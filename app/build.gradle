@@ -14,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -21,15 +22,78 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '29.0.2'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
+
+    // UI design
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.navigation:navigation-fragment:2.2.0'
+    implementation 'androidx.navigation:navigation-ui:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    //ButterKnife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
+    // Firebase & FirebaseUI libraries
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-inappmessaging:19.0.3'
+    implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:5.1.0'
+
+    // Facebook & Twitter login supports
+    implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
+    implementation 'com.twitter.sdk.android:twitter-core:3.3.0'
+
+    // Google Maps services
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-places:17.0.0'
+    implementation 'com.google.android.libraries.places:places:2.1.0'
+
+    // Retrofit & RXJava2/RXAndroid libraries
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+
+    // Test libraries
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation('androidx.test.espresso:espresso-contrib:3.1.1') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
+    apply plugin: 'com.google.gms.google-services'
 }
