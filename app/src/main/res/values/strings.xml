@@ -10,5 +10,19 @@
     <string name="error_unknown_error">Unknown error</string>
     <string name="connection_succeed">Authentication successful</string>
 
+    <string name="facebook_application_id">274579653518850</string>
+    <string name="fb_login_protocol_scheme">fb274579653518850</string>
+    <string name="profile">PROFILE</string>
+    <string name="places">PLACES</string>
+    <string name="inbox">INBOX</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cover_picture">Cover picture</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="change_cover_picture_button">Change cover picture button</string>
+    <string name="planned_trips">PLANNED TRIPS</string>
+    <string name="past_trips">PAST TRIPS</string>
+
 
 </resources>
