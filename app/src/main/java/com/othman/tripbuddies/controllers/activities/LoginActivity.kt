@@ -131,7 +131,7 @@ class LoginActivity : AppCompatActivity() {
     private fun createUserInFirestore() {
 
         val urlPicture: String? = if (FirebaseAuth.getInstance().currentUser!!.photoUrl != null)
-                Objects.requireNonNull(FirebaseAuth.getInstance().currentUser!!.photoUrl).toString() else null
+                FirebaseAuth.getInstance().currentUser!!.photoUrl.toString() else null
         val username: String? = FirebaseAuth.getInstance().currentUser!!.displayName
         val userId: String? = FirebaseAuth.getInstance().currentUser!!.uid
 

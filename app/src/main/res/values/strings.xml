@@ -21,8 +21,20 @@
     <string name="cover_picture">Cover picture</string>
     <string name="profile_picture">Profile picture</string>
     <string name="change_cover_picture_button">Change cover picture button</string>
-    <string name="planned_trips">PLANNED TRIPS</string>
-    <string name="past_trips">PAST TRIPS</string>
+    <string name="last_trips">LAST TRIPS</string>
+    <string name="static_map">Static map</string>
+    <string name="trip_image">Trip image</string>
+    <string name="add_a_new_trip">ADD A NEW TRIP</string>
+    <string name="edit_a_trip">EDIT A TRIP</string>
+    <string name="wish_list">WISH LIST</string>
+    <string name="add_city">ADD CITIES</string>
+    <string name="depart_date">Depart date</string>
+    <string name="return_date">Return date</string>
+    <string name="add_photos">ADD PHOTOS</string>
+    <string name="add_buddies">ADD BUDDIES</string>
+    <string name="tell_other_buddies_about_your_trip">Tell other buddies about your trip !</string>
+    <string name="name_of_your_trip">Name of your trip</string>
+    <string name="buddies_icon">Buddies icon</string>
 
 
 </resources>

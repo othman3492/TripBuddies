@@ -13,5 +13,4 @@ data class Trip(
     var endDate: String?,
     var imageList: MutableList<String> = ArrayList(),
     var buddiesList: MutableList<User> = ArrayList()
-
     )
