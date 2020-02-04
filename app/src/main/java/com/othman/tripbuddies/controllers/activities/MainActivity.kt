@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.controllers.fragments.ChatFragment
+import com.othman.tripbuddies.controllers.fragments.InboxFragment
 import com.othman.tripbuddies.controllers.fragments.CityFragment
 import com.othman.tripbuddies.controllers.fragments.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.bottom_menu_profile -> displayFragment(ProfileFragment.newInstance())
                 R.id.bottom_menu_places -> displayFragment(CityFragment.newInstance())
-                R.id.bottom_menu_inbox -> displayFragment(ChatFragment.newInstance())
+                R.id.bottom_menu_inbox -> displayFragment(InboxFragment.newInstance())
             }
 
             return@setOnNavigationItemSelectedListener true
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             is CityFragment -> {
                 fragmentId = 1
             }
-            is ChatFragment -> {
+            is InboxFragment -> {
                 fragmentId = 2
             }
         }

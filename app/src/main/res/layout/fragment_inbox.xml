@@ -7,7 +7,7 @@
     tools:context=".controllers.fragments.InboxFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/chat_header"
+        android:id="@+id/inbox_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
@@ -16,15 +16,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/chat_profile_picture"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:id="@+id/inbox_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_normal"
-            android:background="@color/white"
-            android:contentDescription="@string/search_button"
+            android:background="@drawable/baseline_search_24"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/search_button"/>
 
         <TextView
             android:id="@+id/inbox_textview"
@@ -34,21 +34,21 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_title"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/chat_profile_picture"
+            android:text="@string/messages"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Othman"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_recycler_view"
+        android:id="@+id/inbox_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chat_header" />
+        app:layout_constraintTop_toBottomOf="@id/inbox_header"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

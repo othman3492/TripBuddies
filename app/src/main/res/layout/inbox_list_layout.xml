@@ -13,32 +13,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/buddies_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/baseline_people_alt_24"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/buddies_icon" />
-
-    <TextView
-        android:id="@+id/nb_buddies_trip_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        tools:text="3"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="@id/buddies_icon"
-        app:layout_constraintBottom_toBottomOf="@id/buddies_icon"
-        app:layout_constraintEnd_toStartOf="@id/buddies_icon"/>
-
-    <ImageView
         android:id="@+id/inbox_image"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/trip_image"
@@ -60,36 +37,43 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            tools:text="California roadtrip"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
+            tools:text="Othman"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_title"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/trip_cities"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="30dp"
-            tools:text="Los Angeles and 3 others"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@id/inbox_name"
-            app:layout_constraintTop_toBottomOf="@id/inbox_name" />
-
-        <TextView
-            android:id="@+id/trip_dates"
+            android:id="@+id/inbox_message_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/black"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            tools:text="23/08/2019 > 07/09/2019"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:lines="2"
+            tools:text="A message is a discrete unit of communication intended by the source for consumption by ... a conversation."
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="@id/inbox_name"
-            app:layout_constraintTop_toBottomOf="@+id/trip_cities" />
+            app:layout_constraintEnd_toEndOf="@id/inbox_date"
+            app:layout_constraintTop_toBottomOf="@id/inbox_name"/>
+
+        <TextView
+            android:id="@+id/inbox_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="04/02/2020"/>
+
+        <TextView
+            android:id="@+id/inbox_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/inbox_date"
+            app:layout_constraintEnd_toEndOf="@id/inbox_date"
+            tools:text="14:50"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

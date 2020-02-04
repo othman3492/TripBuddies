@@ -35,6 +35,11 @@
     <string name="tell_other_buddies_about_your_trip">Tell other buddies about your trip !</string>
     <string name="name_of_your_trip">Name of your trip</string>
     <string name="buddies_icon">Buddies icon</string>
+    <string name="search_button">Search button</string>
+    <string name="trip_name_by">by %s</string>
+    <string name="photos">PHOTOS</string>
+    <string name="buddies">BUDDIES</string>
+    <string name="messages">MESSAGES</string>
 
 
 </resources>

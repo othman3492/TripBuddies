@@ -2,7 +2,9 @@
   <dictionary name="Othman">
     <words>
       <w>firestore</w>
+      <w>othman</w>
       <w>snackbar</w>
+      <w>textview</w>
     </words>
   </dictionary>
 </component>

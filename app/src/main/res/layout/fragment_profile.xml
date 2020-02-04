@@ -21,7 +21,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@color/white"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/margin_normal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/cover_picture"
         android:contentDescription="@string/profile_picture" />
@@ -34,7 +34,7 @@
         android:textSize="20sp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="@dimen/margin_normal"
         app:layout_constraintStart_toEndOf="@id/profile_picture"
         app:layout_constraintTop_toTopOf="@id/profile_picture"/>
 
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content. Click below to consent to the use of this technology and the processing of your personal data for these purposes. You can change your mind and change your consent choices at any time by returning to this site. "
         android:textColor="@color/white"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/margin_normal"
         android:textSize="8sp"
         app:layout_constraintTop_toBottomOf="@id/username"
         app:layout_constraintStart_toStartOf="@id/username"
@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/baseline_panorama_24"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/margin_normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/change_cover_picture_button" />
@@ -69,29 +69,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
+        <Button
             android:id="@+id/last_trips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/last_trips"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:background="@color/colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/wish_list"/>
 
-    <TextView
+    <Button
         android:id="@+id/wish_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/wish_list"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/last_trips"
@@ -112,7 +114,7 @@
         android:id="@+id/add_floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/margin_normal"
         android:src="@drawable/baseline_add_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -122,7 +124,7 @@
         android:id="@+id/chat_floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/margin_normal"
         android:src="@drawable/baseline_chat_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
