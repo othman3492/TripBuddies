@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.repositories.FirestoreUserRepository
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
@@ -111,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
 
                 // Show message, create user and start MainActivity
                 showSnackbar(login_constraint_layout, getString(R.string.connection_succeed))
-                createUserInFirestore()
+                //createUserInFirestore()
                 startActivity(Intent(this, MainActivity::class.java))
             }  else {
                 when (response.error!!.errorCode) {
@@ -128,22 +128,22 @@ class LoginActivity : AppCompatActivity() {
 
 
     // Create user in Firestore if it doesn't exist and store data
-    private fun createUserInFirestore() {
+    /*private fun createUserInFirestore() {
 
         val urlPicture: String? = if (FirebaseAuth.getInstance().currentUser!!.photoUrl != null)
                 FirebaseAuth.getInstance().currentUser!!.photoUrl.toString() else null
         val username: String? = FirebaseAuth.getInstance().currentUser!!.displayName
         val userId: String? = FirebaseAuth.getInstance().currentUser!!.uid
 
-        FirebaseUserHelper.getUser(FirebaseAuth.getInstance().currentUser!!.uid).addOnSuccessListener {
+        FirestoreUserRepository.getUser(FirebaseAuth.getInstance().currentUser!!.uid).addOnSuccessListener {
 
             val currentUser = it.toObject(User::class.java)
             if (currentUser != null) {
-                FirebaseUserHelper.createUser(userId!!, username!!, currentUser.presentation!!, urlPicture!!, currentUser.urlCoverPicture!!,
+                FirestoreUserRepository.createUser(userId!!, username!!, currentUser.presentation!!, urlPicture!!, currentUser.urlCoverPicture!!,
                     currentUser.tripList, currentUser.wishList)
             } else {
-                FirebaseUserHelper.createUser(userId!!, username!!, "", urlPicture!!, "", ArrayList(), ArrayList())
+                FirestoreUserRepository.createUser(userId!!, username!!, "", urlPicture!!, "", ArrayList(), ArrayList())
             }
         }
-    }
+    }*/
 }

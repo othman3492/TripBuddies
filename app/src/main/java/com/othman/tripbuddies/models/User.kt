@@ -1,5 +1,7 @@
 package com.othman.tripbuddies.models
 
+import java.io.Serializable
+
 
 data class User(
 
@@ -10,4 +12,7 @@ data class User(
     var urlCoverPicture: String? = null,
     var tripList: MutableList<Trip> = ArrayList(),
     var wishList: MutableList<Trip> = ArrayList()
-)
+): Serializable {
+
+    constructor(): this("", "", "", "", "", ArrayList(), ArrayList())
+}

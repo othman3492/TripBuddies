@@ -42,27 +42,21 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    //ButterKnife
-    implementation 'com.jakewharton:butterknife:10.2.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
-
     // Firebase & FirebaseUI libraries
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-inappmessaging:19.0.3'
+    implementation 'com.google.firebase:firebase-firestore:21.3.1'
     implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
     implementation 'com.firebaseui:firebase-ui-database:5.1.0'
     implementation 'com.firebaseui:firebase-ui-storage:5.1.0'
     implementation 'com.firebaseui:firebase-ui-firestore:5.1.0'
 
-    // Facebook & Twitter login supports
+    // Facebook support
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
-    implementation 'com.twitter.sdk.android:twitter-core:3.3.0'
 
-    // Google Maps services
+    // Google services
+    implementation 'com.google.gms:google-services:4.3.3'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'

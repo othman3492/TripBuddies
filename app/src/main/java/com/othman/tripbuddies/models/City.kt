@@ -1,6 +1,7 @@
 package com.othman.tripbuddies.models
 
 import com.google.android.gms.location.places.Place
+import java.io.Serializable
 
 
 data class City(
@@ -13,5 +14,9 @@ data class City(
     var visitorsList: MutableList<User> = ArrayList(),
     var nbVisitors: Int = visitorsList.size,
     var lastTrips: MutableList<Trip> = ArrayList(),
-    var nextTrips: MutableList<Trip> = ArrayList()
-)
+    var wishList: MutableList<City> = ArrayList()
+): Serializable {
+
+    constructor(): this ("", "", "", null, null,
+        ArrayList(), 0, ArrayList(), ArrayList())
+}
