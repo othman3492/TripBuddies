@@ -2,6 +2,7 @@ package com.othman.tripbuddies.repositories
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.othman.tripbuddies.models.User
 
@@ -14,7 +15,7 @@ class FirestoreUserRepository {
 
     // GET COLLECTIONS
     fun getAllUsers(): CollectionReference = firestoreDB.collection("users")
-    fun getUser(user: User): CollectionReference = firestoreDB.collection("users/${user.userId}")
+    fun getUser(userId: String): DocumentReference = firestoreDB.collection("users").document(userId)
 
 
     // CREATE
@@ -26,5 +27,5 @@ class FirestoreUserRepository {
 
 
     // DELETE
-    fun deleteUser(user:User): Task<Void> = this.getAllUsers().document(user.userId).delete()
+    fun deleteUser(userId: String): Task<Void> = this.getAllUsers().document(userId).delete()
 }

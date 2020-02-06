@@ -11,8 +11,8 @@ data class Trip(
     var destination: MutableList<City> = ArrayList(),
     var description: String?,
     var creationDate: String,
-    var startDate: String?,
-    var endDate: String?,
+    var departDate: String?,
+    var returnDate: String?,
     var imageList: MutableList<String> = ArrayList(),
     var buddiesList: MutableList<User> = ArrayList()
     ): Serializable {

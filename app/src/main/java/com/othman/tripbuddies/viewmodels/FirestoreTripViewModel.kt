@@ -35,20 +35,16 @@ class FirestoreTripViewModel: ViewModel() {
     // Retrieve single trip from Firestore and convert it to usable LiveData
     fun getTrip(trip: Trip): LiveData<Trip> {
 
-        tripRepository.getTrip(trip).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+        tripRepository.getTrip(trip).addSnapshotListener { doc, e ->
             if (e != null) {
                 this.trip.value = null
-                return@EventListener
+                return@addSnapshotListener
             }
 
-            var savedTrip = Trip()
-            for (doc in value!!) {
-
-                savedTrip = doc.toObject(Trip::class.java)
-            }
+            val savedTrip = doc!!.toObject(Trip::class.java)
 
             this.trip.value = savedTrip
-        })
+        }
 
         return this.trip
     }
@@ -58,7 +54,7 @@ class FirestoreTripViewModel: ViewModel() {
     // Retrieve user's trip list from Firestore and convert it to usable List<LiveData>
     fun getAllTripsFromUser(user: User): LiveData<List<Trip>> {
 
-        tripRepository.getAllTripsFromUser(user).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+        tripRepository.getAllTripsFromUser(user.userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
             if (e != null) {
 

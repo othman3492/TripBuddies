@@ -29,27 +29,23 @@ class FirestoreUserViewModel : ViewModel() {
 
 
     // DELETE
-    fun deleteUserFromFirestore(user: User) = userRepository.deleteUser(user)
+    fun deleteUserFromFirestore(userId: String) = userRepository.deleteUser(userId)
 
 
 
     // Retrieve single user from Firestore and convert it to usable LiveData
-    fun getUser(user: User): LiveData<User> {
+    fun getUser(userId: String): LiveData<User> {
 
-        userRepository.getUser(user).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+        userRepository.getUser(userId).addSnapshotListener { doc, e ->
             if (e != null) {
                 this.user.value = null
-                return@EventListener
+                return@addSnapshotListener
             }
 
-            var savedUser = User()
-            for (doc in value!!) {
-
-                savedUser = doc.toObject(User::class.java)
-            }
+            val savedUser = doc!!.toObject(User::class.java)
 
             this.user.value = savedUser
-        })
+        }
 
         return this.user
     }
@@ -66,10 +62,10 @@ class FirestoreUserViewModel : ViewModel() {
                 return@EventListener
             }
 
-            var savedUserList: MutableList<User> = mutableListOf()
+            val savedUserList: MutableList<User> = mutableListOf()
             for (doc in value!!) {
 
-                var user = doc.toObject(User::class.java)
+                val user = doc.toObject(User::class.java)
                 savedUserList.add(user)
             }
 

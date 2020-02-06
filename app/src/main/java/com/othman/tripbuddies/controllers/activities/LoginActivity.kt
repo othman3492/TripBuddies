@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.ErrorCodes
@@ -13,7 +14,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.repositories.FirestoreUserRepository
+import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
@@ -21,12 +23,14 @@ import java.util.*
 class LoginActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 100
+    private lateinit var userViewModel: FirestoreUserViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        configureViewModel()
         setSignInButtons()
 
     }
@@ -111,15 +115,18 @@ class LoginActivity : AppCompatActivity() {
 
                 // Show message, create user and start MainActivity
                 showSnackbar(login_constraint_layout, getString(R.string.connection_succeed))
-                //createUserInFirestore()
+                createUserInFirestore()
                 startActivity(Intent(this, MainActivity::class.java))
-            }  else {
+            } else {
                 when (response.error!!.errorCode) {
                     ErrorCodes.NO_NETWORK -> {
                         showSnackbar(login_constraint_layout, getString(R.string.error_no_internet))
                     }
                     ErrorCodes.UNKNOWN_ERROR -> {
-                        showSnackbar(login_constraint_layout, getString(R.string.error_unknown_error))
+                        showSnackbar(
+                            login_constraint_layout,
+                            getString(R.string.error_unknown_error)
+                        )
                     }
                 }
             }
@@ -128,22 +135,33 @@ class LoginActivity : AppCompatActivity() {
 
 
     // Create user in Firestore if it doesn't exist and store data
-    /*private fun createUserInFirestore() {
+    private fun createUserInFirestore() {
 
-        val urlPicture: String? = if (FirebaseAuth.getInstance().currentUser!!.photoUrl != null)
-                FirebaseAuth.getInstance().currentUser!!.photoUrl.toString() else null
-        val username: String? = FirebaseAuth.getInstance().currentUser!!.displayName
-        val userId: String? = FirebaseAuth.getInstance().currentUser!!.uid
+        val urlPicture: String? = if (FirebaseUserHelper.getCurrentUser()!!.photoUrl != null)
+            FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString() else null
+        val username: String? = FirebaseUserHelper.getCurrentUser()!!.displayName
+        val userId: String? = FirebaseUserHelper.getCurrentUser()!!.uid
 
-        FirestoreUserRepository.getUser(FirebaseAuth.getInstance().currentUser!!.uid).addOnSuccessListener {
 
-            val currentUser = it.toObject(User::class.java)
-            if (currentUser != null) {
-                FirestoreUserRepository.createUser(userId!!, username!!, currentUser.presentation!!, urlPicture!!, currentUser.urlCoverPicture!!,
-                    currentUser.tripList, currentUser.wishList)
-            } else {
-                FirestoreUserRepository.createUser(userId!!, username!!, "", urlPicture!!, "", ArrayList(), ArrayList())
-            }
-        }
-    }*/
+        userViewModel.getUser(FirebaseAuth.getInstance().currentUser!!.uid).observe(this,
+            androidx.lifecycle.Observer<User> {
+
+                if (it == null)
+                    userViewModel.createUserIntoFirestore(
+                        User(
+                            userId!!,
+                            username!!,
+                            "",
+                            urlPicture
+                        )
+                    )
+            })
+    }
+
+    private fun configureViewModel() {
+
+        userViewModel = ViewModelProviders.of(this)
+            .get(FirestoreUserViewModel::class.java)
+    }
 }
+
