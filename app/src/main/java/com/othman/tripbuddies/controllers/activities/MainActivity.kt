@@ -29,9 +29,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Get savedInstanceState in case of screen rotation
         if (savedInstanceState != null) {
 
             fragmentId = savedInstanceState.getInt("FRAGMENT_ID")
+        }
+
+        // Display TripFragment if an intent exists
+        if (intent.getSerializableExtra("TRIP") != null) {
+
+            trip = intent.getSerializableExtra("TRIP") as Trip
+            fragmentId = 3
         }
 
         configureBottomNavigationView()
@@ -64,13 +72,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun configureUI(fragmentId: Int) {
-
-        // Display TripFragment if an intent exists
-        if (intent.getSerializableExtra("TRIP") != null) {
-
-            trip = intent.getSerializableExtra("TRIP") as Trip
-            displayFragment(TripFragment.newInstance(trip))
-        }
 
         when (fragmentId) {
 

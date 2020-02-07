@@ -11,7 +11,7 @@ data class User(
     var urlPicture: String? = null,
     var urlCoverPicture: String? = null,
     var tripList: MutableList<Trip> = ArrayList(),
-    var wishList: MutableList<Trip> = ArrayList()
+    var wishList: MutableList<City> = ArrayList()
 ): Serializable {
 
     constructor(): this("", "", "", "", "", ArrayList(), ArrayList())

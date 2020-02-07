@@ -15,9 +15,9 @@ import java.util.concurrent.Executor
 class FirestoreUserViewModel : ViewModel() {
 
 
-    var userRepository = FirestoreUserRepository()
+    private var userRepository = FirestoreUserRepository()
     var user: MutableLiveData<User> = MutableLiveData()
-    var userList: MutableLiveData<List<User>> = MutableLiveData()
+    private var userList: MutableLiveData<List<User>> = MutableLiveData()
 
 
     // CREATE

@@ -72,10 +72,10 @@ class AddEditActivity : AppCompatActivity() {
     private fun fillData() {
 
         // Set views' visibility
-        add_trip.visibility = View.GONE
+        add_trip.text = getString(R.string.edit_a_trip)
         add_button.visibility = View.GONE
-        edit_trip.visibility = View.VISIBLE
         edit_button.visibility = View.VISIBLE
+
 
         // Fill input texts
         name_text_input.setText(trip.name)

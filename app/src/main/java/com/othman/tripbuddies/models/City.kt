@@ -14,7 +14,7 @@ data class City(
     var visitorsList: MutableList<User> = ArrayList(),
     var nbVisitors: Int = visitorsList.size,
     var lastTrips: MutableList<Trip> = ArrayList(),
-    var wishList: MutableList<City> = ArrayList()
+    var wishList: MutableList<User> = ArrayList()
 ): Serializable {
 
     constructor(): this ("", "", "", null, null,

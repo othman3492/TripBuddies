@@ -25,7 +25,7 @@
     <string name="static_map">Static map</string>
     <string name="trip_image">Trip image</string>
     <string name="add_a_new_trip">ADD A NEW TRIP</string>
-    <string name="edit_a_trip">EDIT A TRIP</string>
+    <string name="edit_a_trip">EDIT TRIP</string>
     <string name="wish_list">WISH LIST</string>
     <string name="add_city">ADD CITIES</string>
     <string name="depart_date">Depart date</string>
@@ -40,6 +40,17 @@
     <string name="photos">PHOTOS</string>
     <string name="buddies">BUDDIES</string>
     <string name="messages">MESSAGES</string>
+
+    <string name="by_name">by %s</string>
+    <string name="dates_from_to">From %s to %s</string>
+    <plurals name="destination_and_others">
+        <item quantity="one">%s</item>
+        <item quantity="two">%s and 1 other</item>
+        <item quantity="other">%s and %s others</item></plurals>
+
+    <string name="trip_cover">Trip cover</string>
+    <string name="trip_images">Trip images</string>
+    <string name="trip_cover_picture">Trip cover picture</string>
 
 
 </resources>

@@ -1,6 +1,8 @@
 package com.othman.tripbuddies.controllers.fragments
 
 
+import ProfileCitiesAdapter
+import ProfileTripsAdapter
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -25,6 +29,8 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private var profileUser = User()
+    private lateinit var profileCitiesAdapter: ProfileCitiesAdapter
+    private lateinit var profileTripsAdapter: ProfileTripsAdapter
     private lateinit var userViewModel: FirestoreUserViewModel
 
 
@@ -51,19 +57,27 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun configureUI() {
 
         // Retrieve user data
-        userViewModel.getUser(arguments!!.getString("USER_ID")!!).observe(viewLifecycleOwner, Observer {
+        userViewModel.getUser(arguments!!.getString("USER_ID")!!)
+            .observe(viewLifecycleOwner, Observer {
+
+                // Fill user data into views
+                username.text = it.name
+                user_presentation.text = it.presentation
+                setProfilePicture(it)
+                setCoverPicture(it)
+
+                configureFloatingButton(it)
+                configureTripsRecyclerView()
+                configureButtons()
+            })
+    }
 
 
-            // Fill user data into views
-            username.text = it.name
-            user_presentation.text = it.presentation
-            setProfilePicture(it)
-            setCoverPicture(it)
+    private fun configureButtons() {
 
-            configureFloatingButton(it)
 
-            profileUser = it
-        })
+        profile_last_trips_button.setOnClickListener { configureTripsRecyclerView() }
+        profile_wish_list_button.setOnClickListener { configureCitiesRecyclerView() }
     }
 
 
@@ -76,7 +90,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             add_floating_action_button.setOnClickListener {
 
                 val userIntent = Intent(activity, AddEditActivity::class.java)
-                userIntent.putExtra("USER", profileUser)
+                userIntent.putExtra("USER", user)
                 startActivity(userIntent)
             }
         } else {
@@ -84,42 +98,64 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             add_floating_action_button.visibility = View.GONE
             chat_floating_action_button.visibility = View.VISIBLE
 
-            chat_floating_action_button.setOnClickListener { // display chat fragment //
-                 }
+            chat_floating_action_button.setOnClickListener {
+                // display chat fragment //
+            }
+
+        }
 
     }
 
-}
+
+    private fun configureTripsRecyclerView() {
+
+        // Configure trips RecyclerView
+        profileTripsAdapter = ProfileTripsAdapter(requireContext(), profileUser)
+        profile_trips_recycler_view.adapter = profileTripsAdapter
+        profile_trips_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        profile_trips_recycler_view.addItemDecoration(DividerItemDecoration(
+            profile_trips_recycler_view.context, DividerItemDecoration.VERTICAL)
+        )
+    }
 
 
-private fun configureRecyclerView() {}
+    private fun configureCitiesRecyclerView() {
 
-private fun configureViewModel() {
+        // Configure cities RecyclerView
+        profileCitiesAdapter = ProfileCitiesAdapter(requireContext(), profileUser)
+        profile_cities_recycler_view.adapter = profileCitiesAdapter
+        profile_cities_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        profile_cities_recycler_view.addItemDecoration(DividerItemDecoration(
+            profile_cities_recycler_view.context, DividerItemDecoration.VERTICAL)
+        )
+    }
 
-    userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-}
+    private fun configureViewModel() {
+
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+    }
 
 
-// Load profile picture into view
-private fun setProfilePicture(user: User) {
-
-    Glide.with(this)
-        .load(user.urlPicture)
-        .apply(RequestOptions.circleCropTransform())
-        .into(profile_picture)
-}
-
-// Load cover picture into view if not null
-private fun setCoverPicture(user: User) {
-
-    if (user.urlCoverPicture != null) {
+    // Load profile picture into view
+    private fun setProfilePicture(user: User) {
 
         Glide.with(this)
-            .load(user.urlCoverPicture)
-            .into(cover_picture)
+            .load(user.urlPicture)
+            .apply(RequestOptions.circleCropTransform())
+            .into(profile_picture)
     }
 
-}
+    // Load cover picture into view if not null
+    private fun setCoverPicture(user: User) {
+
+        if (user.urlCoverPicture != null) {
+
+            Glide.with(this)
+                .load(user.urlCoverPicture)
+                .into(cover_picture)
+        }
+
+    }
 
 
 }
