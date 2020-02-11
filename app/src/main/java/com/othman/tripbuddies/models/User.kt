@@ -10,8 +10,8 @@ data class User(
     var presentation: String? = null,
     var urlPicture: String? = null,
     var urlCoverPicture: String? = null,
-    var tripList: MutableList<Trip> = ArrayList(),
-    var wishList: MutableList<City> = ArrayList()
+    var tripList: List<Trip> = ArrayList(),
+    var wishList: List<City> = ArrayList()
 ): Serializable {
 
     constructor(): this("", "", "", "", "", ArrayList(), ArrayList())

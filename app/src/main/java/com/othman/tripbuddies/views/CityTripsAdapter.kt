@@ -42,7 +42,7 @@ class CityTripsAdapter(val context: Context, private val city: City) :
         fun bind(trip: Trip) {
 
             view.trip_list_name.text = trip.name
-            view.trip_list_cities_or_user.text = trip.user.name
+            view.trip_list_cities_or_user.text = trip.username
             view.trip_list_dates.text = String.format(
                 context.resources.getString(
                     R.string.dates_from_to, trip.departDate, trip.returnDate

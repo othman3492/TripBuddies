@@ -20,8 +20,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
 import com.othman.tripbuddies.controllers.activities.MainActivity
+import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -31,6 +33,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var profileUser = User()
     private lateinit var profileCitiesAdapter: ProfileCitiesAdapter
     private lateinit var profileTripsAdapter: ProfileTripsAdapter
+    private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
 
 
@@ -49,7 +52,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configureViewModel()
+        configureViewModels()
         configureUI()
     }
 
@@ -67,9 +70,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 setCoverPicture(it)
 
                 configureFloatingButton(it)
+                getTripList(it)
                 configureTripsRecyclerView()
                 configureButtons()
+
             })
+
     }
 
 
@@ -112,9 +118,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         // Configure trips RecyclerView
         profileTripsAdapter = ProfileTripsAdapter(requireContext(), profileUser)
         profile_trips_recycler_view.adapter = profileTripsAdapter
-        profile_trips_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        profile_trips_recycler_view.addItemDecoration(DividerItemDecoration(
-            profile_trips_recycler_view.context, DividerItemDecoration.VERTICAL)
+        profile_trips_recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        profile_trips_recycler_view.addItemDecoration(
+            DividerItemDecoration(
+                profile_trips_recycler_view.context, DividerItemDecoration.VERTICAL
+            )
         )
     }
 
@@ -124,14 +133,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         // Configure cities RecyclerView
         profileCitiesAdapter = ProfileCitiesAdapter(requireContext(), profileUser)
         profile_cities_recycler_view.adapter = profileCitiesAdapter
-        profile_cities_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        profile_cities_recycler_view.addItemDecoration(DividerItemDecoration(
-            profile_cities_recycler_view.context, DividerItemDecoration.VERTICAL)
+        profile_cities_recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        profile_cities_recycler_view.addItemDecoration(
+            DividerItemDecoration(
+                profile_cities_recycler_view.context, DividerItemDecoration.VERTICAL
+            )
         )
     }
 
-    private fun configureViewModel() {
+    private fun configureViewModels() {
 
+        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
         userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
     }
 
@@ -155,6 +168,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .into(cover_picture)
         }
 
+    }
+
+
+    private fun updateTripList(list: List<Trip>) {
+
+        this.profileTripsAdapter.updateData(list)
+    }
+
+
+    // Get trips list from Firestore
+    private fun getTripList(user: User) {
+
+        tripViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
+            Observer<List<Trip>> { updateTripList(it) })
     }
 
 

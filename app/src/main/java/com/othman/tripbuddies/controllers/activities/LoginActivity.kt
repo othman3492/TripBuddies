@@ -160,8 +160,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun configureViewModel() {
 
-        userViewModel = ViewModelProviders.of(this)
-            .get(FirestoreUserViewModel::class.java)
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
     }
 }
 

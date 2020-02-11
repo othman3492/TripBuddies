@@ -4,6 +4,9 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+def GOOGLE_APIKEY = '"' + google_apikey + '"' ?: "Define key"
+def STRING = 'String'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -26,6 +29,11 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+
+    buildTypes.each {
+        it.buildConfigField STRING, 'google_apikey', GOOGLE_APIKEY
+    }
+
     buildToolsVersion = '29.0.2'
 }
 

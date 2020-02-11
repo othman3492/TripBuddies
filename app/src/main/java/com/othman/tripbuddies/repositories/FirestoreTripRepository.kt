@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
+import com.othman.tripbuddies.utils.FirebaseUserHelper
 
 
 class FirestoreTripRepository {
@@ -14,27 +15,25 @@ class FirestoreTripRepository {
 
 
     // GET COLLECTIONS
-    fun getAllTrips(): CollectionReference =
-        firestoreDB.collection("users").document().collection("trips")
+    fun getAllTrips(): CollectionReference = firestoreDB.collection("trips")
 
     fun getAllTripsFromUser(userId: String): CollectionReference =
-        firestoreDB.collection("users/$userId/trips")
+        firestoreDB.collection("users").document(userId).collection("trips")
 
     fun getTrip(trip: Trip): DocumentReference =
-        firestoreDB.collection("users/${trip.user.userId}/trips").document(trip.tripId)
+        firestoreDB.collection("users/${trip.userId}/trips").document(trip.tripId)
 
 
     // CREATE
-    fun createTrip(trip: Trip) = firestoreDB.collection("users").document(trip.user.userId)
-        .collection("trips").document("gfdgfdgdfhg").set(trip)
+    fun createTrip(trip: Trip) = FirebaseFirestore.getInstance().collection("users")
+        .document(trip.userId).collection("trips").add(trip)
 
-
-    // UPDATE
-    fun updateTrip(trip: Trip) = firestoreDB.collection("users").document(trip.user.userId)
+        // UPDATE
+    fun updateTrip(trip: Trip) = firestoreDB.collection("users").document(trip.userId)
         .collection("trips").document(trip.tripId).set(trip)
 
     // DELETE
-    fun deleteTrip(trip: Trip) = firestoreDB.collection("users").document(trip.user.userId)
+    fun deleteTrip(trip: Trip) = firestoreDB.collection("users").document(trip.userId)
         .collection("trips").document(trip.tripId).delete()
 
 

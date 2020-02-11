@@ -25,7 +25,6 @@ class AddEditActivity : AppCompatActivity() {
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
 
-    private var user = User()
     private var trip = Trip()
 
 
@@ -44,9 +43,6 @@ class AddEditActivity : AppCompatActivity() {
         configureDatePicker(depart_date)
         configureDatePicker(return_date)
 
-        // Retrieve data from intents
-        if (intent.getSerializableExtra("USER") != null)
-            user = intent.getSerializableExtra("USER") as User
 
         if (intent.getSerializableExtra("TRIP_TO_EDIT") != null) {
             trip = intent.getSerializableExtra("TRIP_TO_EDIT") as Trip
@@ -90,12 +86,15 @@ class AddEditActivity : AppCompatActivity() {
     // Apply data to Trip object
     private fun getDataFromInput(trip: Trip) {
 
+
         trip.name = name_text_input.text.toString()
         trip.description = description_text_input.text.toString()
-        trip.user = user
+        trip.userId = FirebaseUserHelper.getCurrentUser()!!.uid
         trip.departDate = depart_date.text.toString()
         trip.returnDate = return_date.text.toString()
         trip.creationDate = Converters.convertDate(Date())
+
+        trip.username = FirebaseUserHelper.getCurrentUser()!!.displayName.toString()
 
     }
 

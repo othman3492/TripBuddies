@@ -103,7 +103,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         // Load data into views
         trip_name.text = trip.name
-        trip_username.text = String.format(this.resources.getString(R.string.by_name), trip.user.name)
+        trip_username.text = String.format(this.resources.getString(R.string.by_name), trip.username)
         trip_description.text = trip.description
         trip_dates.text = String.format(context!!.resources.getString(R.string.dates_from_to), trip.departDate, trip.returnDate)
         nb_photos_textview.text = trip.imageList.size.toString()

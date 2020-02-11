@@ -1,158 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.fragments.TripFragment">
+    android:orientation="vertical">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        tools:context=".controllers.fragments.TripFragment">
 
-        <ImageView
-            android:id="@+id/trip_cover_picture"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/colorPrimary"
-            android:contentDescription="@string/trip_cover_picture"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/trip_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_normal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_normal"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/trip_username"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="CALIFORNIA ROADTRIP" />
+            <ImageView
+                android:id="@+id/trip_cover_picture"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorPrimary"
+                android:contentDescription="@string/trip_cover_picture"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/trip_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_normal"
-            android:paddingBottom="@dimen/margin_normal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_small"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/trip_cover_picture"
-            app:layout_constraintStart_toStartOf="@id/trip_name"
-            tools:text="by Othman" />
+            <TextView
+                android:id="@+id/trip_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_normal"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/trip_username"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="CALIFORNIA ROADTRIP" />
 
-        <TextView
-            android:id="@+id/trip_dates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"
-            tools:text="From 23/08/2018 to 10/09/2018"/>
+            <TextView
+                android:id="@+id/trip_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:paddingBottom="@dimen/margin_normal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/trip_cover_picture"
+                app:layout_constraintStart_toStartOf="@id/trip_name"
+                tools:text="by Othman" />
 
-
-        <TextView
-            android:id="@+id/trip_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:paddingBottom="@dimen/margin_normal"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/trip_dates"
-            tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content. Click below to consent to the use of this technology and the processing of your personal data for these purposes. You can change your mind and change your consent choices at any time by returning to this site. " />
-
-        <TextView
-            android:id="@+id/photos_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:text="@string/photos"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_title"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/trip_cover_picture"
-            app:layout_constraintTop_toBottomOf="@id/trip_description" />
-
-        <TextView
-            android:id="@+id/nb_photos_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_normal"
-            android:textSize="@dimen/text_title"
-            app:layout_constraintBottom_toBottomOf="@id/photos_textview"
-            app:layout_constraintStart_toEndOf="@id/photos_textview"
-            tools:text="5" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trip_photos_recycler_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photos_textview" />
-
-        <TextView
-            android:id="@+id/buddies_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:text="@string/buddies"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_title"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/trip_photos_recycler_view" />
-
-        <TextView
-            android:id="@+id/nb_buddies_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_normal"
-            android:textSize="@dimen/text_title"
-            app:layout_constraintBottom_toBottomOf="@id/buddies_textview"
-            app:layout_constraintStart_toEndOf="@id/buddies_textview"
-            tools:text="3" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trip_buddies_recycler_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buddies_textview" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/edit_floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:src="@drawable/baseline_create_24"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/delete_floating_action_button" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/delete_floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:src="@drawable/baseline_delete_24"
-            app:backgroundTint="@color/red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/trip_dates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"
+                tools:text="From 23/08/2018 to 10/09/2018" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/trip_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                android:paddingBottom="@dimen/margin_normal"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_dates"
+                tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content. Click below to consent to the use of this technology and the processing of your personal data for these purposes. You can change your mind and change your consent choices at any time by returning to this site. " />
+
+            <TextView
+                android:id="@+id/photos_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                android:text="@string/photos"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/trip_cover_picture"
+                app:layout_constraintTop_toBottomOf="@id/trip_description" />
+
+            <TextView
+                android:id="@+id/nb_photos_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:textSize="@dimen/text_title"
+                app:layout_constraintBottom_toBottomOf="@id/photos_textview"
+                app:layout_constraintStart_toEndOf="@id/photos_textview"
+                tools:text="5" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trip_photos_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photos_textview" />
+
+            <TextView
+                android:id="@+id/buddies_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                android:text="@string/buddies"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_photos_recycler_view" />
+
+            <TextView
+                android:id="@+id/nb_buddies_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:textSize="@dimen/text_title"
+                app:layout_constraintBottom_toBottomOf="@id/buddies_textview"
+                app:layout_constraintStart_toEndOf="@id/buddies_textview"
+                tools:text="3" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trip_buddies_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/buddies_textview" />
 
 
-</ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit_floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:src="@drawable/baseline_create_24"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/delete_floating_action_button" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:src="@drawable/baseline_delete_24"
+        app:backgroundTint="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

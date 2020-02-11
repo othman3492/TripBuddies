@@ -11,10 +11,10 @@ data class City(
     var country: String,
     var latitude: Double? = null,
     var longitude: Double? = null,
-    var visitorsList: MutableList<User> = ArrayList(),
+    var visitorsList: List<User> = ArrayList(),
     var nbVisitors: Int = visitorsList.size,
-    var lastTrips: MutableList<Trip> = ArrayList(),
-    var wishList: MutableList<User> = ArrayList()
+    var lastTrips: List<Trip> = ArrayList(),
+    var wishList: List<User> = ArrayList()
 ): Serializable {
 
     constructor(): this ("", "", "", null, null,

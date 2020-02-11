@@ -30,6 +30,12 @@ class ProfileTripsAdapter(val context: Context, val user: User) :
         holder.bind(user.tripList[position])
     }
 
+    //
+    fun updateData(list: List<Trip>) {
+
+        user.tripList = list
+    }
+
 
     class ProfileTripsViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v) {
 
@@ -48,10 +54,10 @@ class ProfileTripsAdapter(val context: Context, val user: User) :
 
 
             // Set destination(s) text view depending on quantities
-            view.trip_list_cities_or_user.text = context.resources.getQuantityString(
+            /*view.trip_list_cities_or_user.text = context.resources.getQuantityString(
                 R.plurals.destination_and_others,
                 trip.destination.size, trip.destination[0].name, trip.destination.size
-            )
+            )*/
 
 
             // Display first trip photo if image list isn't empty
