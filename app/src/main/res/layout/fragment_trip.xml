@@ -11,12 +11,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".controllers.fragments.TripFragment">
+        tools:context=".controllers.fragments.TripFragment"
+        tools:layout_editor_absoluteX="-20dp"
+        tools:layout_editor_absoluteY="-323dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:ignore="ScrollViewSize">
 
             <ImageView
                 android:id="@+id/trip_cover_picture"

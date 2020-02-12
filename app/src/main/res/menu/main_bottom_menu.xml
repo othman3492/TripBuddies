@@ -18,7 +18,7 @@
     <item
         android:id="@+id/bottom_menu_inbox"
         android:enabled="true"
-        android:icon="@drawable/baseline_chat_green_24"
+        android:icon="@drawable/baseline_chat_blue_24"
         android:title="@string/inbox"
         app:showAsAction="ifRoom"/>
 </menu>

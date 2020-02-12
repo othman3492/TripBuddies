@@ -95,7 +95,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         this.trip = trip
 
         // Set trip cover picture
-        if (trip.imageList.size > 0)
+        if (trip.imageList.isNotEmpty())
             Picasso.get().load(trip.imageList[0]).into(cover_picture)
 
         // Load photos

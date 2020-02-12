@@ -1,27 +1,30 @@
 package com.othman.tripbuddies.controllers.fragments
 
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_city.*
-import java.util.*
 
 
 class CityFragment : Fragment(R.layout.fragment_city) {
 
 
     val AUTOCOMPLETE_REQUEST_CODE = 100
+    val COVER_IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
+
 
 
     companion object {
@@ -39,9 +42,21 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
+    @SuppressLint("DefaultLocale")
     private fun configureUI(place: Place) {
 
-        city_name.text = place.name
+        val path = COVER_IMAGE_URL + place.photoMetadatas!![1].zza() +
+                "&key=" + BuildConfig.google_apikey
+
+        city_name.text = place.name!!.toUpperCase()
+        city_country.text = getCountry(place)
+
+        val a = getCountry(place)
+        val b = loadStaticMap(place)
+
+
+        Picasso.get().load(loadStaticMap(place)).into(city_static_map)
+        Picasso.get().load(path).fit().into(city_cover_picture)
 
     }
 
@@ -52,6 +67,8 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         val fields: List<Place.Field> = listOf(
             Place.Field.ID,
             Place.Field.NAME,
+            Place.Field.LAT_LNG,
+            Place.Field.ADDRESS_COMPONENTS,
             Place.Field.PHOTO_METADATAS)
 
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
@@ -71,6 +88,33 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                 configureUI(city)
             }
         }
+    }
+
+
+    // Display static map with city location
+    private fun loadStaticMap(place: Place): String {
+
+        val location = "${place.latLng!!.latitude}, ${place.latLng!!.longitude}"
+
+        // Set center of the map
+        val mapURLInitial = "https://maps.googleapis.com/maps/api/staticmap?center=$location"
+        // Set properties and marker
+        val mapURLProperties = "&zoom=4&size=200x200&markers=size:tiny%7C$location"
+        val key = "&key=${BuildConfig.google_apikey}"
+
+        return mapURLInitial + mapURLProperties + key
+    }
+
+
+    // Retrieve country from Place result
+    private fun getCountry(place: Place): String {
+
+        val geocoder = Geocoder(activity)
+        val location = place.latLng
+
+        val country = geocoder.getFromLocation(location!!.latitude, location.longitude, 1)
+
+        return country[0].countryName
     }
 
 
