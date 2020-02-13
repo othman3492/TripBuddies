@@ -15,6 +15,8 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.extensions.getCountry
+import com.othman.tripbuddies.extensions.loadStaticMap
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_city.*
 
@@ -49,13 +51,11 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                 "&key=" + BuildConfig.google_apikey
 
         city_name.text = place.name!!.toUpperCase()
-        city_country.text = getCountry(place)
-
-        val a = getCountry(place)
-        val b = loadStaticMap(place)
+        city_country.text = place.getCountry(context!!)
 
 
-        Picasso.get().load(loadStaticMap(place)).into(city_static_map)
+
+        Picasso.get().load(place.loadStaticMap()).into(city_static_map)
         Picasso.get().load(path).fit().into(city_cover_picture)
 
     }
@@ -88,33 +88,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                 configureUI(city)
             }
         }
-    }
-
-
-    // Display static map with city location
-    private fun loadStaticMap(place: Place): String {
-
-        val location = "${place.latLng!!.latitude}, ${place.latLng!!.longitude}"
-
-        // Set center of the map
-        val mapURLInitial = "https://maps.googleapis.com/maps/api/staticmap?center=$location"
-        // Set properties and marker
-        val mapURLProperties = "&zoom=4&size=200x200&markers=size:tiny%7C$location"
-        val key = "&key=${BuildConfig.google_apikey}"
-
-        return mapURLInitial + mapURLProperties + key
-    }
-
-
-    // Retrieve country from Place result
-    private fun getCountry(place: Place): String {
-
-        val geocoder = Geocoder(activity)
-        val location = place.latLng
-
-        val country = geocoder.getFromLocation(location!!.latitude, location.longitude, 1)
-
-        return country[0].countryName
     }
 
 

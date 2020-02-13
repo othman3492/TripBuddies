@@ -3,6 +3,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.libraries.places.api.model.Place
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.User
@@ -37,9 +38,9 @@ class ProfileCitiesAdapter(val context: Context, val user: User) :
 
 
         // Assign data to the views
-        fun bind(city: City) {
+        fun bind(place: Place) {
 
-            view.city_or_buddies_list_name.text = city.name
+            view.city_or_buddies_list_name.text = place.name
 
             // Display city profile from Google
 

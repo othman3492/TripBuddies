@@ -1,5 +1,7 @@
 package com.othman.tripbuddies.models
 
+import com.google.android.libraries.places.api.model.Place
+import com.othman.tripbuddies.utils.Utils
 import java.io.Serializable
 
 
@@ -9,7 +11,7 @@ data class Trip(
     var name: String = "",
     var userId: String,
     var username: String,
-    var destination: List<City> = ArrayList(),
+    var destination: List<Place> = ArrayList(),
     var description: String?,
     var creationDate: String = "",
     var departDate: String?,
@@ -18,5 +20,5 @@ data class Trip(
     var buddiesList: List<User> = ArrayList()
     ): Serializable {
 
-    constructor():this("", "", "", "", ArrayList(), "", "", "", "", ArrayList(), ArrayList() )
+    constructor():this(Utils.generateId(), "", "", "", ArrayList(), "", "", "", "", ArrayList(), ArrayList() )
 }

@@ -64,15 +64,16 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .observe(viewLifecycleOwner, Observer {
 
                 // Fill user data into views
+                configureTripsRecyclerView()
+                getTripList(it)
+                configureButtons()
+
                 username.text = it.name
                 user_presentation.text = it.presentation
                 setProfilePicture(it)
                 setCoverPicture(it)
 
                 configureFloatingButton(it)
-                getTripList(it)
-                configureTripsRecyclerView()
-                configureButtons()
 
             })
 
@@ -116,7 +117,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun configureTripsRecyclerView() {
 
         // Configure trips RecyclerView
-        profileTripsAdapter = ProfileTripsAdapter(requireContext(), profileUser)
+        profileTripsAdapter = ProfileTripsAdapter(requireContext()) { trip: Trip -> openTripFragmentOnClick(trip) }
         profile_trips_recycler_view.adapter = profileTripsAdapter
         profile_trips_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -182,6 +183,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         tripViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
             Observer<List<Trip>> { updateTripList(it) })
+    }
+
+
+    // Open Trip details fragment when clicked
+    private fun openTripFragmentOnClick(trip: Trip) {
+
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        val fragment = TripFragment.newInstance(trip)
+
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+
+        if (isTablet) {
+            transaction.replace(R.id.second_fragment_container, fragment).commit()
+        } else {
+            transaction.replace(R.id.fragment_container, fragment).commit()
+        }
     }
 
 

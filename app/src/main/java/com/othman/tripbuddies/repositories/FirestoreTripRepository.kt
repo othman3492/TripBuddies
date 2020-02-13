@@ -21,12 +21,12 @@ class FirestoreTripRepository {
         firestoreDB.collection("users").document(userId).collection("trips")
 
     fun getTrip(trip: Trip): DocumentReference =
-        firestoreDB.collection("users/${trip.userId}/trips").document(trip.tripId)
+        firestoreDB.collection("users/${trip.userId}/trips").document()
 
 
     // CREATE
-    fun createTrip(trip: Trip) = FirebaseFirestore.getInstance().collection("users")
-        .document(trip.userId).collection("trips").add(trip)
+    fun createTrip(trip: Trip) = firestoreDB.collection("users").document(trip.userId)
+        .collection("trips").document(trip.tripId).set(trip)
 
         // UPDATE
     fun updateTrip(trip: Trip) = firestoreDB.collection("users").document(trip.userId)

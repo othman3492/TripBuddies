@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
+import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
@@ -140,8 +142,6 @@ class LoginActivity : AppCompatActivity() {
         val urlPicture: String? = if (FirebaseUserHelper.getCurrentUser()!!.photoUrl != null)
             FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString() else null
         val username: String? = FirebaseUserHelper.getCurrentUser()!!.displayName
-        val userId: String? = FirebaseUserHelper.getCurrentUser()!!.uid
-
 
         userViewModel.getUser(FirebaseAuth.getInstance().currentUser!!.uid).observe(this,
             androidx.lifecycle.Observer<User> {
@@ -149,7 +149,6 @@ class LoginActivity : AppCompatActivity() {
                 if (it == null)
                     userViewModel.createUserIntoFirestore(
                         User(
-                            userId!!,
                             username!!,
                             "",
                             urlPicture

@@ -7,13 +7,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatViewInflater
 import androidx.lifecycle.ViewModelProviders
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.controllers.fragments.TripFragment
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.utils.Converters
+import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
@@ -54,6 +51,7 @@ class AddEditActivity : AppCompatActivity() {
     private fun configureButtons() {
 
         add_button.setOnClickListener { createTrip(trip) }
+        edit_button.setOnClickListener { updateTrip(trip) }
     }
 
 
@@ -92,8 +90,6 @@ class AddEditActivity : AppCompatActivity() {
         trip.userId = FirebaseUserHelper.getCurrentUser()!!.uid
         trip.departDate = depart_date.text.toString()
         trip.returnDate = return_date.text.toString()
-        trip.creationDate = Converters.convertDate(Date())
-
         trip.username = FirebaseUserHelper.getCurrentUser()!!.displayName.toString()
 
     }
@@ -105,6 +101,9 @@ class AddEditActivity : AppCompatActivity() {
         getDataFromInput(newTrip)
 
         if (newTrip.name != "") {
+
+            // Set trip creation date
+            newTrip.creationDate = Utils.convertDate(Date())
 
             // Create object
             tripViewModel.createTripIntoFirestore(newTrip)
@@ -120,6 +119,26 @@ class AddEditActivity : AppCompatActivity() {
     }
 
 
+    // Update Trip object from data and store it into database
+    private fun updateTrip(tripUpdate: Trip) {
+
+        getDataFromInput(tripUpdate)
+
+        if (tripUpdate.name != "") {
+
+            // Update object
+            tripViewModel.updateTripIntoFirestore(tripUpdate)
+
+            // Confirm creation
+            Toast.makeText(this, "Trip updated !", Toast.LENGTH_SHORT).show()
+
+            // Return to MainActivity and pass it Trip via intent to display TripFragment
+            finish()
+        }
+    }
+
+
+
     private fun configureDatePicker(textView: TextView) {
 
         val calendar = Calendar.getInstance()
@@ -131,7 +150,7 @@ class AddEditActivity : AppCompatActivity() {
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                textView.text = Converters.convertDate(calendar.time)
+                textView.text = Utils.convertDate(calendar.time)
 
             }
 

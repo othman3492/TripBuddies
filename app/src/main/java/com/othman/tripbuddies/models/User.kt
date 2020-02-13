@@ -1,6 +1,9 @@
 package com.othman.tripbuddies.models
 
+import com.google.android.libraries.places.api.model.Place
+import com.othman.tripbuddies.utils.Utils
 import java.io.Serializable
+import kotlin.random.Random
 
 
 data class User(
@@ -11,8 +14,8 @@ data class User(
     var urlPicture: String? = null,
     var urlCoverPicture: String? = null,
     var tripList: List<Trip> = ArrayList(),
-    var wishList: List<City> = ArrayList()
+    var wishList: List<Place> = ArrayList()
 ): Serializable {
 
-    constructor(): this("", "", "", "", "", ArrayList(), ArrayList())
+    constructor(): this(Utils.generateId(), "", "", "", "", ArrayList(), ArrayList())
 }

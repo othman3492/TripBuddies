@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private var isTablet = false
     private var fragmentId = 0
 
-    private var user = User()
     private var trip = Trip()
 
 
