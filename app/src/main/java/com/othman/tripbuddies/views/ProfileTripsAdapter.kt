@@ -32,7 +32,7 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
         holder.bind(tripList[position], clickListener)
     }
 
-    //
+    
     fun updateData(list: List<Trip>) {
 
         tripList = list

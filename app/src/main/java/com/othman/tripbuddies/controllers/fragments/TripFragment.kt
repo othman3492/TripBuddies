@@ -125,7 +125,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         }
 
         // Close fragment and get back to home screen
-        val transaction = childFragmentManager.beginTransaction()
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
         transaction.replace(R.id.fragment_container, ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid)).commit()
     }

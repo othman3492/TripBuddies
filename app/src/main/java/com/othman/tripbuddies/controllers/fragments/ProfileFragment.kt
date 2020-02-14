@@ -78,7 +78,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 // Fill user data into views
                 configureTripsRecyclerView()
                 getTripList(it)
-                configureButtons()
+                configureButtons(it)
 
                 username.text = it.name
                 user_presentation.text = it.presentation
@@ -92,10 +92,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
-    private fun configureButtons() {
+    private fun configureButtons(user: User) {
 
 
-        profile_last_trips_button.setOnClickListener { configureTripsRecyclerView() }
+        profile_last_trips_button.setOnClickListener {
+            configureTripsRecyclerView()
+            getTripList(user)
+        }
         profile_wish_list_button.setOnClickListener { configureCitiesRecyclerView() }
         cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
     }
