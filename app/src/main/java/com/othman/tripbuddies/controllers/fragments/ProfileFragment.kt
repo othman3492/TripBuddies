@@ -4,12 +4,17 @@ package com.othman.tripbuddies.controllers.fragments
 import ProfileCitiesAdapter
 import ProfileTripsAdapter
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -25,10 +30,15 @@ import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
+
+
+    private val galleryCode = 1
+    private val galleryPermissionCode = 11
 
     private var profileUser = User()
     private lateinit var profileCitiesAdapter: ProfileCitiesAdapter
@@ -63,6 +73,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         userViewModel.getUser(arguments!!.getString("USER_ID")!!)
             .observe(viewLifecycleOwner, Observer {
 
+                profileUser = it
+
                 // Fill user data into views
                 configureTripsRecyclerView()
                 getTripList(it)
@@ -85,6 +97,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         profile_last_trips_button.setOnClickListener { configureTripsRecyclerView() }
         profile_wish_list_button.setOnClickListener { configureCitiesRecyclerView() }
+        cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
     }
 
 
@@ -201,6 +214,66 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             transaction.replace(R.id.fragment_container, fragment).commit()
         }
     }
+
+
+
+    // Ask for permission to pick image from gallery
+    private fun checkPermissionForGallery() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                // Permission denied
+                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                // Request permission
+                requestPermissions(permissions, galleryPermissionCode)
+            } else {
+                // Permission granted
+                pickPhotoFromGallery()
+            }
+        } else {
+            // No permission needed if API < 23
+            pickPhotoFromGallery()
+        }
+    }
+
+    // Handle request permission result
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+
+            galleryPermissionCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted
+                    pickPhotoFromGallery()
+                } else {
+                    // Permission denied
+                    Toast.makeText(activity, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    // Open gallery to select cover photo
+    private fun pickPhotoFromGallery() {
+
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, galleryCode)
+    }
+
+    // Handle picked image result
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (resultCode == Activity.RESULT_OK && requestCode == galleryCode) {
+
+            // Load image into view
+            Picasso.get().load(data?.data.toString()).into(cover_picture)
+
+            // Update data and save new cover picture
+            profileUser.urlCoverPicture = data?.data.toString()
+            userViewModel.updateUserIntoFirestore(profileUser)
+        }
+    }
+
 
 
 }

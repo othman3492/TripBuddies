@@ -26,6 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@color/colorPrimary"
+                android:scaleType="centerCrop"
                 android:contentDescription="@string/trip_cover_picture"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
