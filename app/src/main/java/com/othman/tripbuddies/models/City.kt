@@ -11,7 +11,7 @@ import kotlin.collections.ArrayList
 
 data class City(
 
-    val tripCityId: String,
+    val cityId: String,
     var name: String,
     var country: String,
     var latitude: Double? = null,

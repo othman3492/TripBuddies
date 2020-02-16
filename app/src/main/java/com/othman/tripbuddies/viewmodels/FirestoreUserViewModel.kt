@@ -3,6 +3,7 @@ package com.othman.tripbuddies.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.QuerySnapshot
@@ -26,6 +27,8 @@ class FirestoreUserViewModel : ViewModel() {
 
     // UPDATE
     fun updateUserIntoFirestore(user: User) = userRepository.updateUser(user)
+    fun addCityToWishList(user: User, place: Place) = userRepository.addCity(user, place)
+    fun removeCityFromWishLIst(user: User, place: Place) = userRepository.removeCity(user, place)
 
 
     // DELETE

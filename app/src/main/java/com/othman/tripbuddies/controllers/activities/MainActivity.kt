@@ -9,6 +9,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.auth.FirebaseAuth
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.fragments.InboxFragment

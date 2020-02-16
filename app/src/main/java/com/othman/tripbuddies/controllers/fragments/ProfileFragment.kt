@@ -97,9 +97,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         profile_last_trips_button.setOnClickListener {
             configureTripsRecyclerView()
-            getTripList(user)
-        }
-        profile_wish_list_button.setOnClickListener { configureCitiesRecyclerView() }
+            getTripList(user) }
+        profile_wish_list_button.setOnClickListener {
+            configureCitiesRecyclerView() }
         cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
     }
 

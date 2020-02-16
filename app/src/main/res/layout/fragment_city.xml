@@ -3,150 +3,206 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".controllers.fragments.CityFragment">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/city_original_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/city_original_search_button"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="@drawable/baseline_flight_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/city_original_search_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/where_do_you_want_to_go"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/city_original_search_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/city_fragment_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".controllers.fragments.CityFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="ScrollViewSize">
-
-            <ImageView
-                android:id="@+id/city_cover_picture"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:contentDescription="@string/trip_cover"
-                android:background="@color/colorPrimary"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/city_search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_normal"
-                android:contentDescription="@string/search_button"
-                android:src="@drawable/baseline_search_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/city_static_map"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="@dimen/margin_normal"
-                android:background="@color/com_facebook_messenger_blue"
-                android:contentDescription="@string/static_map"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/city_cover_picture" />
-
-            <TextView
-                android:id="@+id/city_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/city_static_map"
-                app:layout_constraintTop_toTopOf="@id/city_static_map"
-                tools:text="VANCOUVER" />
-
-            <TextView
-                android:id="@+id/city_country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_normal"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/city_name"
-                app:layout_constraintTop_toBottomOf="@id/city_name"
-                tools:text="Canada" />
-
-            <TextView
-                android:id="@+id/nb_past_buddies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/nb_wish_list_buddies"
-                app:layout_constraintStart_toStartOf="@id/city_name"
-                tools:text="25 buddies have visited this city" />
-
-            <TextView
-                android:id="@+id/nb_wish_list_buddies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/city_static_map"
-                app:layout_constraintStart_toStartOf="@id/city_name"
-                tools:text="14 buddies would like to go there" />
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/city_trips_layout"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="@dimen/margin_normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/city_static_map">
+                android:layout_height="match_parent"
+                tools:ignore="ScrollViewSize">
 
-                <Button
-                    android:id="@+id/city_last_trips"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/city_cover_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
                     android:background="@color/colorPrimary"
-                    android:text="@string/last_trips"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_small"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/city_wish_list"
+                    android:contentDescription="@string/trip_cover"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/city_wish_list"
-                    android:layout_width="0dp"
+                <ImageView
+                    android:id="@+id/city_search_button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimaryDark"
-                    android:text="@string/wish_list"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_small"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:contentDescription="@string/search_button"
+                    android:src="@drawable/baseline_search_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/city_static_map"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:background="@color/com_facebook_messenger_blue"
+                    android:contentDescription="@string/static_map"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/city_cover_picture" />
+
+                <TextView
+                    android:id="@+id/city_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/city_static_map"
+                    app:layout_constraintTop_toTopOf="@id/city_static_map"
+                    tools:text="VANCOUVER" />
+
+                <TextView
+                    android:id="@+id/city_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/city_name"
+                    app:layout_constraintTop_toBottomOf="@id/city_name"
+                    tools:text="Canada" />
+
+                <TextView
+                    android:id="@+id/nb_past_buddies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/nb_wish_list_buddies"
+                    app:layout_constraintStart_toStartOf="@id/city_name"
+                    tools:text="25 buddies have visited this city" />
+
+                <TextView
+                    android:id="@+id/nb_wish_list_buddies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/city_static_map"
+                    app:layout_constraintStart_toStartOf="@id/city_name"
+                    tools:text="14 buddies would like to go there" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/city_trips_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/city_static_map">
+
+                    <Button
+                        android:id="@+id/city_last_trips"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:text="@string/last_trips"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_small"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/city_wish_list"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/city_wish_list"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="@string/wish_list"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_small"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/city_last_trips"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/city_trips_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/city_last_trips"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/city_trips_layout" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/city_trips_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/city_trips_layout" />
+        </ScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_city_wish_list_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal"
+            android:src="@drawable/baseline_favorite_border_24"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/remove_city_wish_list_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal"
+            android:src="@drawable/baseline_favorite_24"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"/>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/city_wish_list_floating_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
-        android:src="@drawable/baseline_favorite_border_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
