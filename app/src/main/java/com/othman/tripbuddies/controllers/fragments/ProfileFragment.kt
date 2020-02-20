@@ -25,9 +25,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
 import com.othman.tripbuddies.controllers.activities.MainActivity
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import com.squareup.picasso.Picasso
@@ -45,6 +47,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private lateinit var profileTripsAdapter: ProfileTripsAdapter
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
+    private lateinit var cityViewModel: FirestoreCityViewModel
 
 
     companion object {
@@ -97,9 +100,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         profile_last_trips_button.setOnClickListener {
             configureTripsRecyclerView()
-            getTripList(user) }
+            getTripList(user)
+        }
         profile_wish_list_button.setOnClickListener {
-            configureCitiesRecyclerView() }
+            configureCitiesRecyclerView()
+            getWishList(user)
+        }
         cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
     }
 
@@ -132,8 +138,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun configureTripsRecyclerView() {
 
+        profile_cities_recycler_view.visibility = View.GONE
+        profile_trips_recycler_view.visibility = View.VISIBLE
+
         // Configure trips RecyclerView
-        profileTripsAdapter = ProfileTripsAdapter(requireContext()) { trip: Trip -> openTripFragmentOnClick(trip) }
+        profileTripsAdapter =
+            ProfileTripsAdapter(requireContext()) { trip: Trip -> openTripFragmentOnClick(trip) }
         profile_trips_recycler_view.adapter = profileTripsAdapter
         profile_trips_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -147,8 +157,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun configureCitiesRecyclerView() {
 
+        profile_trips_recycler_view.visibility = View.GONE
+        profile_cities_recycler_view.visibility = View.VISIBLE
+
         // Configure cities RecyclerView
-        profileCitiesAdapter = ProfileCitiesAdapter(requireContext(), profileUser)
+        profileCitiesAdapter =
+            ProfileCitiesAdapter(requireContext()) { city: City -> openCityFragmentOnClick(city) }
         profile_cities_recycler_view.adapter = profileCitiesAdapter
         profile_cities_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -163,6 +177,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
         userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
     }
 
 
@@ -184,21 +199,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .load(user.urlCoverPicture)
                 .into(cover_picture)
         }
-
     }
 
 
-    private fun updateTripList(list: List<Trip>) {
-
-        this.profileTripsAdapter.updateData(list)
-    }
-
-
-    // Get trips list from Firestore
+    // Get data from Firestore
     private fun getTripList(user: User) {
 
+        // Get trip list
         tripViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
-            Observer<List<Trip>> { updateTripList(it) })
+            Observer<List<Trip>> { this.profileTripsAdapter.updateData(it) })
+    }
+
+
+    // Get data from Firestore
+    private fun getWishList(user: User) {
+
+        // Get wish list
+        cityViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner,
+            Observer<List<City>> { this.profileCitiesAdapter.updateData(it) })
     }
 
 
@@ -219,12 +237,32 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
+    // Open City details fragment when clicked
+    private fun openCityFragmentOnClick(city: City) {
+
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        val fragment = CityFragment.newInstance(city)
+
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+
+        if (isTablet) {
+            transaction.replace(R.id.second_fragment_container, fragment).commit()
+        } else {
+            transaction.replace(R.id.fragment_container, fragment).commit()
+        }
+    }
+
 
     // Ask for permission to pick image from gallery
     private fun checkPermissionForGallery() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            if (checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
                 // Permission denied
                 val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 // Request permission
@@ -240,7 +278,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     // Handle request permission result
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
 
             galleryPermissionCode -> {
@@ -276,7 +318,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             userViewModel.updateUserIntoFirestore(profileUser)
         }
     }
-
 
 
 }

@@ -6,7 +6,6 @@ import CityTripsAdapter
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -21,9 +20,9 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.extensions.getCountry
-import com.othman.tripbuddies.extensions.loadStaticMap
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import com.squareup.picasso.Picasso
@@ -34,9 +33,10 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class CityFragment : Fragment(R.layout.fragment_city) {
 
 
-    private lateinit var city: Place
+    private lateinit var city: City
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
+    private lateinit var cityViewModel: FirestoreCityViewModel
     private lateinit var cityBuddiesAdapter: CityBuddiesAdapter
     private lateinit var cityTripsAdapter: CityTripsAdapter
 
@@ -47,7 +47,15 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
 
     companion object {
-        fun newInstance() = CityFragment()
+        fun newInstance(city: City?): CityFragment {
+
+            val args = Bundle()
+            args.putSerializable("CITY", city)
+
+            val fragment = CityFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
 
@@ -59,6 +67,13 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         configureViewModels()
         configureButtons()
+
+
+        if (arguments!!.getSerializable("CITY") != null) {
+
+            city = arguments!!.getSerializable("CITY") as City
+            configureUI(city)
+        }
     }
 
 
@@ -66,6 +81,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
         userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
     }
 
 
@@ -82,19 +98,36 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
-    @SuppressLint("DefaultLocale")
-    private fun configureUI(place: Place) {
+    @SuppressLint("DefaultLocale", "RestrictedApi")
+    private fun configureUI(city: City) {
 
-        val path = COVER_IMAGE_URL + place.photoMetadatas!![1].zza() +
+        // Update UI
+        city_original_layout.visibility = View.GONE
+        city_fragment_layout.visibility = View.VISIBLE
+
+
+        val path = COVER_IMAGE_URL + city.coverPicture +
                 "&key=" + BuildConfig.google_apikey
 
-        city_name.text = place.name!!.toUpperCase()
-        city_country.text = place.getCountry(context!!)
-
-
-
-        Picasso.get().load(place.loadStaticMap()).into(city_static_map)
+        city_name.text = city.name.toUpperCase()
+        city_country.text = city.country
+        Picasso.get().load(loadStaticMap(city)).into(city_static_map)
         Picasso.get().load(path).fit().into(city_cover_picture)
+
+        // Display right floating action button
+        cityViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid)
+            .observe(viewLifecycleOwner, Observer {
+
+                for (doc in it) {
+
+                    if (doc.cityId == city.cityId) {
+
+                        add_city_wish_list_floating_action_button.hide()
+                        remove_city_wish_list_floating_action_button.show()
+                    }
+                }
+            })
+
 
     }
 
@@ -124,47 +157,69 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
-                val city = Autocomplete.getPlaceFromIntent(data!!)
-                this.city = city
+                // Retrieve Place data and create City object
+                val place = Autocomplete.getPlaceFromIntent(data!!)
+                this.city = City(
+                    place.id!!,
+                    place.name!!,
+                    place.getCountry(context!!),
+                    place.latLng!!.latitude,
+                    place.latLng!!.longitude,
+                    place.photoMetadatas!![3].zza(),
+                    ArrayList(),
+                    ArrayList(),
+                    ArrayList())
 
-                // Update UI
-                city_original_layout.visibility = View.GONE
-                city_fragment_layout.visibility = View.VISIBLE
                 configureUI(city)
             }
         }
     }
 
 
+    // Configure static map URI from City object
+    private fun loadStaticMap(city: City): String {
+
+        val location = "${city.latitude}, ${city.longitude}"
+
+        // Set center of the map
+        val mapURLInitial = "https://maps.googleapis.com/maps/api/staticmap?center=$location"
+        // Set properties and marker
+        val mapURLProperties = "&zoom=4&size=200x200&markers=size:tiny%7C$location"
+        val key = "&key=${BuildConfig.google_apikey}"
+
+        return mapURLInitial + mapURLProperties + key
+    }
+
+
     @SuppressLint("RestrictedApi")
-    private fun addCityToWishList(place: Place) {
+    private fun addCityToWishList(city: City) {
 
         userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
             .observe(viewLifecycleOwner, Observer {
 
-                userViewModel.addCityToWishList(it, place).addOnSuccessListener {
+                cityViewModel.addCityToWishList(it, city).addOnSuccessListener {
 
-                    add_city_wish_list_floating_action_button.visibility = View.GONE
-                    remove_city_wish_list_floating_action_button.visibility = View.VISIBLE
+                    // Update button
+                    add_city_wish_list_floating_action_button.hide()
+                    remove_city_wish_list_floating_action_button.show()
+
                     Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
                 }
             })
     }
 
 
-    @SuppressLint("RestrictedApi")
-    private fun removeCityFromWishList(place: Place) {
+    private fun removeCityFromWishList(city: City) {
 
         userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
             .observe(viewLifecycleOwner, Observer {
 
-                it.wishList.toMutableList().remove(place)
-                it.wishList.sortedBy { place.name }
+                cityViewModel.removeCityFromWishList(it, city).addOnSuccessListener {
 
-                userViewModel.updateUserIntoFirestore(it).addOnSuccessListener {
+                    // Update button
+                    remove_city_wish_list_floating_action_button.hide()
+                    add_city_wish_list_floating_action_button.show()
 
-                    remove_city_wish_list_floating_action_button.visibility = View.GONE
-                    add_city_wish_list_floating_action_button.visibility = View.VISIBLE
                     Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
                 }
             })

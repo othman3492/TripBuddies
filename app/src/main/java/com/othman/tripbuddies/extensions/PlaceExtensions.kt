@@ -18,19 +18,4 @@ fun Place.getCountry(context: Context): String {
 }
 
 
-// Configure static map URI from Place object
-fun Place.loadStaticMap(): String {
-
-    val location = "${this.latLng!!.latitude}, ${this.latLng!!.longitude}"
-
-    // Set center of the map
-    val mapURLInitial = "https://maps.googleapis.com/maps/api/staticmap?center=$location"
-    // Set properties and marker
-    val mapURLProperties = "&zoom=4&size=200x200&markers=size:tiny%7C$location"
-    val key = "&key=${BuildConfig.google_apikey}"
-
-    return mapURLInitial + mapURLProperties + key
-}
-
-
 

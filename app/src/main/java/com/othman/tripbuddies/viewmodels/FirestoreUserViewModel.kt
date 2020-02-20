@@ -7,6 +7,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.QuerySnapshot
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.repositories.FirestoreTripRepository
@@ -27,9 +28,6 @@ class FirestoreUserViewModel : ViewModel() {
 
     // UPDATE
     fun updateUserIntoFirestore(user: User) = userRepository.updateUser(user)
-    fun addCityToWishList(user: User, place: Place) = userRepository.addCity(user, place)
-    fun removeCityFromWishLIst(user: User, place: Place) = userRepository.removeCity(user, place)
-
 
     // DELETE
     fun deleteUserFromFirestore(userId: String) = userRepository.deleteUser(userId)

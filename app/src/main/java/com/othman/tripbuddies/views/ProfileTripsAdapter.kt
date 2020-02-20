@@ -1,7 +1,9 @@
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
@@ -54,6 +56,7 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
         fun bind(trip: Trip, clickListener: (Trip) -> Unit) {
 
             view.trip_list_name.text = trip.name
+            view.trip_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             view.trip_list_dates.text = String.format(
                 context.resources.getString(
                     R.string.dates_from_to, trip.departDate, trip.returnDate

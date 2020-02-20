@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         when (fragmentId) {
 
             0 -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
-            1 -> displayFragment(CityFragment.newInstance())
+            1 -> displayFragment(CityFragment.newInstance(null))
             2 -> displayFragment(InboxFragment.newInstance())
             3 -> displayFragment(TripFragment.newInstance(trip))
         }
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
             when (it.itemId) {
                 R.id.bottom_menu_profile -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
-                R.id.bottom_menu_places -> displayFragment(CityFragment.newInstance())
+                R.id.bottom_menu_places -> displayFragment(CityFragment.newInstance(null))
                 R.id.bottom_menu_inbox -> displayFragment(InboxFragment.newInstance())
             }
 

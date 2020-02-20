@@ -6,6 +6,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.User
 
 class FirestoreUserRepository {
@@ -26,8 +27,11 @@ class FirestoreUserRepository {
 
     // UPDATE
     fun updateUser(user: User): Task<Void> = this.getAllUsers().document(user.userId).set(user)
-    fun addCity(user: User, place: Place): Task<Void> = this.getAllUsers().document(user.userId).update("wishList", FieldValue.arrayUnion(place))
-    fun removeCity(user: User, place: Place): Task<Void> = this.getAllUsers().document(user.userId).update("wishList", FieldValue.arrayRemove(place))
+
+    fun addCity(user: User, city: City): Task<Void> = this.getAllUsers().document(user.userId)
+        .collection("userCities").document(city.cityId).set(city)
+
+
 
 
     // DELETE
