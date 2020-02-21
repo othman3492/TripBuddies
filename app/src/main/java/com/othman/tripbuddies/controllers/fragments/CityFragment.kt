@@ -19,6 +19,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.controllers.activities.ChatActivity
 import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.utils.FirebaseUserHelper
@@ -66,14 +67,14 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
 
         configureViewModels()
-        configureButtons()
-
+        city_original_search_button.setOnClickListener { configurePlaceAutocomplete() }
 
         if (arguments!!.getSerializable("CITY") != null) {
 
             city = arguments!!.getSerializable("CITY") as City
             configureUI(city)
         }
+
     }
 
 
@@ -87,32 +88,37 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
     private fun configureButtons() {
 
-        city_original_search_button.setOnClickListener { configurePlaceAutocomplete() }
+        val chatIntent = Intent(activity, ChatActivity::class.java)
+        chatIntent.putExtra("CHAT_CITY", city)
+
         city_search_button.setOnClickListener { configurePlaceAutocomplete() }
         add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
-        remove_city_wish_list_floating_action_button.setOnClickListener {
-            removeCityFromWishList(
-                city
-            )
-        }
+        remove_city_wish_list_floating_action_button.setOnClickListener { removeCityFromWishList(city) }
+        open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
+
     }
 
 
     @SuppressLint("DefaultLocale", "RestrictedApi")
     private fun configureUI(city: City) {
 
+        configureButtons()
+
         // Update UI
         city_original_layout.visibility = View.GONE
         city_fragment_layout.visibility = View.VISIBLE
+        remove_city_wish_list_floating_action_button.hide()
+        add_city_wish_list_floating_action_button.show()
 
-
-        val path = COVER_IMAGE_URL + city.coverPicture +
-                "&key=" + BuildConfig.google_apikey
+        val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
 
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
+        nb_past_buddies.text = String.format(this.resources.getString(R.string.city_nb_buddies), city.visitorsList.size)
+        nb_wish_list_buddies.text = String.format(this.resources.getString(R.string.city_nb_wishlist), city.wishList.size)
+
         Picasso.get().load(loadStaticMap(city)).into(city_static_map)
-        Picasso.get().load(path).fit().into(city_cover_picture)
+        Picasso.get().load(path).into(city_cover_picture)
 
         // Display right floating action button
         cityViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid)
@@ -165,7 +171,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     place.getCountry(context!!),
                     place.latLng!!.latitude,
                     place.latLng!!.longitude,
-                    place.photoMetadatas!![3].zza(),
+                    place.photoMetadatas!![0].zza(),
                     ArrayList(),
                     ArrayList(),
                     ArrayList())

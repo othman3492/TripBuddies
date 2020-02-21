@@ -5,18 +5,15 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.othman.tripbuddies.models.Message
 
-class FirestoreMessageRepository {
+class FirestoreChatRepository {
 
 
     private var firestoreDB = FirebaseFirestore.getInstance()
 
 
     // GET COLLECTIONS
-    fun getAllMessagesFromConversation(userId: String): CollectionReference =
-        firestoreDB.collection("users").document(userId).collection("messages")
-
-    fun getMessage(message: Message): DocumentReference =
-        firestoreDB.collection("users/${message.userId}/messages").document()
+    fun getAllMessagesFromConversation(cityId: String): CollectionReference =
+        firestoreDB.collection("chatRooms").document(cityId).collection("messages")
 
 
     // CREATE

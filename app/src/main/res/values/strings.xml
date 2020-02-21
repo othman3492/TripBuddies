@@ -46,12 +46,20 @@
     <plurals name="destination_and_others">
         <item quantity="one">%s</item>
         <item quantity="two">%s and 1 other</item>
-        <item quantity="other">%s and %s others</item></plurals>
+        <item quantity="other">%s and %s others</item>
+    </plurals>
 
     <string name="trip_cover">Trip cover</string>
     <string name="trip_images">Trip images</string>
     <string name="trip_cover_picture">Trip cover picture</string>
     <string name="where_do_you_want_to_go">Where do you want to go ?</string>
+    <string name="avatar">avatar</string>
+    <string name="city_picture">City picture</string>
+    <string name="type_your_message">Type your message</string>
+    <string name="send_button">Send button</string>
+
+    <string name="city_nb_buddies">%s buddies have visited this city</string>
+    <string name="city_nb_wishlist">%s buddies would like to go there</string>
 
 
 </resources>

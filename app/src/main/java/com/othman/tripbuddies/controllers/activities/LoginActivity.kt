@@ -41,26 +41,10 @@ class LoginActivity : AppCompatActivity() {
     // Configure sign-in buttons
     private fun setSignInButtons() {
 
-        email_button.setOnClickListener { startEmailSignInActivity() }
         facebook_button.setOnClickListener { startFacebookSignInActivity() }
         google_button.setOnClickListener { startGoogleSignInActivity() }
     }
 
-
-    // Launch email sign-in activity
-    private fun startEmailSignInActivity() {
-        startActivityForResult(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(
-                    Collections.singletonList(
-                        EmailBuilder().build()
-                    )
-                )
-                .setIsSmartLockEnabled(false, true)
-                .build(), RC_SIGN_IN
-        )
-    }
 
     // Launch Facebook sign-in activity
     private fun startFacebookSignInActivity() {

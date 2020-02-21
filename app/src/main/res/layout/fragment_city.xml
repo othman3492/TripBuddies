@@ -62,9 +62,9 @@
                     android:id="@+id/city_cover_picture"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:background="@color/colorPrimary"
-                    android:contentDescription="@string/trip_cover"
+                    android:src="@color/colorPrimary"
                     android:scaleType="centerCrop"
+                    android:contentDescription="@string/trip_cover"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -188,9 +188,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_normal"
             android:src="@drawable/baseline_favorite_border_24"
-            android:backgroundTint="@color/white"
+            app:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/open_chat_floating_action_button" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/remove_city_wish_list_floating_action_button"
@@ -198,10 +198,20 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_normal"
             android:src="@drawable/baseline_favorite_24"
-            android:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/open_chat_floating_action_button"
             android:visibility="gone"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/open_chat_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal"
+            android:src="@drawable/baseline_chat_24"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
