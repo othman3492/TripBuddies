@@ -33,7 +33,7 @@ class ChatActivity : AppCompatActivity() {
         val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
 
 
-            // Update views
+        // Update views
         chat_city_name.text = city.name.toUpperCase()
         Picasso.get().load(path).into(chat_city_picture)
 

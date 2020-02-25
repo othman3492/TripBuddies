@@ -11,14 +11,13 @@ data class Trip(
     var name: String = "",
     var userId: String,
     var username: String,
-    var destination: List<Place> = ArrayList(),
     var description: String?,
     var creationDate: String = "",
     var departDate: String?,
     var returnDate: String?,
-    var imageList: List<String> = ArrayList(),
-    var buddiesList: List<User> = ArrayList()
-    ): Serializable {
+    var nbDestinations: Int = 0,
+    var nbBuddies: Int = 0
+    ) : Serializable {
 
-    constructor():this(Utils.generateId(), "", "", "", ArrayList(), "", "", "", "", ArrayList(), ArrayList() )
+    constructor() : this(Utils.generateId(), "", "", "", "", "", "", "",0,0)
 }

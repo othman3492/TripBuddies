@@ -7,12 +7,12 @@ import java.util.*
 
 data class Message(
 
-    val userId: String = "",
     val messageId: String = "",
+    val userId: String = "",
     var content: String = "",
     @ServerTimestamp
     var timestamp: Date? = null
 ): Serializable {
 
-    constructor():this("", Utils.generateId(), "", null)
+    constructor():this(Utils.generateId(),"", "", null)
 }

@@ -13,8 +13,10 @@ import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 class TripPhotoAdapter(val context: Context, val trip: Trip) :
     RecyclerView.Adapter<TripPhotoAdapter.TripPhotoViewHolder>() {
 
+    private var photoList: List<String> = ArrayList()
 
-    override fun getItemCount() = trip.imageList.size
+
+    override fun getItemCount() = photoList.size + 1
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripPhotoViewHolder {
@@ -26,7 +28,7 @@ class TripPhotoAdapter(val context: Context, val trip: Trip) :
     // Populate ViewHolder with data depending on the position in the list
     override fun onBindViewHolder(holder: TripPhotoViewHolder, position: Int) {
 
-        holder.bind(Uri.parse(trip.imageList[position]))
+        holder.bind(Uri.parse(photoList[position]))
     }
 
 

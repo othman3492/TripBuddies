@@ -1,23 +1,14 @@
 package com.othman.tripbuddies.controllers.activities
 
-import android.graphics.Color
-import android.icu.text.CaseMap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.google.android.libraries.places.api.model.Place
-import com.google.firebase.auth.FirebaseAuth
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.controllers.fragments.InboxFragment
 import com.othman.tripbuddies.controllers.fragments.CityFragment
 import com.othman.tripbuddies.controllers.fragments.ProfileFragment
 import com.othman.tripbuddies.controllers.fragments.TripFragment
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -82,8 +73,7 @@ class MainActivity : AppCompatActivity() {
 
             0 -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
             1 -> displayFragment(CityFragment.newInstance(null))
-            2 -> displayFragment(InboxFragment.newInstance())
-            3 -> displayFragment(TripFragment.newInstance(trip))
+            2 -> displayFragment(TripFragment.newInstance(trip))
         }
     }
 
@@ -97,7 +87,6 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.bottom_menu_profile -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
                 R.id.bottom_menu_places -> displayFragment(CityFragment.newInstance(null))
-                R.id.bottom_menu_inbox -> displayFragment(InboxFragment.newInstance())
             }
 
             return@setOnNavigationItemSelectedListener true
@@ -113,9 +102,7 @@ class MainActivity : AppCompatActivity() {
 
             is CityFragment -> fragmentId = 1
 
-            is InboxFragment -> fragmentId = 2
-
-            is TripFragment -> fragmentId = 3
+            is TripFragment -> fragmentId = 2
         }
 
         val transaction = supportFragmentManager.beginTransaction()

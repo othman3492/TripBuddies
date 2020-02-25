@@ -15,10 +15,4 @@
         android:icon="@drawable/baseline_place_24"
         android:title="@string/places"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/bottom_menu_inbox"
-        android:enabled="true"
-        android:icon="@drawable/baseline_chat_blue_24"
-        android:title="@string/inbox"
-        app:showAsAction="ifRoom"/>
 </menu>

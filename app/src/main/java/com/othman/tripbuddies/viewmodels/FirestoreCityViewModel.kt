@@ -22,40 +22,14 @@ class FirestoreCityViewModel: ViewModel() {
 
 
     // CREATE
-    fun addCityToWishList(user: User, city: City) = cityRepository.addCityToWishList(user, city)
     fun addCityToTrip(trip: Trip, city: City) = cityRepository.addCityToTrip(trip, city)
 
 
     // DELETE
-    fun removeCityFromWishList(user: User, city: City) = cityRepository.removeCityFromWishList(user, city)
     fun removeCityFromTrip(trip: Trip, city: City) = cityRepository.removeCityFromTrip(trip, city)
 
 
 
-
-    // Retrieve user's wish list from Firestore and convert it to usable List<LiveData>
-    fun getAllCitiesFromUser(userId: String): LiveData<List<City>> {
-
-        cityRepository.getAllCitiesFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                userWishList.value = null
-                return@EventListener
-            }
-
-            val savedUserWishList: MutableList<City> = mutableListOf()
-            for (doc in value!!) {
-
-                val city = doc.toObject(City::class.java)
-                savedUserWishList.add(city)
-            }
-
-            userWishList.value = savedUserWishList
-        })
-
-        return userWishList
-    }
 
 
     // Retrieve trip's city list from Firestore and convert it to usable List<LiveData>

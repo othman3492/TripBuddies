@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.othman.tripbuddies.models.City
+import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 
 class FirestoreUserRepository {
@@ -15,23 +16,36 @@ class FirestoreUserRepository {
     private var firestoreDB = FirebaseFirestore.getInstance()
 
 
-
     // GET COLLECTIONS
-    fun getAllUsers(): CollectionReference = firestoreDB.collection("users")
-    fun getUser(userId: String): DocumentReference = firestoreDB.collection("users").document(userId)
+    fun getAllUsers() = firestoreDB.collection("users")
+
+    fun getUser(userId: String) = getAllUsers().document(userId)
+
+    fun getAllTripsFromUser(userId: String) = getAllUsers().document(userId)
+        .collection("trips")
+
+    fun getWishListFromUser(userId: String) = getAllUsers().document(userId)
+        .collection("userCities")
 
 
     // CREATE
-    fun createUser(user: User): Task<Void> = this.getAllUsers().document(user.userId).set(user)
+    fun createUser(user: User) = getAllUsers().document(user.userId).set(user)
 
 
     // UPDATE
-    fun updateUser(user: User): Task<Void> = this.getAllUsers().document(user.userId).set(user)
+    fun updateUser(user: User) = getAllUsers().document(user.userId).set(user)
 
-    fun addCity(user: User, city: City): Task<Void> = this.getAllUsers().document(user.userId)
-        .collection("userCities").document(city.cityId).set(city)
+    fun addTripToUser(userId: String, trip: Trip): Task<Void> =
+        getAllUsers().document(userId).collection("trips").document(trip.tripId).set(trip)
 
+    fun removeTripFromUser(userId: String, trip: Trip): Task<Void> =
+        getAllUsers().document(userId).collection("trips").document(trip.tripId).delete()
 
+    fun addCityToWishList(userId: String, city: City): Task<Void> =
+        getAllUsers().document(userId).collection("userCities").document(city.cityId).set(city)
+
+    fun removeCityFromWishList(userId: String, city: City): Task<Void> = getAllUsers()
+        .document(userId).collection("userCities").document(city.cityId).delete()
 
 
     // DELETE

@@ -84,7 +84,6 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="@dimen/margin_normal"
-                    android:background="@color/com_facebook_messenger_blue"
                     android:contentDescription="@string/static_map"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/city_cover_picture" />

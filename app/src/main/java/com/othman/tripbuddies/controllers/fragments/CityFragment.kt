@@ -93,7 +93,9 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         city_search_button.setOnClickListener { configurePlaceAutocomplete() }
         add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
-        remove_city_wish_list_floating_action_button.setOnClickListener { removeCityFromWishList(city) }
+        remove_city_wish_list_floating_action_button.setOnClickListener {
+            removeCityFromWishList(city)
+        }
         open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
 
     }
@@ -114,8 +116,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
-        nb_past_buddies.text = String.format(this.resources.getString(R.string.city_nb_buddies), city.visitorsList.size)
-        nb_wish_list_buddies.text = String.format(this.resources.getString(R.string.city_nb_wishlist), city.wishList.size)
+        nb_past_buddies.text = String.format(
+            this.resources.getString(R.string.city_nb_buddies), city.visitorsList.size)
+        nb_wish_list_buddies.text =
+            String.format(this.resources.getString(R.string.city_nb_wishlist), city.wishList.size)
 
         Picasso.get().load(loadStaticMap(city)).into(city_static_map)
         Picasso.get().load(path).into(city_cover_picture)
@@ -133,8 +137,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     }
                 }
             })
-
-
     }
 
 
@@ -171,12 +173,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     place.getCountry(context!!),
                     place.latLng!!.latitude,
                     place.latLng!!.longitude,
-                    place.photoMetadatas!![0].zza(),
-                    ArrayList(),
-                    ArrayList(),
-                    ArrayList())
+                    place.photoMetadatas!![0].zza()
+                )
 
-                configureUI(city)
+                configureUI(this.city)
             }
         }
     }
@@ -200,35 +200,30 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     @SuppressLint("RestrictedApi")
     private fun addCityToWishList(city: City) {
 
-        userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
-            .observe(viewLifecycleOwner, Observer {
+        cityViewModel.addCityToWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city)
+            .addOnSuccessListener {
 
-                cityViewModel.addCityToWishList(it, city).addOnSuccessListener {
+                // Update button
+                add_city_wish_list_floating_action_button.hide()
+                remove_city_wish_list_floating_action_button.show()
 
-                    // Update button
-                    add_city_wish_list_floating_action_button.hide()
-                    remove_city_wish_list_floating_action_button.show()
+                Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
+            }
 
-                    Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
-                }
-            })
     }
 
 
     private fun removeCityFromWishList(city: City) {
 
-        userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
-            .observe(viewLifecycleOwner, Observer {
+        cityViewModel.removeCityFromWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city)
+            .addOnSuccessListener {
 
-                cityViewModel.removeCityFromWishList(it, city).addOnSuccessListener {
+                // Update button
+                remove_city_wish_list_floating_action_button.hide()
+                add_city_wish_list_floating_action_button.show()
 
-                    // Update button
-                    remove_city_wish_list_floating_action_button.hide()
-                    add_city_wish_list_floating_action_button.show()
-
-                    Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
-                }
-            })
+                Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
+            }
     }
 
 }

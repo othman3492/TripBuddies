@@ -24,16 +24,14 @@ class FirestoreCityRepository {
             .document(trip.tripId).collection("tripCities")
 
     // CREATE
-    fun addCityToWishList(user: User, city: City): Task<Void> = firestoreDB.collection("users")
-        .document(user.userId).collection("userCities").document(city.cityId).set(city)
+
 
     fun addCityToTrip(trip: Trip, city: City): Task<Void> = firestoreDB.collection("users")
         .document(trip.userId).collection("trips").document(trip.tripId).collection("tripCities")
         .document(city.cityId).set(city)
 
     // DELETE
-    fun removeCityFromWishList(user: User, city: City): Task<Void> = firestoreDB.collection("users")
-        .document(user.userId).collection("userCities").document(city.cityId).delete()
+
 
     fun removeCityFromTrip(trip: Trip, city: City): Task<Void> = firestoreDB.collection("users")
         .document(trip.userId).collection("trips").document(trip.tripId).collection("tripCities")

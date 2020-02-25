@@ -14,12 +14,10 @@ data class City(
     var latitude: Double? = null,
     var longitude: Double? = null,
     var coverPicture: String?,
-    var visitorsList: List<User> = ArrayList(),
-    var lastTrips: List<Trip> = ArrayList(),
-    var wishList: List<User> = ArrayList()
+    var nbTrips: Int = 0
 ) : Serializable {
 
 
-    constructor() : this("", "", "", null, null, null, ArrayList(), ArrayList(), ArrayList())
+    constructor() : this("", "", "", null, null, null,0)
 
 }

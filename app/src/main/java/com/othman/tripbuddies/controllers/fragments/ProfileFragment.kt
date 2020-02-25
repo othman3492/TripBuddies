@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
@@ -29,6 +31,7 @@ import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
@@ -130,9 +133,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             chat_floating_action_button.setOnClickListener {
                 // display chat fragment //
             }
-
         }
-
     }
 
 
@@ -310,14 +311,29 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         if (resultCode == Activity.RESULT_OK && requestCode == galleryCode) {
 
-            // Load image into view
-            Picasso.get().load(data?.data.toString()).into(cover_picture)
 
-            // Update data and save new cover picture
-            profileUser.urlCoverPicture = data?.data.toString()
-            userViewModel.updateUserIntoFirestore(profileUser)
+            // Upload image and get Firebase new URI
+            val imageId = generateId()
+            val imageRef: StorageReference = FirebaseStorage.getInstance().getReference(imageId)
+            val uploadTask = imageRef.putFile(data?.data!!)
+
+            uploadTask.continueWithTask { imageRef.downloadUrl }.addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+
+                    // Update data and save it
+                    profileUser.urlCoverPicture = downloadUri.toString()
+                    userViewModel.updateUserIntoFirestore(profileUser)
+
+                    // Load image into view
+                    Picasso.get().load(profileUser.urlCoverPicture).into(cover_picture)
+                }
+            }
+
+
+            }
         }
     }
 
 
-}

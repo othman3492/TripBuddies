@@ -3,6 +3,7 @@ package com.othman.tripbuddies.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.facebook.internal.Mutable
 import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
@@ -19,7 +20,9 @@ class FirestoreUserViewModel : ViewModel() {
 
     private var userRepository = FirestoreUserRepository()
     var user: MutableLiveData<User> = MutableLiveData()
-    private var userList: MutableLiveData<List<User>> = MutableLiveData()
+    private var usersList: MutableLiveData<List<User>> = MutableLiveData()
+    private var userTripList: MutableLiveData<List<Trip>> = MutableLiveData()
+    private var userWishList: MutableLiveData<List<City>> = MutableLiveData()
 
 
     // CREATE
@@ -28,6 +31,13 @@ class FirestoreUserViewModel : ViewModel() {
 
     // UPDATE
     fun updateUserIntoFirestore(user: User) = userRepository.updateUser(user)
+
+    fun addTripToUser(userId: String, trip: Trip) = userRepository.addTripToUser(userId, trip)
+    fun removeTripFromUser(userId: String, trip: Trip) = userRepository.removeTripFromUser(userId, trip)
+
+    fun addCityToWishList(userId: String, city: City) = userRepository.addCityToWishList(userId, city)
+    fun removeCityFromWishList(userId: String, city: City) = userRepository.removeCityFromWishList(userId, city)
+
 
     // DELETE
     fun deleteUserFromFirestore(userId: String) = userRepository.deleteUser(userId)
@@ -59,21 +69,71 @@ class FirestoreUserViewModel : ViewModel() {
 
             if (e != null) {
 
-                userList.value = null
+                usersList.value = null
                 return@EventListener
             }
 
-            val savedUserList: MutableList<User> = mutableListOf()
+            val savedUsersList: MutableList<User> = mutableListOf()
             for (doc in value!!) {
 
                 val user = doc.toObject(User::class.java)
-                savedUserList.add(user)
+                savedUsersList.add(user)
             }
 
-            userList.value = savedUserList
+            usersList.value = savedUsersList
         })
 
-        return userList
+        return usersList
+    }
+
+
+    // Retrieve user's trip list from Firestore and convert it to usable List<LiveData>
+    fun getAllTripsFromUser(userId: String): LiveData<List<Trip>> {
+
+        userRepository.getAllTripsFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+
+            if (e != null) {
+
+                userTripList.value = null
+                return@EventListener
+            }
+
+            val savedUserTripList: MutableList<Trip> = mutableListOf()
+            for (doc in value!!) {
+
+                val trip = doc.toObject(Trip::class.java)
+                savedUserTripList.add(trip)
+            }
+
+            userTripList.value = savedUserTripList
+        })
+
+        return userTripList
+    }
+
+
+    // Retrieve user's wish list from Firestore and convert it to usable List<LiveData>
+    fun getAllCitiesFromUser(userId: String): LiveData<List<City>> {
+
+        userRepository.getWishListFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+
+            if (e != null) {
+
+                userWishList.value = null
+                return@EventListener
+            }
+
+            val savedUserWishList: MutableList<City> = mutableListOf()
+            for (doc in value!!) {
+
+                val city = doc.toObject(City::class.java)
+                savedUserWishList.add(city)
+            }
+
+            userWishList.value = savedUserWishList
+        })
+
+        return userWishList
     }
 
 
