@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
@@ -22,6 +24,8 @@ import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.ChatActivity
 import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
+import com.othman.tripbuddies.models.Trip
+import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
@@ -33,6 +37,8 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 
 class CityFragment : Fragment(R.layout.fragment_city) {
 
+
+    private var currentUser = User()
 
     private lateinit var city: City
     private lateinit var tripViewModel: FirestoreTripViewModel
@@ -63,12 +69,16 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize current user
+        configureViewModels()
+        userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
+            .observe(viewLifecycleOwner, Observer { currentUser = it })
+
         // Initialize Places for Autocomplete
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
-
-        configureViewModels()
         city_original_search_button.setOnClickListener { configurePlaceAutocomplete() }
 
+        // Display city data if bundle isn't empty
         if (arguments!!.getSerializable("CITY") != null) {
 
             city = arguments!!.getSerializable("CITY") as City
@@ -86,25 +96,11 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
-    private fun configureButtons() {
-
-        val chatIntent = Intent(activity, ChatActivity::class.java)
-        chatIntent.putExtra("CHAT_CITY", city)
-
-        city_search_button.setOnClickListener { configurePlaceAutocomplete() }
-        add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
-        remove_city_wish_list_floating_action_button.setOnClickListener {
-            removeCityFromWishList(city)
-        }
-        open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
-
-    }
-
-
     @SuppressLint("DefaultLocale", "RestrictedApi")
     private fun configureUI(city: City) {
 
-        configureButtons()
+
+        configureButtons(city)
 
         // Update UI
         city_original_layout.visibility = View.GONE
@@ -112,20 +108,21 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         remove_city_wish_list_floating_action_button.hide()
         add_city_wish_list_floating_action_button.show()
 
-        val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
-
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
-        nb_past_buddies.text = String.format(
-            this.resources.getString(R.string.city_nb_buddies), city.visitorsList.size)
-        nb_wish_list_buddies.text =
-            String.format(this.resources.getString(R.string.city_nb_wishlist), city.wishList.size)
 
         Picasso.get().load(loadStaticMap(city)).into(city_static_map)
+
+        val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
         Picasso.get().load(path).into(city_cover_picture)
 
+    }
+
+
+    private fun configureButtons(city: City) {
+
         // Display right floating action button
-        cityViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid)
+        userViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid)
             .observe(viewLifecycleOwner, Observer {
 
                 for (doc in it) {
@@ -137,6 +134,65 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     }
                 }
             })
+
+
+        val chatIntent = Intent(activity, ChatActivity::class.java)
+        chatIntent.putExtra("CHAT_CITY", city)
+
+        city_search_button.setOnClickListener { configurePlaceAutocomplete() }
+        add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
+        remove_city_wish_list_floating_action_button.setOnClickListener {
+            removeCityFromWishList(city)
+        }
+        open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
+
+        city_last_trips.setOnClickListener {
+            configureTripsRecyclerView()
+            getTripList(city)
+        }
+        city_wish_list.setOnClickListener {
+            configureBuddiesRecyclerView()
+            getWishList(city)
+        }
+
+    }
+
+
+    private fun configureTripsRecyclerView() {
+
+        city_buddies_recycler_view.visibility = View.GONE
+        city_trips_recycler_view.visibility = View.VISIBLE
+
+        // Configure trips RecyclerView
+        cityTripsAdapter =
+            CityTripsAdapter(requireContext()) { trip: Trip -> openTripFragmentOnClick(trip) }
+        city_trips_recycler_view.adapter = cityTripsAdapter
+        city_trips_recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        city_trips_recycler_view.addItemDecoration(
+            DividerItemDecoration(
+                city_trips_recycler_view.context, DividerItemDecoration.VERTICAL
+            )
+        )
+    }
+
+
+    private fun configureBuddiesRecyclerView() {
+
+        city_trips_recycler_view.visibility = View.GONE
+        city_buddies_recycler_view.visibility = View.VISIBLE
+
+        // Configure cities RecyclerView
+        cityBuddiesAdapter =
+            CityBuddiesAdapter(requireContext()) { user: User -> openProfileFragmentOnClick(user) }
+        city_buddies_recycler_view.adapter = cityBuddiesAdapter
+        city_buddies_recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        city_buddies_recycler_view.addItemDecoration(
+            DividerItemDecoration(
+                city_buddies_recycler_view.context, DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
 
@@ -197,17 +253,49 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
+    // Get data from Firestore
+    private fun getTripList(city: City) {
+
+        // Get trip list
+        cityViewModel.getAllTripsFromCity(city.cityId).observe(viewLifecycleOwner,
+            Observer<List<Trip>> { this.cityTripsAdapter.updateData(it) })
+
+    }
+
+
+    // Get data from Firestore
+    private fun getWishList(city: City) {
+
+        // Get wish list
+        cityViewModel.getWishListFromCity(city.cityId).observe(viewLifecycleOwner,
+            Observer<List<User>> { this.cityBuddiesAdapter.updateData(it) })
+    }
+
+
+
     @SuppressLint("RestrictedApi")
     private fun addCityToWishList(city: City) {
 
-        cityViewModel.addCityToWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city)
+        // Create city collection if it doesn't exist
+        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+
+            if (it == null) cityViewModel.createCityIntoFirestore(city)
+        })
+
+        // Add city to current user wish list
+        userViewModel.addCityToWishList(currentUser.userId, city)
             .addOnSuccessListener {
 
-                // Update button
-                add_city_wish_list_floating_action_button.hide()
-                remove_city_wish_list_floating_action_button.show()
+                // Add user to city wish list
+                cityViewModel.addUserToWishList(city.cityId, currentUser).addOnSuccessListener {
 
-                Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
+                    // Update button
+                    add_city_wish_list_floating_action_button.hide()
+                    remove_city_wish_list_floating_action_button.show()
+
+                    Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
+
+                }
             }
 
     }
@@ -215,15 +303,55 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
     private fun removeCityFromWishList(city: City) {
 
-        cityViewModel.removeCityFromWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city)
+        // Remove city from user wish list
+        userViewModel.removeCityFromWishList(currentUser.userId, city)
             .addOnSuccessListener {
 
-                // Update button
-                remove_city_wish_list_floating_action_button.hide()
-                add_city_wish_list_floating_action_button.show()
+                // Remove user from city wish list
+                cityViewModel.removeUserFromWishList(city.cityId, currentUser)
+                    .addOnSuccessListener {
 
-                Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
+                        // Update button
+                        remove_city_wish_list_floating_action_button.hide()
+                        add_city_wish_list_floating_action_button.show()
+
+                        Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
+                    }
             }
+    }
+
+
+    // Open Trip details fragment when clicked
+    private fun openTripFragmentOnClick(trip: Trip) {
+
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        val fragment = TripFragment.newInstance(trip)
+
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+
+        if (isTablet) {
+            transaction.replace(R.id.second_fragment_container, fragment).commit()
+        } else {
+            transaction.replace(R.id.fragment_container, fragment).commit()
+        }
+    }
+
+
+    // Open City details fragment when clicked
+    private fun openProfileFragmentOnClick(user: User) {
+
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        val fragment = ProfileFragment.newInstance(user.userId)
+
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+
+        if (isTablet) {
+            transaction.replace(R.id.second_fragment_container, fragment).commit()
+        } else {
+            transaction.replace(R.id.fragment_container, fragment).commit()
+        }
     }
 
 }

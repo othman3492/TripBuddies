@@ -16,7 +16,9 @@ import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
+import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_trip.*
@@ -29,6 +31,8 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private lateinit var trip: Trip
 
     private lateinit var tripViewModel: FirestoreTripViewModel
+    private lateinit var userViewModel: FirestoreUserViewModel
+    private lateinit var cityViewModel: FirestoreCityViewModel
 
 
     companion object {
@@ -95,8 +99,8 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         this.trip = trip
 
         // Set trip cover picture
-        if (trip.imageList.isNotEmpty())
-            Picasso.get().load(trip.imageList[0]).into(cover_picture)
+        if (trip.imagesList.isNotEmpty())
+            Picasso.get().load(trip.imagesList[0]).into(cover_picture)
 
         // Load photos
         configureRecyclerViews()
@@ -106,14 +110,15 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         trip_username.text = String.format(this.resources.getString(R.string.by_name), trip.username)
         trip_description.text = trip.description
         trip_dates.text = String.format(context!!.resources.getString(R.string.dates_from_to), trip.departDate, trip.returnDate)
-        nb_photos_textview.text = trip.imageList.size.toString()
-        nb_buddies_textview.text = trip.buddiesList.size.toString()
+        nb_photos_textview.text = trip.nbImages.toString()
+        nb_buddies_textview.text = trip.nbBuddies.toString()
     }
 
 
     private fun configureViewModel() {
 
         tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
 
     }
 
@@ -121,7 +126,11 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private fun deleteTrip(trip: Trip) {
 
         tripViewModel.deleteTripFromFirestore(trip).addOnSuccessListener {
-            Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()
+
+            userViewModel.removeTripFromUser(trip.userId, trip).addOnSuccessListener {
+
+                Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Close fragment and get back to home screen

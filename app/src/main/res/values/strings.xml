@@ -43,6 +43,7 @@
 
     <string name="by_name">by %s</string>
     <string name="dates_from_to">From %s to %s</string>
+    <string name="trips_in_cities">%s trips in %s cities</string>
     <plurals name="destination_and_others">
         <item quantity="one">%s</item>
         <item quantity="two">%s and 1 other</item>

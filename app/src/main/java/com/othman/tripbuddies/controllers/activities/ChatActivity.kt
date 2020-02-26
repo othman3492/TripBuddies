@@ -36,7 +36,5 @@ class ChatActivity : AppCompatActivity() {
         // Update views
         chat_city_name.text = city.name.toUpperCase()
         Picasso.get().load(path).into(chat_city_picture)
-
-
     }
 }

@@ -29,34 +29,39 @@ class FirestoreTripRepository {
     fun getPhotosFromTrip(tripId: String) = getAllTrips().document(tripId)
         .collection("photos")
 
+
+
     // CREATE
     fun createTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).set(trip)
+
+    fun addBuddyToTrip(tripId: String, user: User): Task<Void> =
+        getAllTrips().document(tripId).collection("buddies").document(user.userId).set(user)
+
+    fun addCityToTrip(tripId: String, city: City): Task<Void> =
+        getAllTrips().document(tripId).collection("tripCities").document(city.cityId).set(city)
+
+    fun addPhotoToTrip(tripId: String, path: String): Task<Void> =
+        getAllTrips().document(tripId).collection("photos").document(path).set(path)
+
 
 
     // UPDATE
     fun updateTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).set(trip)
 
-    fun addBuddyToTrip(tripId: String, user: User): Task<Void> =
-        getAllTrips().document(tripId).collection("buddies").document(user.userId).set(user)
-
-    fun removeBuddyFromTrip(tripId: String, user: User): Task<Void> =
-        getAllTrips().document(tripId).collection("buddies").document(user.userId).delete()
-
-    fun addCityToTrip(tripId: String, city: City): Task<Void> =
-        getAllTrips().document(tripId).collection("tripCities").document(city.cityId).set(city)
-
-    fun removeCityFromTrip(tripId: String, city: City): Task<Void> =
-        getAllTrips().document(tripId).collection("tripCities").document(city.cityId).delete()
-
-    fun addPhotoToTrip(tripId: String, path: String): Task<Void> =
-        getAllTrips().document(tripId).collection("photos").document(path).set(path)
-
-    fun removePhotoFromTrip(tripId: String, path: String): Task<Void> =
-        getAllTrips().document(tripId).collection("photos").document(path).delete()
 
 
     // DELETE
     fun deleteTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).delete()
+
+    fun removeBuddyFromTrip(tripId: String, user: User): Task<Void> =
+        getAllTrips().document(tripId).collection("buddies").document(user.userId).delete()
+
+    fun removeCityFromTrip(tripId: String, city: City): Task<Void> =
+        getAllTrips().document(tripId).collection("tripCities").document(city.cityId).delete()
+
+    fun removePhotoFromTrip(tripId: String, path: String): Task<Void> =
+        getAllTrips().document(tripId).collection("photos").document(path).delete()
+
 
 }
 

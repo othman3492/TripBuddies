@@ -112,22 +112,6 @@
                     app:layout_constraintTop_toBottomOf="@id/city_name"
                     tools:text="Canada" />
 
-                <TextView
-                    android:id="@+id/nb_past_buddies"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@id/nb_wish_list_buddies"
-                    app:layout_constraintStart_toStartOf="@id/city_name"
-                    tools:text="25 buddies have visited this city" />
-
-                <TextView
-                    android:id="@+id/nb_wish_list_buddies"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/city_static_map"
-                    app:layout_constraintStart_toStartOf="@id/city_name"
-                    tools:text="14 buddies would like to go there" />
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/city_trips_layout"
                     android:layout_width="match_parent"
@@ -169,12 +153,22 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/city_trips_recycler_view"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/city_trips_layout" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/city_buddies_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/city_trips_layout"
+                    android:visibility="gone"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

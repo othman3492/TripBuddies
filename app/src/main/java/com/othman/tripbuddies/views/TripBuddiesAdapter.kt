@@ -14,7 +14,10 @@ class TripBuddiesAdapter(val context: Context, val trip: Trip) :
     RecyclerView.Adapter<TripBuddiesAdapter.TripBuddiesViewHolder>() {
 
 
-    override fun getItemCount() = trip.buddiesList.size
+    private var buddiesList: List<User> = ArrayList()
+
+
+    override fun getItemCount() = buddiesList.size
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripBuddiesViewHolder {
@@ -26,7 +29,7 @@ class TripBuddiesAdapter(val context: Context, val trip: Trip) :
     // Populate ViewHolder with data depending on the position in the list
     override fun onBindViewHolder(holder: TripBuddiesViewHolder, position: Int) {
 
-        holder.bind(trip.buddiesList[position])
+        holder.bind(buddiesList[position])
     }
 
 

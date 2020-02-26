@@ -11,35 +11,50 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.trips_list_layout.view.*
 
 
-class CityTripsAdapter(val context: Context, private val city: City) :
+class CityTripsAdapter(val context: Context, private val clickListener: (Trip) -> Unit) :
     RecyclerView.Adapter<CityTripsAdapter.CityTripsViewHolder>() {
 
 
-    override fun getItemCount() = city.lastTrips.size
+    private var tripList: List<Trip> = ArrayList()
+
+
+    override fun getItemCount() = tripList.size
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityTripsViewHolder {
 
-        val v: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.trips_list_layout, parent, false)
+        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.trips_list_layout, parent, false)
         return CityTripsViewHolder(v, context)
     }
 
     // Populate ViewHolder with data depending on the position in the list
     override fun onBindViewHolder(holder: CityTripsViewHolder, position: Int) {
 
-        holder.bind(city.lastTrips[position])
+        holder.bind(tripList[position], clickListener)
     }
 
 
-    class CityTripsViewHolder(v: View, private var context: Context) :
-        RecyclerView.ViewHolder(v) {
+    fun updateData(list: List<Trip>) {
+
+        tripList = list
+        this.notifyDataSetChanged()
+    }
+
+
+    class CityTripsViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v), View.OnClickListener {
+
 
         private var view: View = v
 
+        init { v.setOnClickListener(this) }
+
+        override fun onClick(v: View?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
 
         // Assign data to the views
-        fun bind(trip: Trip) {
+        fun bind(trip: Trip, clickListener: (Trip) -> Unit) {
 
             view.trip_list_name.text = trip.name
             view.trip_list_cities_or_user.text = trip.username
@@ -51,15 +66,18 @@ class CityTripsAdapter(val context: Context, private val city: City) :
 
 
             // Display first trip photo if image list isn't empty
-            if (trip.imageList.size > 0) {
-                Picasso.get().load(trip.imageList[0]).into(view.trip_list_image)
+            if (trip.imagesList.isNotEmpty()) {
+                Picasso.get().load(trip.imagesList[0]).into(view.trip_list_image)
             } else {
                 Picasso.get().load(R.drawable.blank_picture).into(view.trip_list_image)
             }
 
 
             // Set number of buddies
-            view.trip_list_nb_buddies.text = trip.buddiesList.toString()
+            view.trip_list_nb_buddies.text = trip.nbBuddies.toString()
+
+            // Set view holder on click
+            view.setOnClickListener { clickListener(trip) }
         }
 
 

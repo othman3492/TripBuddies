@@ -72,14 +72,14 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
 
 
             // Display first trip photo if image list isn't empty
-            if (trip.imageList.isNotEmpty()) {
-                Picasso.get().load(trip.imageList[0]).into(view.trip_list_image)
+            if (trip.imagesList.isNotEmpty()) {
+                Picasso.get().load(trip.imagesList[0]).into(view.trip_list_image)
             } else {
                 Picasso.get().load(R.drawable.blank_picture).into(view.trip_list_image)
             }
 
             // Set number of buddies
-            view.trip_list_nb_buddies.text = trip.buddiesList.toString()
+            view.trip_list_nb_buddies.text = trip.nbBuddies.toString()
 
             // Set view holder on click
             view.setOnClickListener { clickListener(trip) }

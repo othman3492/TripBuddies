@@ -26,8 +26,7 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileCitiesViewHolder {
 
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.city_or_buddies_list_layout, parent, false)
+        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.city_or_buddies_list_layout, parent, false)
         return ProfileCitiesViewHolder(v, context)
     }
 
@@ -45,14 +44,15 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
     }
 
 
-    class ProfileCitiesViewHolder(v: View, private var context: Context) :
-        RecyclerView.ViewHolder(v), View.OnClickListener {
+
+
+    class ProfileCitiesViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
         private var view: View = v
+        val COVER_IMAGE_URL =
+            "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
-        init {
-            v.setOnClickListener(this)
-        }
+        init { v.setOnClickListener(this) }
 
         override fun onClick(v: View?) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -63,16 +63,9 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
         fun bind(city: City, clickListener: (City) -> Unit) {
 
             view.city_or_buddies_list_name.text = city.name
-            view.city_or_buddies_list_name.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorPrimaryDark
-                )
-            )
-            Picasso.get().load(
-                "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference=" + city.coverPicture +
-                        "&key=" + BuildConfig.google_apikey
-            ).into(view.city_or_buddies_list_image)
+            view.city_or_buddies_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            Picasso.get().load(COVER_IMAGE_URL + city.coverPicture +
+                    "&key=" + BuildConfig.google_apikey).into(view.city_or_buddies_list_image)
 
             // Set view holder on click
             view.setOnClickListener { clickListener(city) }

@@ -46,20 +46,8 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/profile_picture"
                 app:layout_constraintTop_toTopOf="@id/profile_picture"
-                tools:text="Othman BOUADJENAK" />
-
-            <TextView
-                android:id="@+id/user_presentation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_normal"
-                android:textColor="@color/black"
-                android:textSize="8sp"
                 app:layout_constraintBottom_toBottomOf="@id/profile_picture"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/username"
-                app:layout_constraintTop_toBottomOf="@id/username"
-                tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content." />
+                tools:text="Othman BOUADJENAK" />
 
             <ImageView
                 android:id="@+id/cover_profile_change_button"
@@ -142,17 +130,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_normal"
         android:src="@drawable/baseline_add_24"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/chat_floating_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
-        android:src="@drawable/baseline_chat_24"
-        android:visibility="gone"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

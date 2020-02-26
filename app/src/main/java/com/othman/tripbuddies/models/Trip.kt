@@ -15,9 +15,11 @@ data class Trip(
     var creationDate: String = "",
     var departDate: String?,
     var returnDate: String?,
+    var imagesList: List<String> = ArrayList(),
     var nbDestinations: Int = 0,
-    var nbBuddies: Int = 0
+    var nbBuddies: Int = 0,
+    var nbImages: Int = imagesList.size
     ) : Serializable {
 
-    constructor() : this(Utils.generateId(), "", "", "", "", "", "", "",0,0)
+    constructor() : this(Utils.generateId(), "", "", "", "", "", "", "")
 }

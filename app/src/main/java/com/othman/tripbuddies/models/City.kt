@@ -14,10 +14,13 @@ data class City(
     var latitude: Double? = null,
     var longitude: Double? = null,
     var coverPicture: String?,
-    var nbTrips: Int = 0
+    var nbTrips: Int = 0,
+    var nbVisitors: Int = 0,
+    var nbWishList: Int = 0,
+    var nbMessages: Int = 0
 ) : Serializable {
 
 
-    constructor() : this("", "", "", null, null, null,0)
+    constructor() : this("", "", "", null, null, null)
 
 }

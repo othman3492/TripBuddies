@@ -23,24 +23,27 @@ class FirestoreUserViewModel : ViewModel() {
     private var usersList: MutableLiveData<List<User>> = MutableLiveData()
     private var userTripList: MutableLiveData<List<Trip>> = MutableLiveData()
     private var userWishList: MutableLiveData<List<City>> = MutableLiveData()
+    private var userVisitedCitiesList: MutableLiveData<List<City>> = MutableLiveData()
 
 
     // CREATE
     fun createUserIntoFirestore(user: User) = userRepository.createUser(user)
+    fun addTripToUser(userId: String, trip: Trip) = userRepository.addTripToUser(userId, trip)
+    fun addCityToWishList(userId: String, city: City) = userRepository.addCityToWishList(userId, city)
+    fun addVisitedCity(userId: String, city: City) = userRepository.addVisitedCity(userId, city)
+
 
 
     // UPDATE
     fun updateUserIntoFirestore(user: User) = userRepository.updateUser(user)
 
-    fun addTripToUser(userId: String, trip: Trip) = userRepository.addTripToUser(userId, trip)
-    fun removeTripFromUser(userId: String, trip: Trip) = userRepository.removeTripFromUser(userId, trip)
-
-    fun addCityToWishList(userId: String, city: City) = userRepository.addCityToWishList(userId, city)
-    fun removeCityFromWishList(userId: String, city: City) = userRepository.removeCityFromWishList(userId, city)
-
 
     // DELETE
     fun deleteUserFromFirestore(userId: String) = userRepository.deleteUser(userId)
+    fun removeTripFromUser(userId: String, trip: Trip) = userRepository.removeTripFromUser(userId, trip)
+    fun removeCityFromWishList(userId: String, city: City) = userRepository.removeCityFromWishList(userId, city)
+    fun removeVisitedCity(userId: String, city: City) = userRepository.removeVisitedCity(userId, city)
+
 
 
 
@@ -134,6 +137,31 @@ class FirestoreUserViewModel : ViewModel() {
         })
 
         return userWishList
+    }
+
+
+    // Retrieve user's visited cities from Firestore and convert it to usable List<LiveData>
+    fun getAllVisitedCitiesFromUser(userId: String): LiveData<List<City>> {
+
+        userRepository.getVisitedCitiesFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+
+            if (e != null) {
+
+                userVisitedCitiesList.value = null
+                return@EventListener
+            }
+
+            val savedUserVisitedCitiesList: MutableList<City> = mutableListOf()
+            for (doc in value!!) {
+
+                val city = doc.toObject(City::class.java)
+                savedUserVisitedCitiesList.add(city)
+            }
+
+            userVisitedCitiesList.value = savedUserVisitedCitiesList
+        })
+
+        return userVisitedCitiesList
     }
 
 

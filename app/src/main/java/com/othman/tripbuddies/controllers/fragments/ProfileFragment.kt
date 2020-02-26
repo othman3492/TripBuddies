@@ -87,7 +87,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 configureButtons(it)
 
                 username.text = it.name
-                user_presentation.text = it.presentation
                 setProfilePicture(it)
                 setCoverPicture(it)
 
@@ -119,6 +118,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         if (user.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
+            add_floating_action_button.show()
             add_floating_action_button.setOnClickListener {
 
                 val userIntent = Intent(activity, AddEditActivity::class.java)
@@ -127,12 +127,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
         } else {
 
-            add_floating_action_button.visibility = View.GONE
-            chat_floating_action_button.visibility = View.VISIBLE
-
-            chat_floating_action_button.setOnClickListener {
-                // display chat fragment //
-            }
+            add_floating_action_button.hide()
         }
     }
 
@@ -207,8 +202,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun getTripList(user: User) {
 
         // Get trip list
-        tripViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
+        userViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
             Observer<List<Trip>> { this.profileTripsAdapter.updateData(it) })
+
     }
 
 
@@ -216,7 +212,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun getWishList(user: User) {
 
         // Get wish list
-        cityViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner,
+        userViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner,
             Observer<List<City>> { this.profileCitiesAdapter.updateData(it) })
     }
 
@@ -317,8 +313,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             val imageRef: StorageReference = FirebaseStorage.getInstance().getReference(imageId)
             val uploadTask = imageRef.putFile(data?.data!!)
 
-            uploadTask.continueWithTask { imageRef.downloadUrl }.addOnCompleteListener { task ->
-
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUri = task.result
 
