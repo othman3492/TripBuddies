@@ -69,7 +69,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         // Configure photos RecyclerView
         photoAdapter = TripPhotoAdapter(requireContext()) { photo: String -> displayPhotoOnClick(photo) }
-
         trip_photos_recycler_view.adapter = photoAdapter
         trip_photos_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trip_photos_recycler_view.addItemDecoration(DividerItemDecoration(
