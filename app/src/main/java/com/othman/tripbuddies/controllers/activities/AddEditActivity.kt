@@ -35,6 +35,11 @@ class AddEditActivity : AppCompatActivity() {
 
     private fun configureUI() {
 
+        // Display initial layout
+        add_trip_buddies_layout.visibility = View.GONE
+        add_trip_destinations_layout.visibility = View.GONE
+        add_trip_details_layout.visibility = View.VISIBLE
+
         configureViewModels()
         configureButtons()
         configureDatePicker(depart_date)
@@ -50,7 +55,27 @@ class AddEditActivity : AppCompatActivity() {
 
     private fun configureButtons() {
 
-        add_button.setOnClickListener { createTrip(trip) }
+        next_button.setOnClickListener {
+            add_trip_details_layout.visibility = View.GONE
+            add_trip_destinations_layout.visibility = View.VISIBLE
+        }
+
+        next_button_2.setOnClickListener {
+            add_trip_destinations_layout.visibility = View.GONE
+            add_trip_buddies_layout.visibility = View.VISIBLE
+        }
+
+        back_button.setOnClickListener {
+            add_trip_destinations_layout.visibility = View.GONE
+            add_trip_details_layout.visibility = View.VISIBLE
+        }
+
+        back_button_2.setOnClickListener {
+            add_trip_buddies_layout.visibility = View.GONE
+            add_trip_destinations_layout.visibility = View.VISIBLE
+        }
+
+        create_button.setOnClickListener { createTrip(trip) }
         edit_button.setOnClickListener { updateTrip(trip) }
     }
 
@@ -67,7 +92,7 @@ class AddEditActivity : AppCompatActivity() {
 
         // Set views' visibility
         add_trip.text = getString(R.string.edit_a_trip)
-        add_button.visibility = View.GONE
+        create_button.visibility = View.GONE
         edit_button.visibility = View.VISIBLE
 
 

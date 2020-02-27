@@ -3,6 +3,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
@@ -62,9 +64,14 @@ class CityBuddiesAdapter(val context: Context, private val clickListener: (User)
 
             // Display profile picture if not null
             if (user.urlPicture != null) {
-                Picasso.get().load(user.urlPicture).into(view.city_or_buddies_list_image)
+                Glide.with(context).load(user.urlPicture)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(view.city_or_buddies_list_image)
+
             } else {
-                Picasso.get().load(R.drawable.blank_picture).into(view.city_or_buddies_list_image)
+                Glide.with(context)
+                    .load(R.drawable.blank_picture)
+                    .into(view.city_or_buddies_list_image)
             }
 
             // Set view holder on click

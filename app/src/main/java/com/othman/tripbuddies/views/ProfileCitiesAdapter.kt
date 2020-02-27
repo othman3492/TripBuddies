@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.libraries.places.api.model.Place
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
@@ -64,7 +65,7 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
 
             view.city_or_buddies_list_name.text = city.name
             view.city_or_buddies_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-            Picasso.get().load(COVER_IMAGE_URL + city.coverPicture +
+            Glide.with(context).load(COVER_IMAGE_URL + city.coverPicture +
                     "&key=" + BuildConfig.google_apikey).into(view.city_or_buddies_list_image)
 
             // Set view holder on click

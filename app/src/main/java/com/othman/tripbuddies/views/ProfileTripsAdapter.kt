@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
@@ -73,9 +74,9 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
 
             // Display first trip photo if image list isn't empty
             if (trip.imagesList.isNotEmpty()) {
-                Picasso.get().load(trip.imagesList[0]).into(view.trip_list_image)
+                Glide.with(context).load(trip.imagesList[0]).into(view.trip_list_image)
             } else {
-                Picasso.get().load(R.drawable.blank_picture).into(view.trip_list_image)
+                Glide.with(context).load(R.drawable.blank_picture).into(view.trip_list_image)
             }
 
             // Set number of buddies

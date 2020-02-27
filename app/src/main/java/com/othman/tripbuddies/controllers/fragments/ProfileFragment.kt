@@ -35,7 +35,6 @@ import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -329,7 +328,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     userViewModel.updateUserIntoFirestore(profileUser)
 
                     // Load image into view
-                    Picasso.get().load(profileUser.urlCoverPicture).into(cover_picture)
+                    Glide.with(this)
+                        .load(profileUser.urlCoverPicture).into(cover_picture)
                 }
             }
 

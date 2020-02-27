@@ -61,6 +61,14 @@
 
     <string name="city_nb_buddies">%s buddies have visited this city</string>
     <string name="city_nb_wishlist">%s buddies would like to go there</string>
+    <string name="destinations">DESTINATIONS</string>
+    <string name="next">NEXT</string>
+    <string name="add_destinations_to_your_trip">Add destinations to your trip</string>
+    <string name="previous">PREVIOUS</string>
+    <string name="back">BACK</string>
+    <string name="add_buddies_to_your_trip">Add Buddies to your trip</string>
+    <string name="create">CREATE</string>
+    <string name="update">UPDATE</string>
 
 
 </resources>

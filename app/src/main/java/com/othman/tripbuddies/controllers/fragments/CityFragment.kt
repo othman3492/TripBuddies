@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
@@ -30,7 +31,6 @@ import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_city.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -111,10 +111,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
 
-        Picasso.get().load(loadStaticMap(city)).into(city_static_map)
+        Glide.with(this).load(loadStaticMap(city)).into(city_static_map)
 
         val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
-        Picasso.get().load(path).into(city_cover_picture)
+        Glide.with(this).load(path).into(city_cover_picture)
 
     }
 
@@ -338,7 +338,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
-    // Open City details fragment when clicked
+    // Open User profile fragment when clicked
     private fun openProfileFragmentOnClick(user: User) {
 
         val isTablet = resources.getBoolean(R.bool.isTablet)

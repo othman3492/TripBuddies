@@ -5,38 +5,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
 
 
-class TripBuddiesAdapter(val context: Context, private val clickListener: (User) -> Unit) :
-    RecyclerView.Adapter<TripBuddiesAdapter.TripBuddiesViewHolder>() {
+class TripDestinationsAdapter(val context: Context, private val clickListener: (City) -> Unit) :
+    RecyclerView.Adapter<TripDestinationsAdapter.TripDestinationsViewHolder>() {
 
 
-    private var buddiesList: List<User> = ArrayList()
+    private var destinationsList: List<City> = ArrayList()
 
 
-    override fun getItemCount() = buddiesList.size
+    override fun getItemCount() = destinationsList.size
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripBuddiesViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripDestinationsViewHolder {
 
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.city_or_buddies_list_layout, parent, false)
-        return TripBuddiesViewHolder(v, context)
+        return TripDestinationsViewHolder(v, context)
     }
 
     // Populate ViewHolder with data depending on the position in the list
-    override fun onBindViewHolder(holder: TripBuddiesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TripDestinationsViewHolder, position: Int) {
 
-        holder.bind(buddiesList[position], clickListener)
+        holder.bind(destinationsList[position], clickListener)
     }
 
 
 
 
-    class TripBuddiesViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    class TripDestinationsViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
         private var view: View = v
 
@@ -48,19 +49,19 @@ class TripBuddiesAdapter(val context: Context, private val clickListener: (User)
 
 
         // Assign data to the views
-        fun bind(user: User, clickListener: (User) -> Unit) {
+        fun bind(city: City, clickListener: (City) -> Unit) {
 
-            view.city_or_buddies_list_name.text = user.name
+            view.city_or_buddies_list_name.text = city.name
 
             // Display profile picture if not null
-            if (user.urlPicture != null) {
-                Glide.with(context).load(user.urlPicture).into(view.city_or_buddies_list_image)
+            if (city.coverPicture != null) {
+                Glide.with(context).load(city.coverPicture).into(view.city_or_buddies_list_image)
             } else {
                 Glide.with(context).load(R.drawable.blank_picture).into(view.city_or_buddies_list_image)
             }
 
             // Set view holder on click
-            view.setOnClickListener { clickListener(user) }
+            view.setOnClickListener { clickListener(city) }
         }
 
 
