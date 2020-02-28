@@ -132,6 +132,7 @@ class AddEditActivity : AppCompatActivity() {
 
             // Create object
             tripViewModel.createTripIntoFirestore(newTrip)
+            userViewModel.addTripToUser(FirebaseUserHelper.getCurrentUser()!!.uid, trip)
 
             // Confirm creation
             Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()

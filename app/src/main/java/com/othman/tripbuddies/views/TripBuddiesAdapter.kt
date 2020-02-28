@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.squareup.picasso.Picasso
@@ -31,6 +32,13 @@ class TripBuddiesAdapter(val context: Context, private val clickListener: (User)
     override fun onBindViewHolder(holder: TripBuddiesViewHolder, position: Int) {
 
         holder.bind(buddiesList[position], clickListener)
+    }
+
+
+    fun updateData(list: List<User>) {
+
+        buddiesList = list
+        this.notifyDataSetChanged()
     }
 
 

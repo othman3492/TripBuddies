@@ -1,31 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/other_message"
     android:orientation="vertical"
-    android:layout_margin="@dimen/margin_normal"
-    android:layout_width="wrap_content"
+    android:layout_gravity="end"
+    android:layout_marginLeft="@dimen/margin_normal"
+    android:layout_marginRight="@dimen/margin_normal"
+    android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:background="@drawable/other_bubble_shape"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/other_message"
-        android:background="@drawable/other_bubble_shape"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_normal"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/other_avatar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="12dp"/>
-
     <ImageView
-        android:id="@+id/other_avatar"
+        android:id="@+id/other_profile_picture"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_margin="@dimen/margin_normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/grey"
-        android:cropToPadding="true"
-        android:contentDescription="@string/avatar"/>
+        android:contentDescription="@string/message_profile_picture" />
+
+    <TextView
+        android:id="@+id/other_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_marginStart="@dimen/margin_normal"
+        app:layout_constraintTop_toTopOf="@id/other_message"
+        app:layout_constraintStart_toEndOf="@id/other_profile_picture"
+        tools:text="Othman BOUADJENAK"/>
+
+    <TextView
+        android:id="@+id/other_message_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_small"
+        android:paddingStart="@dimen/margin_normal"
+        android:paddingEnd="@dimen/margin_normal"
+        android:paddingBottom="@dimen/margin_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/other_profile_picture"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Le Règlement général sur la protection des données (RGPD) exige que certaines entreprises qui opèrent dans l’Union européenne désignent un DPO qui doit être le référent à contacter pour obtenir des informations sur la façon de traiter les données."/>
+
+    <TextView
+        android:id="@+id/my_message_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_normal"
+        android:textColor="@color/white"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@id/other_message_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/other_message"
+        tools:text="05/02/2020 - 16:35"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

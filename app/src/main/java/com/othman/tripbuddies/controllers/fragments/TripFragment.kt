@@ -6,13 +6,21 @@ import TripDestinationsAdapter
 import TripPhotoAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.othman.tripbuddies.BuildConfig
 
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
@@ -39,6 +47,8 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private lateinit var userViewModel: FirestoreUserViewModel
     private lateinit var cityViewModel: FirestoreCityViewModel
 
+    private val AUTOCOMPLETE_REQUEST_CODE = 1
+
 
     companion object {
         fun newInstance(trip: Trip): TripFragment {
@@ -57,11 +67,33 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         trip = arguments!!.getSerializable("TRIP") as Trip
 
+        if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
+
+
         configureViewModel()
-        configureRecyclerViews()
         configureButtons()
 
-        getDataAndUpdateUI(trip)
+        configureUI(trip)
+    }
+
+
+
+    private fun configureUI(trip: Trip) {
+
+        this.trip = trip
+
+        // Load data into views
+        configureRecyclerViews()
+        getLists(trip)
+
+
+        trip_name.text = trip.name
+        trip_username.text = String.format(this.resources.getString(R.string.by_name), trip.username)
+        trip_description.text = trip.description
+        trip_dates.text = String.format(context!!.resources.getString(R.string.dates_from_to), trip.departDate, trip.returnDate)
+        nb_photos_textview.text = trip.nbImages.toString()
+        nb_buddies_textview.text = trip.nbBuddies.toString()
+        nb_destinations_textview.text = trip.nbDestinations.toString()
     }
 
 
@@ -82,7 +114,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             trip_buddies_recycler_view.context, DividerItemDecoration.VERTICAL))
 
         // Configure destinations RecyclerView
-        destinationsAdapter = TripDestinationsAdapter(requireContext()) { city: City -> openCityFragmentOnClick(city) }
+        destinationsAdapter = TripDestinationsAdapter(requireContext(), { city: City -> openCityFragmentOnClick(city) }, { configurePlaceAutocomplete() })
         trip_destinations_recycler_view.adapter = destinationsAdapter
         trip_destinations_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         trip_destinations_recycler_view.addItemDecoration(DividerItemDecoration(
@@ -103,27 +135,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         // Set delete button
         delete_floating_action_button.setOnClickListener { deleteTrip(trip) }
-    }
-
-
-    private fun getDataAndUpdateUI(trip: Trip) {
-
-        this.trip = trip
-
-        // Set trip cover picture
-        if (trip.imagesList.isNotEmpty())
-            Picasso.get().load(trip.imagesList[0]).into(cover_picture)
-
-        // Load photos
-        configureRecyclerViews()
-
-        // Load data into views
-        trip_name.text = trip.name
-        trip_username.text = String.format(this.resources.getString(R.string.by_name), trip.username)
-        trip_description.text = trip.description
-        trip_dates.text = String.format(context!!.resources.getString(R.string.dates_from_to), trip.departDate, trip.returnDate)
-        nb_photos_textview.text = trip.nbImages.toString()
-        nb_buddies_textview.text = trip.nbBuddies.toString()
     }
 
 
@@ -190,6 +201,48 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         } else {
             transaction.replace(R.id.fragment_container, fragment).commit()
         }
+    }
+
+
+    // Get lists from subcollections
+    private fun getLists(trip: Trip) {
+
+        tripViewModel.getAllCitiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
+            this.destinationsAdapter.updateData(it)
+            trip.nbDestinations = it.size
+        })
+
+        tripViewModel.getAllBuddiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
+            this.buddiesAdapter.updateData(it)
+            trip.nbBuddies = it.size
+        })
+
+        tripViewModel.getPhotosFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
+            this.photoAdapter.updateData(it)
+            trip.nbImages = it.size
+        })
+
+        // Update number properties
+        tripViewModel.updateTripIntoFirestore(trip)
+    }
+
+
+    // Retrieve city data from Autocomplete search
+    private fun configurePlaceAutocomplete() {
+
+        val fields: List<Place.Field> = listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.LAT_LNG,
+            Place.Field.ADDRESS_COMPONENTS,
+            Place.Field.PHOTO_METADATAS
+        )
+
+        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+            .setTypeFilter(TypeFilter.CITIES)
+            .build(context!!)
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+
     }
 
 

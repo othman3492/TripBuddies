@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.squareup.picasso.Picasso
@@ -32,6 +33,13 @@ class TripPhotoAdapter(val context: Context, private val clickListener: (String)
     override fun onBindViewHolder(holder: TripPhotoViewHolder, position: Int) {
 
         holder.bind(photoList[position], clickListener)
+    }
+
+
+    fun updateData(list: List<String>) {
+
+        photoList = list
+        this.notifyDataSetChanged()
     }
 
 

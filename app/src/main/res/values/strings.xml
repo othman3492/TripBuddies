@@ -69,6 +69,8 @@
     <string name="add_buddies_to_your_trip">Add Buddies to your trip</string>
     <string name="create">CREATE</string>
     <string name="update">UPDATE</string>
+    <string name="recyclerview_add_button">RecyclerView add button</string>
+    <string name="message_profile_picture">Message profile picture</string>
 
 
 </resources>
