@@ -1,4 +1,5 @@
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,21 +10,21 @@ import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
+import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import java.lang.IllegalArgumentException
 
 
-class TripBuddiesAdapter(val context: Context, private val itemClickListener: (User) -> Unit,
-                              private val addClickListener: (View) -> Unit) :
-    RecyclerView.Adapter<TripBuddiesAdapter.BaseTripBuddiesViewHolder>() {
+class TripPhotosAdapter(val context: Context, private val itemClickListener: (String) -> Unit,
+                         private val addClickListener: (View) -> Unit) :
+    RecyclerView.Adapter<TripPhotosAdapter.BaseTripPhotosViewHolder>() {
 
 
-    private var buddiesList: List<User> = ArrayList()
+    private var photosList: List<String> = ArrayList()
     private val TYPE_ITEM = 0
     private val TYPE_ADD = 1
 
 
-    override fun getItemCount() = buddiesList.size + 1
+    override fun getItemCount() = photosList.size + 1
 
 
     override fun getItemViewType(position: Int): Int {
@@ -36,20 +37,20 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseTripBuddiesViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseTripPhotosViewHolder {
 
         return when (viewType) {
 
             TYPE_ITEM -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.city_or_buddies_list_layout, parent, false)
-                TripBuddiesViewHolder(view, context)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_photos_list_layout, parent, false)
+                TripPhotosViewHolder(view, context)
             }
 
             TYPE_ADD -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
-                TripBuddiesFooter(view)
+                TripPhotosFooter(view)
             }
 
             else -> throw IllegalArgumentException("Invalid view type")
@@ -58,30 +59,32 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
 
 
     // Populate ViewHolder with data depending on the position in the list
-    override fun onBindViewHolder(holder: BaseTripBuddiesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseTripPhotosViewHolder, position: Int) {
 
         when (holder) {
 
-            is TripBuddiesViewHolder -> holder.bind(buddiesList[position], itemClickListener)
-            is TripBuddiesFooter -> holder.bind(addClickListener)
+            is TripPhotosViewHolder -> holder.bind(photosList[position], itemClickListener)
+            is TripPhotosFooter -> holder.bind(addClickListener)
             else -> throw IllegalArgumentException()
         }
     }
 
 
-    fun updateData(list: List<User>) {
+    fun updateData(list: List<String>) {
 
-        buddiesList = list
+        photosList = list
         this.notifyDataSetChanged()
     }
 
 
 
 
-    abstract class BaseTripBuddiesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
+    abstract class BaseTripPhotosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 
 
-    class TripBuddiesViewHolder(v: View, private var context: Context) : BaseTripBuddiesViewHolder(v), View.OnClickListener {
+
+    class TripPhotosViewHolder(v: View, private var context: Context) : BaseTripPhotosViewHolder(v), View.OnClickListener {
+
 
         private var view: View = v
 
@@ -93,26 +96,17 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
 
 
         // Assign data to the views
-        fun bind(user: User, clickListener: (User) -> Unit) {
+        fun bind(photo: String, clickListener: (String) -> Unit) {
 
-            view.city_or_buddies_list_name.text = user.name
-
-            // Display profile picture if not null
-            if (user.urlPicture != null) {
-                Glide.with(context).load(user.urlPicture).into(view.city_or_buddies_list_image)
-            } else {
-                Glide.with(context).load(R.drawable.blank_picture).into(view.city_or_buddies_list_image)
-            }
+            Glide.with(context).load(photo).into(view.details_photo_image)
 
             // Set view holder on click
-            view.setOnClickListener { clickListener(user) }
+            view.setOnClickListener { clickListener(photo) }
         }
-
-
     }
 
 
-    class TripBuddiesFooter(v: View) : BaseTripBuddiesViewHolder(v), View.OnClickListener {
+    class TripPhotosFooter(v: View) : BaseTripPhotosViewHolder(v), View.OnClickListener {
 
         private var view: View = v
 

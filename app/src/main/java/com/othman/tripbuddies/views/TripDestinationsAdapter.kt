@@ -130,9 +130,6 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
         // Set view onClick
         fun bind(clickListener: (View) -> Unit) { view.setOnClickListener { clickListener(view) }}
 
-
-
-
     }
 }
 

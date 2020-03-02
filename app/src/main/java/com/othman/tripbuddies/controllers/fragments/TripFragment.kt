@@ -3,7 +3,7 @@ package com.othman.tripbuddies.controllers.fragments
 
 import TripBuddiesAdapter
 import TripDestinationsAdapter
-import TripPhotoAdapter
+import TripPhotosAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.fragment_trip.*
 
 class TripFragment : Fragment(R.layout.fragment_trip) {
 
-    private lateinit var photoAdapter: TripPhotoAdapter
+    private lateinit var photoAdapter: TripPhotosAdapter
     private lateinit var buddiesAdapter: TripBuddiesAdapter
     private lateinit var destinationsAdapter: TripDestinationsAdapter
     private lateinit var trip: Trip
@@ -100,14 +100,14 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private fun configureRecyclerViews() {
 
         // Configure photos RecyclerView
-        photoAdapter = TripPhotoAdapter(requireContext()) { photo: String -> displayPhotoOnClick(photo) }
+        photoAdapter = TripPhotosAdapter(requireContext(), { photo: String -> displayPhotoOnClick(photo) }, { Toast.makeText(activity, "Photo clicked", Toast.LENGTH_SHORT).show() })
         trip_photos_recycler_view.adapter = photoAdapter
         trip_photos_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trip_photos_recycler_view.addItemDecoration(DividerItemDecoration(
             trip_photos_recycler_view.context, DividerItemDecoration.HORIZONTAL))
 
         // Configure buddies RecyclerView
-        buddiesAdapter = TripBuddiesAdapter(requireContext()) { user: User -> openProfileFragmentOnClick(user) }
+        buddiesAdapter = TripBuddiesAdapter(requireContext(), { user: User -> openProfileFragmentOnClick(user) }, { Toast.makeText(activity, "User clicked", Toast.LENGTH_SHORT).show() })
         trip_buddies_recycler_view.adapter = buddiesAdapter
         trip_buddies_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         trip_buddies_recycler_view.addItemDecoration(DividerItemDecoration(
