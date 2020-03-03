@@ -26,10 +26,6 @@ class FirestoreTripRepository {
     fun getAllCitiesFromTrip(tripId: String) = getAllTrips().document(tripId)
         .collection("tripCities")
 
-    fun getPhotosFromTrip(tripId: String) = getAllTrips().document(tripId)
-        .collection("photos")
-
-
 
     // CREATE
     fun createTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).set(trip)
@@ -39,10 +35,6 @@ class FirestoreTripRepository {
 
     fun addCityToTrip(tripId: String, city: City): Task<Void> =
         getAllTrips().document(tripId).collection("tripCities").document(city.cityId).set(city)
-
-    fun addPhotoToTrip(tripId: String, path: String): Task<Void> =
-        getAllTrips().document(tripId).collection("photos").document(path).set(path)
-
 
 
     // UPDATE
@@ -58,10 +50,6 @@ class FirestoreTripRepository {
 
     fun removeCityFromTrip(tripId: String, city: City): Task<Void> =
         getAllTrips().document(tripId).collection("tripCities").document(city.cityId).delete()
-
-    fun removePhotoFromTrip(tripId: String, path: String): Task<Void> =
-        getAllTrips().document(tripId).collection("photos").document(path).delete()
-
 
 }
 

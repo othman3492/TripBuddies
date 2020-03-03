@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.trips_list_layout.view.*
 
 
@@ -73,8 +70,8 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
 
 
             // Display first trip photo if image list isn't empty
-            if (trip.imagesList.isNotEmpty()) {
-                Glide.with(context).load(trip.imagesList[0]).into(view.trip_list_image)
+            if (trip.photosList.isNotEmpty()) {
+                Glide.with(context).load(trip.photosList[0]).into(view.trip_list_image)
             } else {
                 Glide.with(context).load(R.drawable.blank_picture).into(view.trip_list_image)
             }

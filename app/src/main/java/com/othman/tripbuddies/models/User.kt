@@ -12,9 +12,12 @@ data class User(
     var name: String = "",
     var urlPicture: String? = null,
     var urlCoverPicture: String? = null,
-    var nbTrips: Int = 0,
-    var nbWishList: Int = 0,
-    var nbVisitedCities: Int = 0
+    var tripList: MutableList<String> = ArrayList(),
+    var wishList: MutableList<String> = ArrayList(),
+    var visitedCitiesList: MutableList<String> = ArrayList(),
+    var nbTrips: Int = tripList.size,
+    var nbWishList: Int = wishList.size,
+    var nbVisitedCities: Int = visitedCitiesList.size
 ): Serializable {
 
     constructor(): this(Utils.generateId(), "", "", "")

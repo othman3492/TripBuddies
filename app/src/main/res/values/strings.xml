@@ -71,6 +71,13 @@
     <string name="update">UPDATE</string>
     <string name="recyclerview_add_button">RecyclerView add button</string>
     <string name="message_profile_picture">Message profile picture</string>
+    <string name="remove_icon">Remove icon</string>
+    <string name="remove_photo_button">Remove photo button</string>
+    <string name="edit">EDIT</string>
+    <string name="delete_trip">DELETE TRIP</string>
+    <string name="delete_trip_confirmation">Do you really want to delete this trip ?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 
 
 </resources>

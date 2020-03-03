@@ -62,7 +62,17 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
         when (holder) {
 
-            is TripDestinationsViewHolder -> holder.bind(destinationsList[position], itemClickListener)
+            is TripDestinationsViewHolder -> {
+                holder.bind(destinationsList[position], itemClickListener)
+
+                // Configure delete button
+                holder.itemView.remove_cities_or_buddies_button.visibility = View.VISIBLE
+                holder.itemView.remove_cities_or_buddies_button.setOnClickListener {
+
+                    destinationsList.toMutableList().removeAt(position)
+                    notifyItemRemoved(position)
+                }
+            }
             is TripDestinationsFooter -> holder.bind(addClickListener)
             else -> throw IllegalArgumentException()
         }

@@ -18,14 +18,12 @@ class FirestoreTripViewModel: ViewModel() {
     var tripList: MutableLiveData<List<Trip>> = MutableLiveData()
     var tripBuddiesList: MutableLiveData<List<User>> = MutableLiveData()
     var tripCitiesList: MutableLiveData<List<City>> = MutableLiveData()
-    var tripImagesList: MutableLiveData<List<String>> = MutableLiveData()
 
 
     // CREATE
     fun createTripIntoFirestore(trip: Trip) = tripRepository.createTrip(trip)
     fun addBuddyToTrip(tripId: String, user: User) = tripRepository.addBuddyToTrip(tripId, user)
     fun addCityToTrip(tripId: String, city: City) = tripRepository.addCityToTrip(tripId, city)
-    fun addPhotoToTrip(tripId: String, path: String) = tripRepository.addPhotoToTrip(tripId, path)
 
 
     // UPDATE
@@ -36,7 +34,6 @@ class FirestoreTripViewModel: ViewModel() {
     fun deleteTripFromFirestore(trip: Trip) = tripRepository.deleteTrip(trip)
     fun removeBuddyFromTrip(tripId: String, user: User) = tripRepository.removeBuddyFromTrip(tripId, user)
     fun removeCityFromTrip(tripId: String, city: City) = tripRepository.removeCityFromTrip(tripId, city)
-    fun removePhotoFromTrip(tripId: String, path: String) = tripRepository.removePhotoFromTrip(tripId, path)
 
 
 
@@ -131,32 +128,6 @@ class FirestoreTripViewModel: ViewModel() {
         })
 
         return tripCitiesList
-    }
-
-
-
-    // Retrieve trip's photo list from Firestore and convert it to usable List<LiveData>
-    fun getPhotosFromTrip(tripId: String): LiveData<List<String>> {
-
-        tripRepository.getPhotosFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                tripImagesList.value = null
-                return@EventListener
-            }
-
-            val savedTripImagesList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val photo = doc.toObject(String::class.java)
-                savedTripImagesList.add(photo)
-            }
-
-            tripImagesList.value = savedTripImagesList
-        })
-
-        return tripImagesList
     }
 
 

@@ -1,6 +1,5 @@
 package com.othman.tripbuddies.models
 
-import com.google.android.libraries.places.api.model.Place
 import com.othman.tripbuddies.utils.Utils
 import java.io.Serializable
 
@@ -15,10 +14,12 @@ data class Trip(
     var creationDate: String = "",
     var departDate: String?,
     var returnDate: String?,
-    var imagesList: List<String> = ArrayList(),
-    var nbDestinations: Int = 0,
-    var nbBuddies: Int = 0,
-    var nbImages: Int = imagesList.size
+    var photosList: MutableList<String> = ArrayList(),
+    var destinationsList: MutableList<String> = ArrayList(),
+    var buddiesList: MutableList<String> = ArrayList(),
+    var nbDestinations: Int = destinationsList.size,
+    var nbBuddies: Int = buddiesList.size,
+    var nbPhotos: Int = photosList.size
     ) : Serializable {
 
     constructor() : this(Utils.generateId(), "", "", "", "", "", "", "")

@@ -14,17 +14,16 @@ import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import java.lang.IllegalArgumentException
 
 
-class TripPhotosAdapter(val context: Context, private val itemClickListener: (String) -> Unit,
+class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemClickListener: (String) -> Unit,
                          private val addClickListener: (View) -> Unit) :
     RecyclerView.Adapter<TripPhotosAdapter.BaseTripPhotosViewHolder>() {
 
 
-    private var photosList: List<String> = ArrayList()
     private val TYPE_ITEM = 0
     private val TYPE_ADD = 1
 
 
-    override fun getItemCount() = photosList.size + 1
+    override fun getItemCount() = trip.photosList.size + 1
 
 
     override fun getItemViewType(position: Int): Int {
@@ -49,7 +48,7 @@ class TripPhotosAdapter(val context: Context, private val itemClickListener: (St
 
             TYPE_ADD -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_photos_list_add, parent, false)
                 TripPhotosFooter(view)
             }
 
@@ -63,19 +62,21 @@ class TripPhotosAdapter(val context: Context, private val itemClickListener: (St
 
         when (holder) {
 
-            is TripPhotosViewHolder -> holder.bind(photosList[position], itemClickListener)
+            is TripPhotosViewHolder -> {
+                holder.bind(trip.photosList[position], itemClickListener)
+
+                // Configure delete button
+                holder.itemView.remove_photo_button.visibility = View.VISIBLE
+                holder.itemView.remove_photo_button.setOnClickListener {
+
+                    trip.photosList.removeAt(position)
+                    notifyItemRemoved(position)
+                }
+            }
             is TripPhotosFooter -> holder.bind(addClickListener)
             else -> throw IllegalArgumentException()
         }
     }
-
-
-    fun updateData(list: List<String>) {
-
-        photosList = list
-        this.notifyDataSetChanged()
-    }
-
 
 
 

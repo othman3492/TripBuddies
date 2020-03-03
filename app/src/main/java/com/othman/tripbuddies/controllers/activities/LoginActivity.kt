@@ -123,6 +123,7 @@ class LoginActivity : AppCompatActivity() {
     // Create user in Firestore if it doesn't exist and store data
     private fun createUserInFirestore() {
 
+        val uid: String = FirebaseUserHelper.getCurrentUser()!!.uid
         val urlPicture: String? = if (FirebaseUserHelper.getCurrentUser()!!.photoUrl != null)
             FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString() else null
         val username: String? = FirebaseUserHelper.getCurrentUser()!!.displayName
@@ -131,13 +132,7 @@ class LoginActivity : AppCompatActivity() {
             androidx.lifecycle.Observer<User> {
 
                 if (it == null)
-                    userViewModel.createUserIntoFirestore(
-                        User(
-                            username!!,
-                            "",
-                            urlPicture
-                        )
-                    )
+                    userViewModel.createUserIntoFirestore(User(uid, username!!, urlPicture))
             })
     }
 

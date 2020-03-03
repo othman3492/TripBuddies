@@ -68,6 +68,17 @@
                 app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"
                 tools:text="From 23/08/2018 to 10/09/2018" />
 
+            <Button
+                android:id="@+id/edit_trip_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/edit"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"/>
+
 
             <TextView
                 android:id="@+id/trip_description"
@@ -78,7 +89,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/trip_dates"
+                app:layout_constraintTop_toBottomOf="@id/edit_trip_button"
                 tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content. Click below to consent to the use of this technology and the processing of your personal data for these purposes. You can change your mind and change your consent choices at any time by returning to this site. " />
 
             <TextView
@@ -172,30 +183,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/destinations_textview" />
 
+            <Button
+                android:id="@+id/delete_trip_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:src="@drawable/baseline_delete_24"
+                android:text="@string/delete_trip"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/red"
+                app:layout_constraintTop_toBottomOf="@id/trip_destinations_recycler_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/edit_floating_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:src="@drawable/baseline_create_24"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/delete_floating_action_button" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/delete_floating_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:src="@drawable/baseline_delete_24"
-        app:backgroundTint="@color/red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

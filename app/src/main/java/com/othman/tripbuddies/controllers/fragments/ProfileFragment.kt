@@ -250,6 +250,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
+
     // Ask for permission to pick image from gallery
     private fun checkPermissionForGallery() {
 
