@@ -16,14 +16,16 @@ class FirestoreTripViewModel: ViewModel() {
     var tripRepository = FirestoreTripRepository()
     var trip: MutableLiveData<Trip> = MutableLiveData()
     var tripList: MutableLiveData<List<Trip>> = MutableLiveData()
-    var tripBuddiesList: MutableLiveData<List<User>> = MutableLiveData()
-    var tripCitiesList: MutableLiveData<List<City>> = MutableLiveData()
+    var tripBuddiesList: MutableLiveData<List<String>> = MutableLiveData()
+    var tripCitiesList: MutableLiveData<List<String>> = MutableLiveData()
+    var tripPhotosList: MutableLiveData<List<String>> = MutableLiveData()
 
 
     // CREATE
     fun createTripIntoFirestore(trip: Trip) = tripRepository.createTrip(trip)
-    fun addBuddyToTrip(tripId: String, user: User) = tripRepository.addBuddyToTrip(tripId, user)
-    fun addCityToTrip(tripId: String, city: City) = tripRepository.addCityToTrip(tripId, city)
+    fun addBuddyToTrip(tripId: String, userId: String) = tripRepository.addBuddyToTrip(tripId, userId)
+    fun addCityToTrip(tripId: String, cityId: String) = tripRepository.addCityToTrip(tripId, cityId)
+    fun addPhotoToTrip(tripId: String, photo: String) = tripRepository.addPhotoToTrip(tripId, photo)
 
 
     // UPDATE
@@ -31,9 +33,10 @@ class FirestoreTripViewModel: ViewModel() {
 
 
     // DELETE
-    fun deleteTripFromFirestore(trip: Trip) = tripRepository.deleteTrip(trip)
-    fun removeBuddyFromTrip(tripId: String, user: User) = tripRepository.removeBuddyFromTrip(tripId, user)
-    fun removeCityFromTrip(tripId: String, city: City) = tripRepository.removeCityFromTrip(tripId, city)
+    fun deleteTripFromFirestore(tripId: String) = tripRepository.deleteTrip(tripId)
+    fun removeBuddyFromTrip(tripId: String, userId: String) = tripRepository.removeBuddyFromTrip(tripId, userId)
+    fun removeCityFromTrip(tripId: String, cityId: String) = tripRepository.removeCityFromTrip(tripId, cityId)
+    fun removePhotoFromTrip(tripId: String, photo: String) = tripRepository.removePhotoFromTrip(tripId, photo)
 
 
 
@@ -82,7 +85,7 @@ class FirestoreTripViewModel: ViewModel() {
 
 
     // Retrieve trip's buddies list from Firestore and convert it to usable List<LiveData>
-    fun getAllBuddiesFromTrip(tripId: String): LiveData<List<User>> {
+    fun getAllBuddiesFromTrip(tripId: String): LiveData<List<String>> {
 
         tripRepository.getAllBuddiesFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
@@ -92,10 +95,10 @@ class FirestoreTripViewModel: ViewModel() {
                 return@EventListener
             }
 
-            val savedTripBuddiesList: MutableList<User> = mutableListOf()
+            val savedTripBuddiesList: MutableList<String> = mutableListOf()
             for (doc in value!!) {
 
-                val user = doc.toObject(User::class.java)
+                val user = doc.id
                 savedTripBuddiesList.add(user)
             }
 
@@ -107,7 +110,7 @@ class FirestoreTripViewModel: ViewModel() {
 
 
     // Retrieve trip's destinations list from Firestore and convert it to usable List<LiveData>
-    fun getAllCitiesFromTrip(tripId: String): LiveData<List<City>> {
+    fun getAllCitiesFromTrip(tripId: String): LiveData<List<String>> {
 
         tripRepository.getAllCitiesFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
@@ -117,10 +120,10 @@ class FirestoreTripViewModel: ViewModel() {
                 return@EventListener
             }
 
-            val savedTripCitiesList: MutableList<City> = mutableListOf()
+            val savedTripCitiesList: MutableList<String> = mutableListOf()
             for (doc in value!!) {
 
-                val city = doc.toObject(City::class.java)
+                val city = doc.id
                 savedTripCitiesList.add(city)
             }
 
@@ -128,6 +131,32 @@ class FirestoreTripViewModel: ViewModel() {
         })
 
         return tripCitiesList
+    }
+
+
+
+    // Retrieve trip's photos list from Firestore and convert it to usable List<LiveData>
+    fun getPhotosFromTrip(tripId: String): LiveData<List<String>> {
+
+        tripRepository.getAllPhotosFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+
+            if (e != null) {
+
+                tripPhotosList.value = null
+                return@EventListener
+            }
+
+            val savedTripPhotosList: MutableList<String> = mutableListOf()
+            for (doc in value!!) {
+
+                val photo = doc.id
+                savedTripPhotosList.add(photo)
+            }
+
+            tripPhotosList.value = savedTripPhotosList
+        })
+
+        return tripPhotosList
     }
 
 

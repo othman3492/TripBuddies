@@ -66,6 +66,14 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
+    /*-----------------------------
+
+    USER INTERFACE
+
+    ---------------------------- */
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -85,14 +93,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             configureUI(city)
         }
 
-    }
-
-
-    private fun configureViewModels() {
-
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
     }
 
 
@@ -122,18 +122,11 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     private fun configureButtons(city: City) {
 
         // Display right floating action button
-        userViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid)
-            .observe(viewLifecycleOwner, Observer {
+        if (currentUser.wishList.contains(city.cityId)) {
 
-                for (doc in it) {
-
-                    if (doc.cityId == city.cityId) {
-
-                        add_city_wish_list_floating_action_button.hide()
-                        remove_city_wish_list_floating_action_button.show()
-                    }
-                }
-            })
+            add_city_wish_list_floating_action_button.hide()
+            remove_city_wish_list_floating_action_button.show()
+        }
 
 
         val chatIntent = Intent(activity, ChatActivity::class.java)
@@ -253,74 +246,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
-    // Get data from Firestore
-    private fun getTripList(city: City) {
-
-        // Get trip list
-        cityViewModel.getAllTripsFromCity(city.cityId).observe(viewLifecycleOwner,
-            Observer<List<Trip>> { this.cityTripsAdapter.updateData(it) })
-
-    }
-
-
-    // Get data from Firestore
-    private fun getWishList(city: City) {
-
-        // Get wish list
-        cityViewModel.getWishListFromCity(city.cityId).observe(viewLifecycleOwner,
-            Observer<List<User>> { this.cityBuddiesAdapter.updateData(it) })
-    }
-
-
-
-    @SuppressLint("RestrictedApi")
-    private fun addCityToWishList(city: City) {
-
-        // Create city collection if it doesn't exist
-        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
-
-            if (it == null) cityViewModel.createCityIntoFirestore(city)
-        })
-
-        // Add city to current user wish list
-        userViewModel.addCityToWishList(currentUser.userId, city)
-            .addOnSuccessListener {
-
-                // Add user to city wish list
-                cityViewModel.addUserToWishList(city.cityId, currentUser).addOnSuccessListener {
-
-                    // Update button
-                    add_city_wish_list_floating_action_button.hide()
-                    remove_city_wish_list_floating_action_button.show()
-
-                    Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT).show()
-
-                }
-            }
-
-    }
-
-
-    private fun removeCityFromWishList(city: City) {
-
-        // Remove city from user wish list
-        userViewModel.removeCityFromWishList(currentUser.userId, city)
-            .addOnSuccessListener {
-
-                // Remove user from city wish list
-                cityViewModel.removeUserFromWishList(city.cityId, currentUser)
-                    .addOnSuccessListener {
-
-                        // Update button
-                        remove_city_wish_list_floating_action_button.hide()
-                        add_city_wish_list_floating_action_button.show()
-
-                        Toast.makeText(activity, "City removed from wish list !", Toast.LENGTH_SHORT).show()
-                    }
-            }
-    }
-
-
     // Open Trip details fragment when clicked
     private fun openTripFragmentOnClick(trip: Trip) {
 
@@ -352,6 +277,106 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         } else {
             transaction.replace(R.id.fragment_container, fragment).commit()
         }
+    }
+
+
+    /*-----------------------------
+
+    DATA QUERIES
+
+    ---------------------------- */
+
+
+    private fun configureViewModels() {
+
+        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+    }
+
+
+
+    // Get trip list from city
+    private fun getTripList(city: City) {
+
+        val list: MutableList<Trip> = ArrayList()
+
+        cityViewModel.getAllTripsFromCity(city.cityId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            cityTripsAdapter.updateData(list)
+        })
+    }
+
+
+    // Get wish list from city
+    private fun getWishList(city: City) {
+
+        val list: MutableList<User> = ArrayList()
+
+        cityViewModel.getWishListFromCity(city.cityId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            cityBuddiesAdapter.updateData(list)
+        })
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    private fun addCityToWishList(city: City) {
+
+        // Create city collection if it doesn't exist
+        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+
+            if (it == null) cityViewModel.createCityIntoFirestore(city)
+        })
+
+        // Add city to current user wish list
+        userViewModel.addCityToWishList(currentUser.userId, city.cityId)
+            .addOnSuccessListener {
+
+                // Add user to city wish list
+                cityViewModel.addUserToWishList(city.cityId, currentUser.userId)
+                    .addOnSuccessListener {
+
+                        // Update button
+                        add_city_wish_list_floating_action_button.hide()
+                        remove_city_wish_list_floating_action_button.show()
+
+                        Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT)
+                            .show()
+
+                    }
+            }
+
+    }
+
+
+    private fun removeCityFromWishList(city: City) {
+
+        // Remove city from user wish list
+        userViewModel.removeCityFromWishList(currentUser.userId, city.cityId)
+            .addOnSuccessListener {
+
+                // Remove user from city wish list
+                cityViewModel.removeUserFromWishList(city.cityId, currentUser.userId)
+                    .addOnSuccessListener {
+
+                        // Update button
+                        remove_city_wish_list_floating_action_button.hide()
+                        add_city_wish_list_floating_action_button.show()
+
+                        Toast.makeText(activity, "City removed from wish list !",Toast.LENGTH_SHORT).show()
+                    }
+            }
     }
 
 }

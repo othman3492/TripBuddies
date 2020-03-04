@@ -72,7 +72,7 @@ class CityTripsAdapter(val context: Context, private val clickListener: (Trip) -
 
 
             // Set number of buddies
-            view.trip_list_nb_buddies.text = trip.nbBuddies.toString()
+            view.trip_list_nb_buddies.text = (trip.buddiesList.size + 1).toString()
 
             // Set view holder on click
             view.setOnClickListener { clickListener(trip) }

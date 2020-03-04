@@ -23,6 +23,14 @@ class AddEditActivity : AppCompatActivity() {
     private lateinit var userViewModel: FirestoreUserViewModel
 
     private var trip = Trip()
+    private val currentUser = FirebaseUserHelper.getCurrentUser()!!.uid
+
+
+    /*-----------------------------
+
+    USER INTERFACE
+
+    ---------------------------- */
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +88,6 @@ class AddEditActivity : AppCompatActivity() {
     }
 
 
-    private fun configureViewModels() {
-
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-    }
-
 
     // Show/hide views depending on Add/Edit layout
     private fun fillData() {
@@ -120,6 +122,49 @@ class AddEditActivity : AppCompatActivity() {
     }
 
 
+    private fun configureDatePicker(textView: TextView) {
+
+        val calendar = Calendar.getInstance()
+
+        // Create an OnDateSetListener
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, monthOfYear)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                textView.text = Utils.convertDate(calendar.time)
+
+            }
+
+        // Open DatePickerDialog when clicked
+        textView.setOnClickListener {
+            DatePickerDialog(
+                this@AddEditActivity, dateSetListener,
+                // set DatePickerDialog to point to today's date when it loads up
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+    }
+
+
+    /*-----------------------------
+
+    DATA QUERIES
+
+    ---------------------------- */
+
+
+    private fun configureViewModels() {
+
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+    }
+
+
+
     // Create Trip object from data and store it into database
     private fun createTrip(newTrip: Trip) {
 
@@ -132,7 +177,7 @@ class AddEditActivity : AppCompatActivity() {
 
             // Create object
             tripViewModel.createTripIntoFirestore(newTrip)
-            userViewModel.addTripToUser(FirebaseUserHelper.getCurrentUser()!!.uid, trip)
+            userViewModel.addTripToUser(currentUser, trip.tripId)
 
             // Confirm creation
             Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()
@@ -141,6 +186,10 @@ class AddEditActivity : AppCompatActivity() {
             val tripIntent = Intent(this, MainActivity::class.java)
             tripIntent.putExtra("TRIP", newTrip)
             startActivity(tripIntent)
+
+        } else {
+
+            Toast.makeText(this, "Give a name to your trip !", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -160,36 +209,11 @@ class AddEditActivity : AppCompatActivity() {
 
             // Return to MainActivity and pass it Trip via intent to display TripFragment
             finish()
+        } else {
+
+            Toast.makeText(this, "Give a name to your trip !", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-    private fun configureDatePicker(textView: TextView) {
-
-        val calendar = Calendar.getInstance()
-
-        // Create an OnDateSetListener
-        val dateSetListener =
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, monthOfYear)
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                textView.text = Utils.convertDate(calendar.time)
-
-            }
-
-        // Open DatePickerDialog when clicked
-        textView.setOnClickListener {
-            DatePickerDialog(this@AddEditActivity, dateSetListener,
-                // set DatePickerDialog to point to today's date when it loads up
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show()
-        }
-    }
-
 
 
 }

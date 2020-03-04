@@ -64,6 +64,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+
+
+    /*-----------------------------
+
+    USER INTERFACE
+
+    ---------------------------- */
+
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -120,9 +131,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             add_floating_action_button.show()
             add_floating_action_button.setOnClickListener {
 
-                val userIntent = Intent(activity, AddEditActivity::class.java)
-                userIntent.putExtra("USER", user)
-                startActivity(userIntent)
+                startActivity(Intent(activity, AddEditActivity:: class.java))
             }
         } else {
 
@@ -168,12 +177,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         )
     }
 
-    private fun configureViewModels() {
-
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
-    }
 
 
     // Load profile picture into view
@@ -196,24 +199,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-
-    // Get data from Firestore
-    private fun getTripList(user: User) {
-
-        // Get trip list
-        userViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner,
-            Observer<List<Trip>> { this.profileTripsAdapter.updateData(it) })
-
-    }
-
-
-    // Get data from Firestore
-    private fun getWishList(user: User) {
-
-        // Get wish list
-        userViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner,
-            Observer<List<City>> { this.profileCitiesAdapter.updateData(it) })
-    }
 
 
     // Open Trip details fragment when clicked
@@ -247,6 +232,58 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         } else {
             transaction.replace(R.id.fragment_container, fragment).commit()
         }
+    }
+
+
+
+    /*-----------------------------
+
+    DATA QUERIES
+
+    ---------------------------- */
+
+
+
+    private fun configureViewModels() {
+
+        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+    }
+
+
+
+    // Get trip list from user
+    private fun getTripList(user: User) {
+
+        val list: MutableList<Trip> = ArrayList()
+
+        userViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            profileTripsAdapter.updateData(list)
+        })
+    }
+
+
+    // Get wish list from user
+    private fun getWishList(user: User) {
+
+        val list: MutableList<City> = ArrayList()
+
+        userViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            profileCitiesAdapter.updateData(list)
+        })
     }
 
 

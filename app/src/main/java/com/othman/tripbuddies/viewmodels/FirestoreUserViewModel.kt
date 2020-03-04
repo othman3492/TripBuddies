@@ -21,17 +21,16 @@ class FirestoreUserViewModel : ViewModel() {
     private var userRepository = FirestoreUserRepository()
     var user: MutableLiveData<User> = MutableLiveData()
     private var usersList: MutableLiveData<List<User>> = MutableLiveData()
-    private var userTripList: MutableLiveData<List<Trip>> = MutableLiveData()
-    private var userWishList: MutableLiveData<List<City>> = MutableLiveData()
-    private var userVisitedCitiesList: MutableLiveData<List<City>> = MutableLiveData()
+    private var userTripList: MutableLiveData<List<String>> = MutableLiveData()
+    private var userWishList: MutableLiveData<List<String>> = MutableLiveData()
+    private var userVisitedCitiesList: MutableLiveData<List<String>> = MutableLiveData()
 
 
     // CREATE
     fun createUserIntoFirestore(user: User) = userRepository.createUser(user)
-    fun addTripToUser(userId: String, trip: Trip) = userRepository.addTripToUser(userId, trip)
-    fun addCityToWishList(userId: String, city: City) = userRepository.addCityToWishList(userId, city)
-    fun addVisitedCity(userId: String, city: City) = userRepository.addVisitedCity(userId, city)
-
+    fun addTripToUser(userId: String, tripId: String) = userRepository.addTripToUser(userId, tripId)
+    fun addCityToWishList(userId: String, cityId: String) = userRepository.addCityToWishList(userId, cityId)
+    fun addVisitedCity(userId: String, cityId: String) = userRepository.addVisitedCity(userId, cityId)
 
 
     // UPDATE
@@ -40,9 +39,9 @@ class FirestoreUserViewModel : ViewModel() {
 
     // DELETE
     fun deleteUserFromFirestore(userId: String) = userRepository.deleteUser(userId)
-    fun removeTripFromUser(userId: String, trip: Trip) = userRepository.removeTripFromUser(userId, trip)
-    fun removeCityFromWishList(userId: String, city: City) = userRepository.removeCityFromWishList(userId, city)
-    fun removeVisitedCity(userId: String, city: City) = userRepository.removeVisitedCity(userId, city)
+    fun removeTripFromUser(userId: String, tripId: String) = userRepository.removeTripFromUser(userId, tripId)
+    fun removeCityFromWishList(userId: String, cityId: String) = userRepository.removeCityFromWishList(userId, cityId)
+    fun removeVisitedCity(userId: String, cityId: String) = userRepository.removeVisitedCity(userId, cityId)
 
 
 
@@ -91,7 +90,7 @@ class FirestoreUserViewModel : ViewModel() {
 
 
     // Retrieve user's trip list from Firestore and convert it to usable List<LiveData>
-    fun getAllTripsFromUser(userId: String): LiveData<List<Trip>> {
+    fun getAllTripsFromUser(userId: String): LiveData<List<String>> {
 
         userRepository.getAllTripsFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
@@ -101,10 +100,10 @@ class FirestoreUserViewModel : ViewModel() {
                 return@EventListener
             }
 
-            val savedUserTripList: MutableList<Trip> = mutableListOf()
+            val savedUserTripList: MutableList<String> = mutableListOf()
             for (doc in value!!) {
 
-                val trip = doc.toObject(Trip::class.java)
+                val trip = doc.id
                 savedUserTripList.add(trip)
             }
 
@@ -116,7 +115,7 @@ class FirestoreUserViewModel : ViewModel() {
 
 
     // Retrieve user's wish list from Firestore and convert it to usable List<LiveData>
-    fun getAllCitiesFromUser(userId: String): LiveData<List<City>> {
+    fun getAllCitiesFromUser(userId: String): LiveData<List<String>> {
 
         userRepository.getWishListFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
@@ -126,10 +125,10 @@ class FirestoreUserViewModel : ViewModel() {
                 return@EventListener
             }
 
-            val savedUserWishList: MutableList<City> = mutableListOf()
+            val savedUserWishList: MutableList<String> = mutableListOf()
             for (doc in value!!) {
 
-                val city = doc.toObject(City::class.java)
+                val city = doc.id
                 savedUserWishList.add(city)
             }
 
@@ -141,7 +140,7 @@ class FirestoreUserViewModel : ViewModel() {
 
 
     // Retrieve user's visited cities from Firestore and convert it to usable List<LiveData>
-    fun getAllVisitedCitiesFromUser(userId: String): LiveData<List<City>> {
+    fun getAllVisitedCitiesFromUser(userId: String): LiveData<List<String>> {
 
         userRepository.getVisitedCitiesFromUser(userId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
@@ -151,10 +150,10 @@ class FirestoreUserViewModel : ViewModel() {
                 return@EventListener
             }
 
-            val savedUserVisitedCitiesList: MutableList<City> = mutableListOf()
+            val savedUserVisitedCitiesList: MutableList<String> = mutableListOf()
             for (doc in value!!) {
 
-                val city = doc.toObject(City::class.java)
+                val city = doc.id
                 savedUserVisitedCitiesList.add(city)
             }
 

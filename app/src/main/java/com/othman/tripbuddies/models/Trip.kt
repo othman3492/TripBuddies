@@ -18,7 +18,7 @@ data class Trip(
     var destinationsList: MutableList<String> = ArrayList(),
     var buddiesList: MutableList<String> = ArrayList(),
     var nbDestinations: Int = destinationsList.size,
-    var nbBuddies: Int = buddiesList.size,
+    var nbBuddies: Int = buddiesList.size + 1,
     var nbPhotos: Int = photosList.size
     ) : Serializable {
 

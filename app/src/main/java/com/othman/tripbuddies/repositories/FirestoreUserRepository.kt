@@ -22,28 +22,25 @@ class FirestoreUserRepository {
 
     fun getUser(userId: String) = getAllUsers().document(userId)
 
-    fun getAllTripsFromUser(userId: String) = getAllUsers().document(userId)
-        .collection("trips")
+    fun getAllTripsFromUser(userId: String) = getAllUsers().document(userId).collection("userTrips")
 
-    fun getWishListFromUser(userId: String) = getAllUsers().document(userId)
-        .collection("userCities")
+    fun getWishListFromUser(userId: String) = getAllUsers().document(userId).collection("userCities")
 
-    fun getVisitedCitiesFromUser(userId: String) = getAllUsers().document(userId)
-        .collection("visitedCities")
+    fun getVisitedCitiesFromUser(userId: String) = getAllUsers().document(userId).collection("userVisitedCities")
 
 
 
     // CREATE
     fun createUser(user: User): Task<Void> = getAllUsers().document(user.userId).set(user)
 
-    fun addTripToUser(userId: String, trip: Trip): Task<Void> = getAllUsers()
-        .document(userId).collection("trips").document(trip.tripId).set(trip)
+    fun addTripToUser(userId: String, tripId: String): Task<Void> = getAllUsers()
+        .document("$userId/userTrips/$tripId").set({tripId})
 
-    fun addCityToWishList(userId: String, city: City): Task<Void> = getAllUsers()
-        .document(userId).collection("userCities").document(city.cityId).set(city)
+    fun addCityToWishList(userId: String, cityId: String): Task<Void> = getAllUsers()
+        .document("$userId/userCities/$cityId").set({cityId})
 
-    fun addVisitedCity(userId: String, city: City): Task<Void> = getAllUsers()
-        .document(userId).collection("visitedCities").document(city.cityId).set(city)
+    fun addVisitedCity(userId: String, cityId: String): Task<Void> = getAllUsers()
+        .document("$userId/userVisitedCities/$cityId").set({cityId})
 
 
 
@@ -55,12 +52,12 @@ class FirestoreUserRepository {
     // DELETE
     fun deleteUser(userId: String): Task<Void> = getAllUsers().document(userId).delete()
 
-    fun removeTripFromUser(userId: String, trip: Trip): Task<Void> = getAllUsers()
-        .document(userId).collection("trips").document(trip.tripId).delete()
+    fun removeTripFromUser(userId: String, tripId: String): Task<Void> = getAllUsers()
+        .document("$userId/userTrips/$tripId").delete()
 
-    fun removeCityFromWishList(userId: String, city: City): Task<Void> = getAllUsers()
-        .document(userId).collection("userCities").document(city.cityId).delete()
+    fun removeCityFromWishList(userId: String, cityId: String): Task<Void> = getAllUsers()
+        .document("$userId/userCities/$cityId").delete()
 
-    fun removeVisitedCity(userId: String, city: City): Task<Void> = getAllUsers()
-        .document(userId).collection("visitedCities").document(city.cityId).delete()
+    fun removeVisitedCity(userId: String, cityId: String): Task<Void> = getAllUsers()
+        .document("$userId/userVisitedCities/$cityId").delete()
 }

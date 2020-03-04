@@ -10,6 +10,7 @@ data class Message(
     val messageId: String = "",
     val type: Int = 0,
     val userId: String = "",
+    val cityId: String = "",
     val username: String = "",
     val urlProfile: String = "",
     var content: String = "",
@@ -25,5 +26,5 @@ data class Message(
         const val OTHER_MESSAGE = 3
     }
 
-    constructor():this(Utils.generateId(), 0,"", "", "", "", null)
+    constructor():this(Utils.generateId(), 0,"", "", "", "", "")
 }

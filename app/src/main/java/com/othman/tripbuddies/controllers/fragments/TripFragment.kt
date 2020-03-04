@@ -70,6 +70,14 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         }
     }
 
+
+    /*-----------------------------
+
+    USER INTERFACE
+
+    ---------------------------- */
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -91,7 +99,8 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         // Load data into views
         configureRecyclerViews()
-        getLists(trip)
+        getDestinationsList(trip)
+        getBuddiesList(trip)
 
 
         trip_name.text = trip.name
@@ -182,35 +191,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    private fun configureViewModel() {
-
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
-
-    }
-
-
-    private fun deleteTrip(trip: Trip) {
-
-        tripViewModel.deleteTripFromFirestore(trip).addOnSuccessListener {
-
-            userViewModel.removeTripFromUser(trip.userId, trip).addOnSuccessListener {
-
-                Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        // Close fragment and get back to home screen
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-        transaction.replace(
-            R.id.fragment_container,
-            ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid)
-        ).commit()
-    }
-
-
     // Open User profile fragment when clicked
     private fun displayPhotoOnClick(photo: String) {
 
@@ -251,24 +231,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    // Get lists from subcollections
-    private fun getLists(trip: Trip) {
-
-        tripViewModel.getAllCitiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
-            this.destinationsAdapter.updateData(it)
-            trip.nbDestinations = it.size
-        })
-
-        tripViewModel.getAllBuddiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
-            this.buddiesAdapter.updateData(it)
-            trip.nbBuddies = it.size
-        })
-
-        // Update number properties
-        tripViewModel.updateTripIntoFirestore(trip)
-    }
-
-
     // Retrieve city data from Autocomplete search
     private fun configurePlaceAutocomplete() {
 
@@ -285,6 +247,60 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             .build(context!!)
         startActivityForResult(intent, autocompleteRequestCode)
 
+    }
+
+
+    /*-----------------------------
+
+    DATA QUERIES
+
+    ---------------------------- */
+
+
+    private fun configureViewModel() {
+
+        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+
+    }
+
+
+    // Get destinations list from trip
+    private fun getDestinationsList(trip: Trip): List<City> {
+
+        val list: MutableList<City> = ArrayList()
+
+        tripViewModel.getAllCitiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            destinationsAdapter.updateData(list)
+        })
+
+        return list
+    }
+
+
+    // Get destinations list from trip
+    private fun getBuddiesList(trip: Trip): List<User> {
+
+        val list: MutableList<User> = ArrayList()
+
+        tripViewModel.getAllBuddiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer { it ->
+
+            for (doc in it) {
+
+                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+            }
+
+            buddiesAdapter.updateData(list)
+        })
+
+        return list
     }
 
 
@@ -373,6 +389,34 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         }
 
 
+    }
+
+
+    private fun deleteTrip(trip: Trip) {
+
+        // Delete trip from Firestore
+        tripViewModel.deleteTripFromFirestore(trip.tripId).addOnSuccessListener {
+
+            // Delete trip from users
+            for (doc in getBuddiesList(trip)) {
+                userViewModel.removeTripFromUser(doc.userId, trip.tripId)
+            }
+
+            // Delete trip from cities
+            for (doc in getDestinationsList(trip)) {
+                cityViewModel.removeTripFromCity(doc.cityId, trip.tripId)
+            }
+
+            Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()
+        }
+
+        // Close fragment and get back to home screen
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+        transaction.replace(
+            R.id.fragment_container,
+            ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid)
+        ).commit()
     }
 }
 

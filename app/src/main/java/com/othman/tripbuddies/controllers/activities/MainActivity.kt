@@ -15,8 +15,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
 
+    private val PROFILE_FRAGMENT = 0
+    private val CITY_FRAGMENT = 1
+    private val TRIP_FRAGMENT = 2
+
     private var isTablet = false
-    private var fragmentId = 0
+    private var fragmentId = PROFILE_FRAGMENT
 
     private var trip = Trip()
 
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         if (intent.getSerializableExtra("TRIP") != null) {
 
             trip = intent.getSerializableExtra("TRIP") as Trip
-            fragmentId = 3
+            fragmentId = TRIP_FRAGMENT
         }
 
         configureBottomNavigationView()
@@ -71,9 +75,9 @@ class MainActivity : AppCompatActivity() {
 
         when (fragmentId) {
 
-            0 -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
-            1 -> displayFragment(CityFragment.newInstance(null))
-            2 -> displayFragment(TripFragment.newInstance(trip))
+            PROFILE_FRAGMENT -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
+            CITY_FRAGMENT -> displayFragment(CityFragment.newInstance(null))
+            TRIP_FRAGMENT -> displayFragment(TripFragment.newInstance(trip))
         }
     }
 
@@ -98,11 +102,11 @@ class MainActivity : AppCompatActivity() {
 
         // Set fragmentId to save it into SavedInstanceState
         when (fragment) {
-            is ProfileFragment -> fragmentId = 0
+            is ProfileFragment -> fragmentId = PROFILE_FRAGMENT
 
-            is CityFragment -> fragmentId = 1
+            is CityFragment -> fragmentId = CITY_FRAGMENT
 
-            is TripFragment -> fragmentId = 2
+            is TripFragment -> fragmentId = TRIP_FRAGMENT
         }
 
         val transaction = supportFragmentManager.beginTransaction()
