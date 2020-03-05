@@ -176,11 +176,18 @@ class AddEditActivity : AppCompatActivity() {
             newTrip.creationDate = Utils.convertDate(Date())
 
             // Create object
-            tripViewModel.createTripIntoFirestore(newTrip)
-            userViewModel.addTripToUser(currentUser, trip.tripId)
+            tripViewModel.createTripIntoFirestore(newTrip).addOnSuccessListener {
+                // Add trip to user trip list
+                userViewModel.addTripToUser(currentUser, trip.tripId).addOnSuccessListener {
+                    // Add user to trip buddies list
+                    tripViewModel.addBuddyToTrip(trip.tripId, currentUser).addOnSuccessListener {
 
-            // Confirm creation
-            Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()
+                        // Confirm creation
+                        Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
 
             // Return to MainActivity and pass it Trip via intent to display TripFragment
             val tripIntent = Intent(this, MainActivity::class.java)

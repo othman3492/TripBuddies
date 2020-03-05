@@ -1,26 +1,22 @@
+package com.othman.tripbuddies.views
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.libraries.places.api.model.Place
-import com.othman.tripbuddies.BuildConfig
+import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Message
-import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
 import kotlinx.android.synthetic.main.my_message_layout.view.*
 import kotlinx.android.synthetic.main.my_message_layout.view.my_message_timestamp
 import kotlinx.android.synthetic.main.other_message_layout.view.*
 import java.lang.IllegalArgumentException
 
 
-class MessageAdapter(private var context: Context) :
+class MessageAdapter(private val context: Context, val userId: String) :
     RecyclerView.Adapter<MessageAdapter.BaseMessageViewHolder<*>>() {
 
 
@@ -31,7 +27,14 @@ class MessageAdapter(private var context: Context) :
 
     override fun getItemCount() = messagesList.size
 
-    override fun getItemViewType(position: Int): Int = messagesList[position].type
+    override fun getItemViewType(position: Int): Int {
+
+        return if (messagesList[position].userId == userId) {
+            MY_MESSAGE
+        } else {
+            OTHER_MESSAGE
+        }
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseMessageViewHolder<*> {
@@ -47,7 +50,7 @@ class MessageAdapter(private var context: Context) :
             OTHER_MESSAGE -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.other_message_layout, parent, false)
-                MyMessageViewHolder(view)
+                OtherMessageViewHolder(view, context)
             }
 
             else -> throw IllegalArgumentException("Invalid view type")
@@ -94,7 +97,7 @@ class MessageAdapter(private var context: Context) :
     }
 
 
-    class OtherMessageViewHolder(v: View): BaseMessageViewHolder<Message>(v) {
+    class OtherMessageViewHolder(v: View, val context: Context): BaseMessageViewHolder<Message>(v) {
 
         private var view: View = v
 
@@ -102,6 +105,16 @@ class MessageAdapter(private var context: Context) :
         override fun bind(message: Message) {
 
             view.other_message_content.text = message.content
+            view.other_message_timestamp.text = message.timestamp.toString()
+            view.other_name.text = message.username
+
+            Glide.with(context)
+                .load(message.urlProfile)
+                .apply(RequestOptions.circleCropTransform())
+                .into(view.other_profile_picture)
+
+
+
 
         }
     }

@@ -1,5 +1,6 @@
 package com.othman.tripbuddies.utils
 
+import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random

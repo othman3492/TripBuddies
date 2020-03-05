@@ -31,6 +31,7 @@ import com.othman.tripbuddies.BuildConfig
 
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
+import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
@@ -39,6 +40,7 @@ import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_trip.*
 
 
@@ -53,7 +55,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private lateinit var userViewModel: FirestoreUserViewModel
     private lateinit var cityViewModel: FirestoreCityViewModel
 
-    private val autocompleteRequestCode = 1
+    private val autocompleteRequestCode = 21
     private val galleryCode = 1
     private val galleryPermissionCode = 11
 
@@ -115,6 +117,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         nb_photos_textview.text = trip.nbPhotos.toString()
         nb_buddies_textview.text = trip.nbBuddies.toString()
         nb_destinations_textview.text = trip.nbDestinations.toString()
+
+        // Display first trip photo if image list isn't empty
+        if (trip.photosList.isNotEmpty()) {
+            Glide.with(activity!!).load(trip.photosList[0]).into(trip_cover_picture)
+        } else {
+            Glide.with(activity!!).load(R.drawable.blank_picture).into(trip_cover_picture)
+        }
     }
 
 
@@ -144,10 +153,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         trip_buddies_recycler_view.adapter = buddiesAdapter
         trip_buddies_recycler_view.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trip_buddies_recycler_view.addItemDecoration(
             DividerItemDecoration(
-                trip_buddies_recycler_view.context, DividerItemDecoration.VERTICAL
+                trip_buddies_recycler_view.context, DividerItemDecoration.HORIZONTAL
             )
         )
 
@@ -159,10 +168,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         trip_destinations_recycler_view.adapter = destinationsAdapter
         trip_destinations_recycler_view.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trip_destinations_recycler_view.addItemDecoration(
             DividerItemDecoration(
-                trip_destinations_recycler_view.context, DividerItemDecoration.VERTICAL
+                trip_destinations_recycler_view.context, DividerItemDecoration.HORIZONTAL
             )
         )
 
@@ -275,7 +284,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
             for (doc in it) {
 
-                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
+                    if (it != null && !list.contains(it))
+                        list.add(it)
+                })
             }
 
             destinationsAdapter.updateData(list)
@@ -290,15 +302,19 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         val list: MutableList<User> = ArrayList()
 
-        tripViewModel.getAllBuddiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer { it ->
+        tripViewModel.getAllBuddiesFromTrip(trip.tripId)
+            .observe(viewLifecycleOwner, Observer { it ->
 
-            for (doc in it) {
+                for (doc in it) {
 
-                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
-            }
+                    userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+                        if (it != null && !list.contains(it))
+                            list.add(it)
+                    })
+                }
 
-            buddiesAdapter.updateData(list)
-        })
+                buddiesAdapter.updateData(list)
+            })
 
         return list
     }
@@ -355,11 +371,14 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         startActivityForResult(intent, galleryCode)
     }
 
+
+
     // Handle picked image result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
+        // Handle image request
         if (resultCode == Activity.RESULT_OK && requestCode == galleryCode) {
-
 
             // Upload image and get Firebase new URI
             val imageId = Utils.generateId()
@@ -389,7 +408,40 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         }
 
 
+        // Handle autocomplete request
+        else if (resultCode == Activity.RESULT_OK && requestCode == autocompleteRequestCode) {
+
+            // Retrieve Place data and create City object
+            val place = Autocomplete.getPlaceFromIntent(data!!)
+            val city = City(
+                place.id!!,
+                place.name!!,
+                place.getCountry(context!!),
+                place.latLng!!.latitude,
+                place.latLng!!.longitude,
+                place.photoMetadatas!![0].zza()
+            )
+
+            // Create city collection if it doesn't exist
+            cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+
+                if (it == null) cityViewModel.createCityIntoFirestore(city)
+            })
+
+            // Add city to trip destinations list
+            tripViewModel.addCityToTrip(trip.tripId, city.cityId).addOnSuccessListener {
+                // Add trip to city trip list
+                cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
+                    // Add user to city visitors list
+                    cityViewModel.addVisitorToCity(city.cityId, trip.userId).addOnSuccessListener {
+                        // Add city to user visited cities
+                        userViewModel.addVisitedCity(trip.userId, city.cityId)
+                    }
+                }
+            }
+        }
     }
+
 
 
     private fun deleteTrip(trip: Trip) {

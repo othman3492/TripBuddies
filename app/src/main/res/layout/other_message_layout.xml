@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/other_message"
-    android:orientation="vertical"
-    android:layout_gravity="end"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
     android:layout_marginLeft="@dimen/margin_normal"
     android:layout_marginRight="@dimen/margin_normal"
     android:layout_marginTop="@dimen/margin_small"
-    android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/margin_small">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/other_message"
+    android:orientation="vertical"
     android:background="@drawable/other_bubble_shape"
+    android:padding="@dimen/margin_normal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
     <ImageView
         android:id="@+id/other_profile_picture"
@@ -42,22 +49,22 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="@dimen/text_small"
-        android:paddingStart="@dimen/margin_normal"
-        android:paddingEnd="@dimen/margin_normal"
-        android:paddingBottom="@dimen/margin_normal"
+        android:padding="@dimen/margin_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/other_profile_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Le Règlement général sur la protection des données (RGPD) exige que certaines entreprises qui opèrent dans l’Union européenne désignent un DPO qui doit être le référent à contacter pour obtenir des informations sur la façon de traiter les données."/>
 
+</androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
-        android:id="@+id/my_message_timestamp"
+        android:id="@+id/other_message_timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_normal"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textStyle="italic"
-        app:layout_constraintTop_toBottomOf="@id/other_message_content"
+        app:layout_constraintTop_toBottomOf="@id/other_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/other_message"
         tools:text="05/02/2020 - 16:35"/>

@@ -9,8 +9,9 @@ import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
+import kotlinx.android.synthetic.main.trip_cities_list_layout.view.*
 import java.lang.IllegalArgumentException
+import java.util.*
 
 
 class TripDestinationsAdapter(val context: Context, private val itemClickListener: (City) -> Unit,
@@ -42,7 +43,7 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
             TYPE_ITEM -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.city_or_buddies_list_layout, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_cities_list_layout, parent, false)
                 TripDestinationsViewHolder(view, context)
             }
 
@@ -66,8 +67,7 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
                 holder.bind(destinationsList[position], itemClickListener)
 
                 // Configure delete button
-                holder.itemView.remove_cities_or_buddies_button.visibility = View.VISIBLE
-                holder.itemView.remove_cities_or_buddies_button.setOnClickListener {
+                holder.itemView.remove_city_button.setOnClickListener {
 
                     destinationsList.toMutableList().removeAt(position)
                     notifyItemRemoved(position)
@@ -109,14 +109,14 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
         // Assign data to the views
         fun bind(city: City, clickListener: (City) -> Unit) {
 
-            view.city_or_buddies_list_name.text = city.name
+            view.details_city_name.text = city.name
 
             // Display profile picture if not null
             if (city.coverPicture != null) {
-                Glide.with(context).load(city.coverPicture).into(view.city_or_buddies_list_image)
+                Glide.with(context).load(city.coverPicture).into(view.details_city_image)
             } else {
                 Glide.with(context).load(R.drawable.blank_picture)
-                    .into(view.city_or_buddies_list_image)
+                    .into(view.details_city_image)
             }
 
             // Set view holder on click

@@ -122,11 +122,16 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     private fun configureButtons(city: City) {
 
         // Display right floating action button
-        if (currentUser.wishList.contains(city.cityId)) {
+        userViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid).observe(viewLifecycleOwner, Observer {
 
-            add_city_wish_list_floating_action_button.hide()
-            remove_city_wish_list_floating_action_button.show()
-        }
+            for (doc in it) {
+                if (doc == city.cityId) {
+
+                    add_city_wish_list_floating_action_button.hide()
+                    remove_city_wish_list_floating_action_button.show()
+                }
+            }
+        })
 
 
         val chatIntent = Intent(activity, ChatActivity::class.java)
@@ -305,7 +310,9 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
             for (doc in it) {
 
-                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
+                    if (it != null && !list.contains(it))
+                    list.add(it) })
             }
 
             cityTripsAdapter.updateData(list)
@@ -322,7 +329,9 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
             for (doc in it) {
 
-                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { list.add(it) })
+                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+                    if (it != null && !list.contains(it))
+                    list.add(it) })
             }
 
             cityBuddiesAdapter.updateData(list)

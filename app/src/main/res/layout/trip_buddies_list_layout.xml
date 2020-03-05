@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -15,7 +16,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/details_photo_image"
+                android:id="@+id/details_buddy_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:scaleType="centerCrop"
@@ -25,8 +26,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/details_buddy_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="@id/details_buddy_image"
+                app:layout_constraintEnd_toEndOf="@id/details_buddy_image"
+                app:layout_constraintBottom_toBottomOf="@id/details_buddy_image"/>
+
             <ImageView
-                android:id="@+id/remove_photo_button"
+                android:id="@+id/remove_buddy_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"

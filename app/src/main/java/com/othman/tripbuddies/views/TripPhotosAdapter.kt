@@ -1,15 +1,11 @@
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import java.lang.IllegalArgumentException
 
@@ -48,7 +44,7 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
 
             TYPE_ADD -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_photos_list_add, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
                 TripPhotosFooter(view)
             }
 
@@ -66,7 +62,6 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
                 holder.bind(trip.photosList[position], itemClickListener)
 
                 // Configure delete button
-                holder.itemView.remove_photo_button.visibility = View.VISIBLE
                 holder.itemView.remove_photo_button.setOnClickListener {
 
                     trip.photosList.removeAt(position)
