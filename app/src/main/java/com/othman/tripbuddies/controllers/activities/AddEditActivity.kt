@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
@@ -23,7 +24,6 @@ class AddEditActivity : AppCompatActivity() {
     private lateinit var userViewModel: FirestoreUserViewModel
 
     private var trip = Trip()
-    private val currentUser = FirebaseUserHelper.getCurrentUser()!!.uid
 
 
     /*-----------------------------
@@ -43,17 +43,13 @@ class AddEditActivity : AppCompatActivity() {
 
     private fun configureUI() {
 
-        // Display initial layout
-        add_trip_buddies_layout.visibility = View.GONE
-        add_trip_destinations_layout.visibility = View.GONE
-        add_trip_details_layout.visibility = View.VISIBLE
 
         configureViewModels()
         configureButtons()
         configureDatePicker(depart_date)
         configureDatePicker(return_date)
 
-
+        // Get trip if it's EditActivity
         if (intent.getSerializableExtra("TRIP_TO_EDIT") != null) {
             trip = intent.getSerializableExtra("TRIP_TO_EDIT") as Trip
             fillData()
@@ -62,26 +58,6 @@ class AddEditActivity : AppCompatActivity() {
 
 
     private fun configureButtons() {
-
-        next_button.setOnClickListener {
-            add_trip_details_layout.visibility = View.GONE
-            add_trip_destinations_layout.visibility = View.VISIBLE
-        }
-
-        next_button_2.setOnClickListener {
-            add_trip_destinations_layout.visibility = View.GONE
-            add_trip_buddies_layout.visibility = View.VISIBLE
-        }
-
-        back_button.setOnClickListener {
-            add_trip_destinations_layout.visibility = View.GONE
-            add_trip_details_layout.visibility = View.VISIBLE
-        }
-
-        back_button_2.setOnClickListener {
-            add_trip_buddies_layout.visibility = View.GONE
-            add_trip_destinations_layout.visibility = View.VISIBLE
-        }
 
         create_button.setOnClickListener { createTrip(trip) }
         edit_button.setOnClickListener { updateTrip(trip) }
@@ -159,8 +135,8 @@ class AddEditActivity : AppCompatActivity() {
 
     private fun configureViewModels() {
 
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
+        tripViewModel = ViewModelProvider(this).get(FirestoreTripViewModel::class.java)
     }
 
 
@@ -178,16 +154,15 @@ class AddEditActivity : AppCompatActivity() {
             // Create object
             tripViewModel.createTripIntoFirestore(newTrip).addOnSuccessListener {
                 // Add trip to user trip list
-                userViewModel.addTripToUser(currentUser, trip.tripId).addOnSuccessListener {
+                userViewModel.addTripToUser(trip.userId, trip.tripId).addOnSuccessListener {
                     // Add user to trip buddies list
-                    tripViewModel.addBuddyToTrip(trip.tripId, currentUser).addOnSuccessListener {
+                    tripViewModel.addBuddyToTrip(trip.tripId, trip.userId).addOnSuccessListener {
 
                         // Confirm creation
                         Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-
 
             // Return to MainActivity and pass it Trip via intent to display TripFragment
             val tripIntent = Intent(this, MainActivity::class.java)
@@ -216,6 +191,7 @@ class AddEditActivity : AppCompatActivity() {
 
             // Return to MainActivity and pass it Trip via intent to display TripFragment
             finish()
+
         } else {
 
             Toast.makeText(this, "Give a name to your trip !", Toast.LENGTH_SHORT).show()

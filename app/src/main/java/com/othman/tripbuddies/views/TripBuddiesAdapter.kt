@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.models.City
-import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
+import com.othman.tripbuddies.utils.AdapterEvent
 import kotlinx.android.synthetic.main.trip_buddies_list_layout.view.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 
 
@@ -19,8 +18,9 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
 
 
     private var buddiesList: List<User> = ArrayList()
-    private val TYPE_ITEM = 0
-    private val TYPE_ADD = 1
+    private val buddiesAdapterId = 1
+    private val typeItem = 0
+    private val typeAdd = 1
 
 
     override fun getItemCount() = buddiesList.size + 1
@@ -29,9 +29,9 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
     override fun getItemViewType(position: Int): Int {
 
         return if (position == itemCount - 1) {
-            TYPE_ADD
+            typeAdd
         } else {
-            TYPE_ITEM
+            typeItem
         }
     }
 
@@ -40,13 +40,13 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
 
         return when (viewType) {
 
-            TYPE_ITEM -> {
+            typeItem -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_buddies_list_layout, parent, false)
                 TripBuddiesViewHolder(view, context)
             }
 
-            TYPE_ADD -> {
+            typeAdd -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
                 TripBuddiesFooter(view)
@@ -67,6 +67,8 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
 
                 // Configure delete button
                 holder.itemView.remove_buddy_button.setOnClickListener {
+
+                    EventBus.getDefault().post(AdapterEvent(buddiesAdapterId, buddiesList[position].userId))
 
                     buddiesList.toMutableList().removeAt(position)
                     notifyItemRemoved(position)

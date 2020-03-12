@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
@@ -26,6 +27,13 @@ class LoginActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 100
     private lateinit var userViewModel: FirestoreUserViewModel
+
+
+    /*-----------------------------
+
+    USER INTERFACE
+
+    ---------------------------- */
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,6 +128,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+
+    /*-----------------------------
+
+    DATA QUERIES
+
+    ---------------------------- */
+
+
     // Create user in Firestore if it doesn't exist and store data
     private fun createUserInFirestore() {
 
@@ -138,7 +154,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun configureViewModel() {
 
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
     }
 }
 

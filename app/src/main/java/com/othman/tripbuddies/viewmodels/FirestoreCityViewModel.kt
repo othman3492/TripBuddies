@@ -20,31 +20,26 @@ class FirestoreCityViewModel: ViewModel() {
     var cityRepository = FirestoreCityRepository()
     var city: MutableLiveData<City> = MutableLiveData()
     var cityList: MutableLiveData<List<City>> = MutableLiveData()
-    var cityVisitorsList: MutableLiveData<List<String>> = MutableLiveData()
-    var cityWishList: MutableLiveData<List<String>> = MutableLiveData()
-    var cityTripList: MutableLiveData<List<String>> = MutableLiveData()
-    var chatMessageList: MutableLiveData<List<Message>> = MutableLiveData()
 
 
     // CREATE
     fun createCityIntoFirestore(city: City) = cityRepository.createCity(city)
-    fun addVisitorToCity(cityId: String, userId: String) = cityRepository.addVisitorToCity(cityId, userId)
-    fun addUserToWishList(cityId: String, userId: String) = cityRepository.addUserToWishList(cityId, userId)
-    fun addTripToCity(cityId: String, tripId: String) = cityRepository.addTripToCity(cityId, tripId)
-    fun createMessage(cityId: String, message: Message) = cityRepository.createMessage(cityId, message)
 
 
     // UPDATE
     fun updateCityIntoFirestore(city: City) = cityRepository.updateCity(city)
-
+    fun addVisitorToCity(cityId: String, userId: String) = cityRepository.addVisitorToCity(cityId, userId)
+    fun addUserToWishList(cityId: String, userId: String) = cityRepository.addUserToWishList(cityId, userId)
+    fun addTripToCity(cityId: String, tripId: String) = cityRepository.addTripToCity(cityId, tripId)
+    fun addMessageToChat(cityId: String, messageId: String) = cityRepository.addMessageToChat(cityId, messageId)
+    fun removeVisitorFromCity(cityId: String, userId: String) = cityRepository.removeVisitorFromCity(cityId, userId)
+    fun removeUserFromWishList(cityId: String, userId: String) = cityRepository.removeUserFromWishList(cityId, userId)
+    fun removeTripFromCity(cityId: String, tripId: String) = cityRepository.removeTripFromCity(cityId, tripId)
+    fun removeMessageFromChat(cityId: String, messageId: String) = cityRepository.removeMessageFromChat(cityId, messageId)
 
 
     // DELETE
     fun deleteCity(cityId: String) = cityRepository.deleteCity(cityId)
-    fun removeVisitorFromCity(cityId: String, userId: String) = cityRepository.removeVisitorFromCity(cityId, userId)
-    fun removeUserFromWishList(cityId: String, userId: String) = cityRepository.removeUserFromWishList(cityId, userId)
-    fun removeTripFromCity(cityId: String, tripId: String) = cityRepository.removeTripFromCity(cityId, tripId)
-    fun deleteMessage(cityId: String, messageId: String) = cityRepository.deleteMessage(cityId, messageId)
 
 
 
@@ -88,106 +83,6 @@ class FirestoreCityViewModel: ViewModel() {
         })
 
         return cityList
-    }
-
-
-    // Retrieve city's visitors list from Firestore and convert it to usable List<LiveData>
-    fun getAllVisitorsFromCity(cityId: String): LiveData<List<String>> {
-
-        cityRepository.getAllVisitorsFromCity(cityId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                cityVisitorsList.value = null
-                return@EventListener
-            }
-
-            val savedCityVisitorsList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val user = doc.id
-                savedCityVisitorsList.add(user)
-            }
-
-            cityVisitorsList.value = savedCityVisitorsList
-        })
-
-        return cityVisitorsList
-    }
-
-
-    // Retrieve city's wish list from Firestore and convert it to usable List<LiveData>
-    fun getWishListFromCity(cityId: String): LiveData<List<String>> {
-
-        cityRepository.getWishListFromCity(cityId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                cityWishList.value = null
-                return@EventListener
-            }
-
-            val savedCityWishList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val user = doc.id
-                savedCityWishList.add(user)
-            }
-
-            cityWishList.value = savedCityWishList
-        })
-
-        return cityWishList
-    }
-
-
-    // Retrieve city's trip list from Firestore and convert it to usable List<LiveData>
-    fun getAllTripsFromCity(cityId: String): LiveData<List<String>> {
-
-        cityRepository.getAllTripsFromCity(cityId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                cityTripList.value = null
-                return@EventListener
-            }
-
-            val savedCityTripList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val trip = doc.id
-                savedCityTripList.add(trip)
-            }
-
-            cityTripList.value = savedCityTripList
-        })
-
-        return cityTripList
-    }
-
-
-    // Retrieve city's chat message list from Firestore and convert it to usable List<LiveData>
-    fun getAllMessagesFromChat(cityId: String): LiveData<List<Message>> {
-
-        cityRepository.getAllMessagesFromChat(cityId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                chatMessageList.value = null
-                return@EventListener
-            }
-
-            val savedChatMessageList: MutableList<Message> = mutableListOf()
-            for (doc in value!!) {
-
-                val message = doc.toObject(Message::class.java)
-                savedChatMessageList.add(message)
-            }
-
-            chatMessageList.value = savedChatMessageList
-        })
-
-        return chatMessageList
     }
 
 

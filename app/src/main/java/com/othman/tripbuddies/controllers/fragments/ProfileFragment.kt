@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -89,19 +90,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         userViewModel.getUser(arguments!!.getString("USER_ID")!!)
             .observe(viewLifecycleOwner, Observer {
 
-                profileUser = it
+                if (it != null) {
 
-                // Fill user data into views
-                configureTripsRecyclerView()
-                getTripList(it)
-                configureButtons(it)
+                    profileUser = it
 
-                username.text = it.name
-                setProfilePicture(it)
-                setCoverPicture(it)
+                    // Fill user data into views
+                    configureTripsRecyclerView()
+                    getTripList(it)
+                    configureButtons(it)
 
-                configureFloatingButton(it)
+                    username.text = it.name
+                    setProfilePicture(it)
+                    setCoverPicture(it)
 
+                    configureFloatingButton(it)
+                }
             })
 
     }
@@ -246,9 +249,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun configureViewModels() {
 
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+        tripViewModel = ViewModelProvider(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProvider(this).get(FirestoreCityViewModel::class.java)
     }
 
 
@@ -258,17 +261,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         val list: MutableList<Trip> = ArrayList()
 
-        userViewModel.getAllTripsFromUser(user.userId).observe(viewLifecycleOwner, Observer { it ->
+        for (doc in user.tripList) {
 
-            for (doc in it) {
+            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
+                    list.add(it) })
+        }
 
-                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
-                    if (it != null && !list.contains(it))
-                        list.add(it) })
-            }
-
-            profileTripsAdapter.updateData(list)
-        })
+        // Send data to adapter
+        profileTripsAdapter.updateData(list)
     }
 
 
@@ -277,17 +278,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         val list: MutableList<City> = ArrayList()
 
-        userViewModel.getAllCitiesFromUser(user.userId).observe(viewLifecycleOwner, Observer { it ->
+        for (doc in user.wishList) {
 
-            for (doc in it) {
+            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
+                    list.add(it) })
+        }
 
-                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
-                    if (it != null && !list.contains(it))
-                        list.add(it) })
-            }
-
-            profileCitiesAdapter.updateData(list)
-        })
+        // Send data to adapter
+        profileCitiesAdapter.updateData(list)
     }
 
 

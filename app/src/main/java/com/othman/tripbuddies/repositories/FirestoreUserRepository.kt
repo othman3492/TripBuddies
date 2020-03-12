@@ -22,42 +22,36 @@ class FirestoreUserRepository {
 
     fun getUser(userId: String) = getAllUsers().document(userId)
 
-    fun getAllTripsFromUser(userId: String) = getAllUsers().document(userId).collection("userTrips")
-
-    fun getWishListFromUser(userId: String) = getAllUsers().document(userId).collection("userCities")
-
-    fun getVisitedCitiesFromUser(userId: String) = getAllUsers().document(userId).collection("userVisitedCities")
-
 
 
     // CREATE
     fun createUser(user: User): Task<Void> = getAllUsers().document(user.userId).set(user)
-
-    fun addTripToUser(userId: String, tripId: String): Task<Void> = getAllUsers()
-        .document("$userId/userTrips/$tripId").set({tripId})
-
-    fun addCityToWishList(userId: String, cityId: String): Task<Void> = getAllUsers()
-        .document("$userId/userCities/$cityId").set({cityId})
-
-    fun addVisitedCity(userId: String, cityId: String): Task<Void> = getAllUsers()
-        .document("$userId/userVisitedCities/$cityId").set({cityId})
 
 
 
     // UPDATE
     fun updateUser(user: User): Task<Void> = getAllUsers().document(user.userId).set(user)
 
+    fun addTripToUser(userId: String, tripId: String): Task<Void> =
+        getAllUsers().document(userId).update("tripList", FieldValue.arrayUnion(tripId))
+
+    fun addCityToWishList(userId: String, cityId: String): Task<Void> =
+        getAllUsers().document(userId).update("wishList", FieldValue.arrayUnion(cityId))
+
+    fun addVisitedCity(userId: String, cityId: String): Task<Void> =
+        getAllUsers().document(userId).update("visitedCitiesList", FieldValue.arrayUnion(cityId))
+
+    fun removeTripFromUser(userId: String, tripId: String): Task<Void> =
+        getAllUsers().document(userId).update("tripList", FieldValue.arrayRemove(tripId))
+
+    fun removeCityFromWishList(userId: String, cityId: String): Task<Void> =
+        getAllUsers().document(userId).update("wishList", FieldValue.arrayRemove(cityId))
+
+    fun removeVisitedCity(userId: String, cityId: String): Task<Void> =
+        getAllUsers().document(userId).update("visitedCitiesList", FieldValue.arrayRemove(cityId))
+
 
 
     // DELETE
     fun deleteUser(userId: String): Task<Void> = getAllUsers().document(userId).delete()
-
-    fun removeTripFromUser(userId: String, tripId: String): Task<Void> = getAllUsers()
-        .document("$userId/userTrips/$tripId").delete()
-
-    fun removeCityFromWishList(userId: String, cityId: String): Task<Void> = getAllUsers()
-        .document("$userId/userCities/$cityId").delete()
-
-    fun removeVisitedCity(userId: String, cityId: String): Task<Void> = getAllUsers()
-        .document("$userId/userVisitedCities/$cityId").delete()
 }

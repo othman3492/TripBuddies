@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.othman.tripbuddies.BuildConfig
@@ -14,6 +15,7 @@ import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Message
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
+import com.othman.tripbuddies.viewmodels.FirestoreMessageViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.fragment_city.*
@@ -22,6 +24,7 @@ class ChatActivity : AppCompatActivity() {
 
 
     private lateinit var cityViewModel: FirestoreCityViewModel
+    private lateinit var messageViewModel: FirestoreMessageViewModel
     private lateinit var messageAdapter: MessageAdapter
 
     private lateinit var city: City
@@ -54,7 +57,7 @@ class ChatActivity : AppCompatActivity() {
 
         configureRecyclerView()
         configureButtons()
-        getMessages()
+        getMessages(city)
 
         val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
 
@@ -83,7 +86,7 @@ class ChatActivity : AppCompatActivity() {
 
     /*-----------------------------
 
-    USER INTERFACE
+    DATA QUERIES
 
     ---------------------------- */
 
@@ -91,16 +94,25 @@ class ChatActivity : AppCompatActivity() {
 
     private fun configureViewModel() {
 
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+        cityViewModel = ViewModelProvider(this).get(FirestoreCityViewModel::class.java)
+        messageViewModel = ViewModelProvider(this).get(FirestoreMessageViewModel::class.java)
     }
 
 
-    private fun getMessages() {
+    // Get message list from city chat
+    private fun getMessages(city: City) {
 
-        cityViewModel.getAllMessagesFromChat(city.cityId).observe(this, androidx.lifecycle.Observer<List<Message>> {
+        val list: MutableList<Message> = ArrayList()
 
-            this.messageAdapter.updateData(it)
-        })
+        for (doc in city.messagesList) {
+
+            messageViewModel.getMessage(doc).observe(this, Observer {
+                if (it != null && !list.contains(it))
+                    list.add(it) })
+        }
+
+        // Send data to adapter
+        messageAdapter.updateData(list)
     }
 
 
@@ -116,13 +128,16 @@ class ChatActivity : AppCompatActivity() {
             message.cityId = city.cityId
             message.content = chat_message_edit_text.text.toString()
 
-            cityViewModel.createMessage(city.cityId, message).addOnSuccessListener {
+            messageViewModel.createMessage(message).addOnSuccessListener {
 
-                messageAdapter.notifyDataSetChanged()
-                chat_message_field.editText!!.text.clear()
+                cityViewModel.addMessageToChat(city.cityId, message.messageId).addOnSuccessListener {
+
+                    // Display message and empty message field
+                    messageAdapter.notifyDataSetChanged()
+                    chat_message_field.editText!!.text.clear()
+                }
             }
+
         }
-
-
     }
 }

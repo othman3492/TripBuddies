@@ -4,12 +4,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
-import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
+import com.othman.tripbuddies.utils.AdapterEvent
 import kotlinx.android.synthetic.main.trip_cities_list_layout.view.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -20,8 +20,10 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
 
     private var destinationsList: List<City> = ArrayList()
-    private val TYPE_ITEM = 0
-    private val TYPE_ADD = 1
+    private val destinationsAdapterId = 2
+    private val typeItem = 0
+    private val typeAdd = 1
+
 
 
     override fun getItemCount() = destinationsList.size + 1
@@ -30,9 +32,9 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
     override fun getItemViewType(position: Int): Int {
 
         return if (position == itemCount - 1) {
-            TYPE_ADD
+            typeAdd
         } else {
-            TYPE_ITEM
+            typeItem
         }
     }
 
@@ -41,13 +43,13 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
         return when (viewType) {
 
-            TYPE_ITEM -> {
+            typeItem -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_cities_list_layout, parent, false)
                 TripDestinationsViewHolder(view, context)
             }
 
-            TYPE_ADD -> {
+            typeAdd -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
                 TripDestinationsFooter(view)
@@ -68,6 +70,8 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
                 // Configure delete button
                 holder.itemView.remove_city_button.setOnClickListener {
+
+                    EventBus.getDefault().post(AdapterEvent(destinationsAdapterId, destinationsList[position].cityId))
 
                     destinationsList.toMutableList().removeAt(position)
                     notifyItemRemoved(position)
@@ -96,6 +100,9 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
         BaseTripDestinationsViewHolder(v), View.OnClickListener {
 
         private var view: View = v
+        val COVER_IMAGE_URL =
+            "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
+
 
         init {
             v.setOnClickListener(this)
@@ -111,9 +118,12 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
 
             view.details_city_name.text = city.name
 
+            val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
+
+
             // Display profile picture if not null
             if (city.coverPicture != null) {
-                Glide.with(context).load(city.coverPicture).into(view.details_city_image)
+                Glide.with(context).load(path).into(view.details_city_image)
             } else {
                 Glide.with(context).load(R.drawable.blank_picture)
                     .into(view.details_city_image)

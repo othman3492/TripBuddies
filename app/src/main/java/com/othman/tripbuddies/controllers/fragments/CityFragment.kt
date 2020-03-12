@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -122,14 +123,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     private fun configureButtons(city: City) {
 
         // Display right floating action button
-        userViewModel.getAllCitiesFromUser(FirebaseUserHelper.getCurrentUser()!!.uid).observe(viewLifecycleOwner, Observer {
+        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
 
-            for (doc in it) {
-                if (doc == city.cityId) {
+            if (it != null && it.wishList.contains(FirebaseUserHelper.getCurrentUser()!!.uid)) {
 
-                    add_city_wish_list_floating_action_button.hide()
-                    remove_city_wish_list_floating_action_button.show()
-                }
+                add_city_wish_list_floating_action_button.hide()
+                remove_city_wish_list_floating_action_button.show()
             }
         })
 
@@ -294,9 +293,9 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
     private fun configureViewModels() {
 
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+        tripViewModel = ViewModelProvider(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProvider(this).get(FirestoreCityViewModel::class.java)
     }
 
 
@@ -306,17 +305,15 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         val list: MutableList<Trip> = ArrayList()
 
-        cityViewModel.getAllTripsFromCity(city.cityId).observe(viewLifecycleOwner, Observer { it ->
+        for (doc in city.tripList) {
 
-            for (doc in it) {
-
-                tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
-                    if (it != null && !list.contains(it))
+            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
                     list.add(it) })
-            }
+        }
 
-            cityTripsAdapter.updateData(list)
-        })
+        // Send data to adapter
+        cityTripsAdapter.updateData(list)
     }
 
 
@@ -325,17 +322,15 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         val list: MutableList<User> = ArrayList()
 
-        cityViewModel.getWishListFromCity(city.cityId).observe(viewLifecycleOwner, Observer { it ->
+        for (doc in city.wishList) {
 
-            for (doc in it) {
-
-                userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
-                    if (it != null && !list.contains(it))
+            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
                     list.add(it) })
-            }
+        }
 
-            cityBuddiesAdapter.updateData(list)
-        })
+        // Send data to adapter
+        cityBuddiesAdapter.updateData(list)
     }
 
 

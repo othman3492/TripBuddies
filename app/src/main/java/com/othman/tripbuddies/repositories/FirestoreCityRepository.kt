@@ -21,50 +21,45 @@ class FirestoreCityRepository {
 
     fun getCity(cityId: String) = getAllCities().document(cityId)
 
-    fun getAllVisitorsFromCity(cityId: String) = getAllCities().document(cityId).collection("cityVisitors")
-
-    fun getWishListFromCity(cityId: String) = getAllCities().document(cityId).collection("cityWishList")
-
-    fun getAllTripsFromCity(cityId: String) = getAllCities().document(cityId).collection("cityTrips")
-
-    fun getAllMessagesFromChat(cityId: String) = getAllCities().document(cityId).collection("chatMessages")
-
 
 
     // CREATE
     fun createCity(city: City): Task<Void> = getAllCities().document(city.cityId).set(city)
 
-    fun addVisitorToCity(cityId: String, userId: String): Task<Void> =
-        getAllCities().document("$cityId/cityVisitors/$userId").set({cityId})
-
-    fun addUserToWishList(cityId: String, userId: String): Task<Void> =
-        getAllCities().document("$cityId/cityWishList/$userId").set({userId})
-
-    fun addTripToCity(cityId: String, tripId: String): Task<Void> =
-        getAllCities().document("$cityId/cityTrips/$tripId").set({tripId})
-
-    fun createMessage(cityId: String, message: Message): Task<Void> =
-        getAllCities().document("$cityId/chatMessages/${message.messageId}").set(message)
 
 
     // UPDATE
     fun updateCity(city: City): Task<Void> = getAllCities().document(city.cityId).set(city)
 
+    fun addUserToWishList(cityId: String, userId: String): Task<Void> =
+        getAllCities().document(cityId).update("wishList", FieldValue.arrayUnion(userId))
+
+    fun addVisitorToCity(cityId: String, userId: String): Task<Void> =
+        getAllCities().document(cityId).update("visitorsList", FieldValue.arrayUnion(userId))
+
+    fun addTripToCity(cityId: String, tripId: String): Task<Void> =
+        getAllCities().document(cityId).update("tripList", FieldValue.arrayUnion(tripId))
+
+    fun addMessageToChat(cityId: String, messageId: String): Task<Void> =
+        getAllCities().document(cityId).update("messagesList", FieldValue.arrayUnion(messageId))
+
+    fun removeVisitorFromCity(cityId: String, userId: String): Task<Void> =
+        getAllCities().document(cityId).update("wishList", FieldValue.arrayRemove(userId))
+
+    fun removeUserFromWishList(cityId: String, userId: String): Task<Void> =
+        getAllCities().document(cityId).update("visitorsList", FieldValue.arrayRemove(userId))
+
+    fun removeTripFromCity(cityId: String, tripId: String): Task<Void> =
+        getAllCities().document(cityId).update("tripList", FieldValue.arrayRemove(tripId))
+
+    fun removeMessageFromChat(cityId: String, messageId: String): Task<Void> =
+        getAllCities().document(cityId).update("messagesList", FieldValue.arrayRemove(messageId))
+
+
 
     // DELETE
     fun deleteCity(cityId: String): Task<Void> = getAllCities().document(cityId).delete()
 
-    fun removeVisitorFromCity(cityId: String, userId: String): Task<Void> =
-        getAllCities().document("$cityId/cityVisitors/$userId").delete()
-
-    fun removeUserFromWishList(cityId: String, userId: String): Task<Void> =
-        getAllCities().document("$cityId/cityWishList/$userId").delete()
-
-    fun removeTripFromCity(cityId: String, tripId: String): Task<Void> =
-        getAllCities().document("$cityId/cityTrips/$tripId").delete()
-
-    fun deleteMessage(cityId: String, messageId: String): Task<Void> =
-        getAllCities().document("$cityId/chatMessages/$messageId").delete()
 }
 
 

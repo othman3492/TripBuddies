@@ -18,11 +18,5 @@ data class Message(
     var timestamp: Date? = null
 ): Serializable {
 
-    companion object {
-
-        const val MY_MESSAGE = 0
-        const val OTHER_MESSAGE = 1
-    }
-
     constructor():this(Utils.generateId(), 0,"", "", "", "", "")
 }

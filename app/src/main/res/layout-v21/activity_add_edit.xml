@@ -11,8 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/add_trip_details_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="gone">
+        android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/add_trip"
@@ -102,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="@id/add_trip"
         app:layout_constraintStart_toStartOf="@id/add_trip"
         app:layout_constraintTop_toBottomOf="@id/depart_date"
-        app:layout_constraintBottom_toTopOf="@id/next_button">
+        app:layout_constraintBottom_toTopOf="@id/create_button">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_text_input"
@@ -110,115 +109,6 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_large"
-        android:background="@color/colorPrimaryDark"
-        android:text="@string/next"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/add_trip_destinations_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/add_trip_destinations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_large"
-            android:paddingBottom="30dp"
-            android:text="@string/add_destinations_to_your_trip"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_title"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/add_destinations_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginBottom="@dimen/margin_large"
-            app:layout_constraintTop_toBottomOf="@id/add_trip_destinations"
-            app:layout_constraintBottom_toTopOf="@id/back_button"
-            app:layout_constraintStart_toStartOf="@id/back_button"
-            app:layout_constraintEnd_toEndOf="@id/next_button_2">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <Button
-            android:id="@+id/next_button_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_large"
-            android:background="@color/colorPrimaryDark"
-            android:text="@string/next"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_large"
-            android:background="@color/colorPrimaryDark"
-            android:text="@string/back"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/add_trip_buddies_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/add_trip_buddies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_large"
-            android:paddingBottom="30dp"
-            android:text="@string/add_buddies_to_your_trip"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_title"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/add_buddies_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginBottom="@dimen/margin_large"
-            app:layout_constraintTop_toBottomOf="@id/add_trip_buddies"
-            app:layout_constraintBottom_toTopOf="@id/back_button_2"
-            app:layout_constraintStart_toStartOf="@id/back_button_2"
-            app:layout_constraintEnd_toEndOf="@id/create_button">
-
-        </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/create_button"
@@ -245,18 +135,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/back_button_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_large"
-            android:background="@color/colorPrimaryDark"
-            android:text="@string/back"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

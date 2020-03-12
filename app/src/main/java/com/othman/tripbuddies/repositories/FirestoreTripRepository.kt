@@ -20,43 +20,40 @@ class FirestoreTripRepository {
 
     fun getTrip(tripId: String) = getAllTrips().document(tripId)
 
-    fun getAllBuddiesFromTrip(tripId: String) = getAllTrips().document(tripId).collection("tripBuddies")
-
-    fun getAllCitiesFromTrip(tripId: String) = getAllTrips().document(tripId).collection("tripCities")
-
-    fun getAllPhotosFromTrip(tripId: String) = getAllTrips().document(tripId).collection("tripPhotos")
 
 
     // CREATE
     fun createTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).set(trip)
 
-    fun addBuddyToTrip(tripId: String, userId: String): Task<Void> =
-        getAllTrips().document("$tripId/tripBuddies/$userId").set({userId})
-
-    fun addCityToTrip(tripId: String, cityId: String): Task<Void> =
-        getAllTrips().document("$tripId/tripCities/$cityId").set({cityId})
-
-    fun addPhotoToTrip(tripId: String, photo: String): Task<Void> = getAllTrips()
-        .document("$tripId/tripPhotos/$photo").set({photo})
 
 
     // UPDATE
     fun updateTrip(trip: Trip): Task<Void> = getAllTrips().document(trip.tripId).set(trip)
 
+    fun addBuddyToTrip(tripId: String, userId: String): Task<Void> =
+        getAllTrips().document(tripId).update("buddiesList", FieldValue.arrayUnion(userId))
+
+    fun addCityToTrip(tripId: String, cityId: String): Task<Void> =
+        getAllTrips().document(tripId).update("destinationsList", FieldValue.arrayUnion(cityId))
+
+    fun addPhotoToTrip(tripId: String, photo: String): Task<Void> =
+        getAllTrips().document(tripId).update("photosList", FieldValue.arrayUnion(photo))
+
+    fun removeBuddyFromTrip(tripId: String, userId: String): Task<Void> =
+        getAllTrips().document(tripId).update("buddiesList", FieldValue.arrayRemove(userId))
+
+    fun removeCityFromTrip(tripId: String, cityId: String): Task<Void> =
+        getAllTrips().document(tripId).update("destinationsList", FieldValue.arrayRemove(cityId))
+
+    fun removePhotoFromTrip(tripId: String, photo: String): Task<Void> =
+        getAllTrips().document(tripId).update("photosList", FieldValue.arrayRemove(photo))
+
+
+
 
 
     // DELETE
     fun deleteTrip(tripId: String): Task<Void> = getAllTrips().document(tripId).delete()
-
-    fun removeBuddyFromTrip(tripId: String, userId: String): Task<Void> =
-        getAllTrips().document("$tripId/tripBuddies/$userId").delete()
-
-    fun removeCityFromTrip(tripId: String, cityId: String): Task<Void> =
-        getAllTrips().document("$tripId/tripCities/$cityId").delete()
-
-    fun removePhotoFromTrip(tripId: String, photo: String): Task<Void> =
-        getAllTrips().document("$tripId/tripPhotos/$photo").delete()
-
 }
 
 

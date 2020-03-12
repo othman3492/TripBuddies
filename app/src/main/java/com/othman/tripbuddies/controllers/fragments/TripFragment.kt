@@ -16,7 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -35,13 +35,15 @@ import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
+import com.othman.tripbuddies.utils.AdapterEvent
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_trip.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 class TripFragment : Fragment(R.layout.fragment_trip) {
@@ -58,6 +60,9 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private val autocompleteRequestCode = 21
     private val galleryCode = 1
     private val galleryPermissionCode = 11
+
+    val COVER_IMAGE_URL =
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
     companion object {
@@ -87,11 +92,23 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
 
+        EventBus.getDefault().register(this)
 
         configureViewModel()
         configureButtons()
 
         configureUI(trip)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
     }
 
 
@@ -121,8 +138,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         // Display first trip photo if image list isn't empty
         if (trip.photosList.isNotEmpty()) {
             Glide.with(activity!!).load(trip.photosList[0]).into(trip_cover_picture)
-        } else {
-            Glide.with(activity!!).load(R.drawable.blank_picture).into(trip_cover_picture)
         }
     }
 
@@ -268,55 +283,56 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     private fun configureViewModel() {
 
-        tripViewModel = ViewModelProviders.of(this).get(FirestoreTripViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(FirestoreUserViewModel::class.java)
-        cityViewModel = ViewModelProviders.of(this).get(FirestoreCityViewModel::class.java)
+        tripViewModel = ViewModelProvider(this).get(FirestoreTripViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
+        cityViewModel = ViewModelProvider(this).get(FirestoreCityViewModel::class.java)
 
     }
 
 
+    @Subscribe
+    fun onEvent(event: AdapterEvent) {
+
+        when (event.adapterId) {
+
+            0 -> trip.photosList.remove(event.data)
+            1 -> trip.buddiesList.remove(event.data)
+            2 -> trip.destinationsList.remove(event.data)
+        }
+    }
+
+
     // Get destinations list from trip
-    private fun getDestinationsList(trip: Trip): List<City> {
+    private fun getDestinationsList(trip: Trip) {
 
         val list: MutableList<City> = ArrayList()
 
-        tripViewModel.getAllCitiesFromTrip(trip.tripId).observe(viewLifecycleOwner, Observer { it ->
+        for (doc in trip.destinationsList) {
 
-            for (doc in it) {
+            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
+                    list.add(it) })
+        }
 
-                cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
-                    if (it != null && !list.contains(it))
-                        list.add(it)
-                })
-            }
-
-            destinationsAdapter.updateData(list)
-        })
-
-        return list
+        // Send data to adapter
+        destinationsAdapter.updateData(list)
     }
 
 
-    // Get destinations list from trip
-    private fun getBuddiesList(trip: Trip): List<User> {
+    // Get buddies list from trip
+    private fun getBuddiesList(trip: Trip) {
 
         val list: MutableList<User> = ArrayList()
 
-        tripViewModel.getAllBuddiesFromTrip(trip.tripId)
-            .observe(viewLifecycleOwner, Observer { it ->
+        for (doc in trip.buddiesList) {
 
-                for (doc in it) {
+            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+                if (it != null && !list.contains(it))
+                    list.add(it) })
+        }
 
-                    userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
-                        if (it != null && !list.contains(it))
-                            list.add(it)
-                    })
-                }
-
-                buddiesAdapter.updateData(list)
-            })
-
-        return list
+        // Send data to adapter
+        buddiesAdapter.updateData(list)
     }
 
 
@@ -450,13 +466,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         tripViewModel.deleteTripFromFirestore(trip.tripId).addOnSuccessListener {
 
             // Delete trip from users
-            for (doc in getBuddiesList(trip)) {
-                userViewModel.removeTripFromUser(doc.userId, trip.tripId)
+            for (doc in trip.buddiesList) {
+                userViewModel.removeTripFromUser(doc, trip.tripId)
             }
 
             // Delete trip from cities
-            for (doc in getDestinationsList(trip)) {
-                cityViewModel.removeTripFromCity(doc.cityId, trip.tripId)
+            for (doc in trip.destinationsList) {
+                cityViewModel.removeTripFromCity(doc, trip.tripId)
             }
 
             Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()

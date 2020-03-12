@@ -16,27 +16,24 @@ class FirestoreTripViewModel: ViewModel() {
     var tripRepository = FirestoreTripRepository()
     var trip: MutableLiveData<Trip> = MutableLiveData()
     var tripList: MutableLiveData<List<Trip>> = MutableLiveData()
-    var tripBuddiesList: MutableLiveData<List<String>> = MutableLiveData()
-    var tripCitiesList: MutableLiveData<List<String>> = MutableLiveData()
-    var tripPhotosList: MutableLiveData<List<String>> = MutableLiveData()
 
 
     // CREATE
     fun createTripIntoFirestore(trip: Trip) = tripRepository.createTrip(trip)
-    fun addBuddyToTrip(tripId: String, userId: String) = tripRepository.addBuddyToTrip(tripId, userId)
-    fun addCityToTrip(tripId: String, cityId: String) = tripRepository.addCityToTrip(tripId, cityId)
-    fun addPhotoToTrip(tripId: String, photo: String) = tripRepository.addPhotoToTrip(tripId, photo)
 
 
     // UPDATE
     fun updateTripIntoFirestore(trip: Trip) = tripRepository.updateTrip(trip)
+    fun addBuddyToTrip(tripId: String, userId: String) = tripRepository.addBuddyToTrip(tripId, userId)
+    fun addCityToTrip(tripId: String, cityId: String) = tripRepository.addCityToTrip(tripId, cityId)
+    fun addPhotoToTrip(tripId: String, photo: String) = tripRepository.addPhotoToTrip(tripId, photo)
+    fun removeBuddyFromTrip(tripId: String, userId: String) = tripRepository.removeBuddyFromTrip(tripId, userId)
+    fun removeCityFromTrip(tripId: String, cityId: String) = tripRepository.removeCityFromTrip(tripId, cityId)
+    fun removePhotoFromTrip(tripId: String, photo: String) = tripRepository.removePhotoFromTrip(tripId, photo)
 
 
     // DELETE
     fun deleteTripFromFirestore(tripId: String) = tripRepository.deleteTrip(tripId)
-    fun removeBuddyFromTrip(tripId: String, userId: String) = tripRepository.removeBuddyFromTrip(tripId, userId)
-    fun removeCityFromTrip(tripId: String, cityId: String) = tripRepository.removeCityFromTrip(tripId, cityId)
-    fun removePhotoFromTrip(tripId: String, photo: String) = tripRepository.removePhotoFromTrip(tripId, photo)
 
 
 
@@ -80,83 +77,6 @@ class FirestoreTripViewModel: ViewModel() {
         })
 
         return tripList
-    }
-
-
-
-    // Retrieve trip's buddies list from Firestore and convert it to usable List<LiveData>
-    fun getAllBuddiesFromTrip(tripId: String): LiveData<List<String>> {
-
-        tripRepository.getAllBuddiesFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                tripBuddiesList.value = null
-                return@EventListener
-            }
-
-            val savedTripBuddiesList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val user = doc.id
-                savedTripBuddiesList.add(user)
-            }
-
-            tripBuddiesList.value = savedTripBuddiesList
-        })
-
-        return tripBuddiesList
-    }
-
-
-    // Retrieve trip's destinations list from Firestore and convert it to usable List<LiveData>
-    fun getAllCitiesFromTrip(tripId: String): LiveData<List<String>> {
-
-        tripRepository.getAllCitiesFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                tripCitiesList.value = null
-                return@EventListener
-            }
-
-            val savedTripCitiesList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val city = doc.id
-                savedTripCitiesList.add(city)
-            }
-
-            tripCitiesList.value = savedTripCitiesList
-        })
-
-        return tripCitiesList
-    }
-
-
-
-    // Retrieve trip's photos list from Firestore and convert it to usable List<LiveData>
-    fun getPhotosFromTrip(tripId: String): LiveData<List<String>> {
-
-        tripRepository.getAllPhotosFromTrip(tripId).addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
-
-            if (e != null) {
-
-                tripPhotosList.value = null
-                return@EventListener
-            }
-
-            val savedTripPhotosList: MutableList<String> = mutableListOf()
-            for (doc in value!!) {
-
-                val photo = doc.id
-                savedTripPhotosList.add(photo)
-            }
-
-            tripPhotosList.value = savedTripPhotosList
-        })
-
-        return tripPhotosList
     }
 
 

@@ -6,17 +6,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
+import com.othman.tripbuddies.utils.AdapterEvent
 import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 
 
-class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemClickListener: (String) -> Unit,
-                         private val addClickListener: (View) -> Unit) :
+class TripPhotosAdapter(
+    val context: Context, val trip: Trip, private val itemClickListener: (String) -> Unit,
+    private val addClickListener: (View) -> Unit
+) :
     RecyclerView.Adapter<TripPhotosAdapter.BaseTripPhotosViewHolder>() {
 
-
-    private val TYPE_ITEM = 0
-    private val TYPE_ADD = 1
+    private val photoAdapterId = 0
+    private val typeItem = 0
+    private val typeAdd = 1
 
 
     override fun getItemCount() = trip.photosList.size + 1
@@ -25,9 +29,9 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
     override fun getItemViewType(position: Int): Int {
 
         return if (position == itemCount - 1) {
-            TYPE_ADD
+            typeAdd
         } else {
-            TYPE_ITEM
+            typeItem
         }
     }
 
@@ -36,15 +40,17 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
 
         return when (viewType) {
 
-            TYPE_ITEM -> {
+            typeItem -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_photos_list_layout, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.trip_photos_list_layout, parent, false)
                 TripPhotosViewHolder(view, context)
             }
 
-            TYPE_ADD -> {
+            typeAdd -> {
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_button, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.recycler_view_add_button, parent, false)
                 TripPhotosFooter(view)
             }
 
@@ -61,8 +67,10 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
             is TripPhotosViewHolder -> {
                 holder.bind(trip.photosList[position], itemClickListener)
 
-                // Configure delete button
+                // Configure delete button and get event
                 holder.itemView.remove_photo_button.setOnClickListener {
+
+                    EventBus.getDefault().post(AdapterEvent(photoAdapterId, trip.photosList[position]))
 
                     trip.photosList.removeAt(position)
                     notifyItemRemoved(position)
@@ -74,17 +82,18 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
     }
 
 
-
     abstract class BaseTripPhotosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 
 
-
-    class TripPhotosViewHolder(v: View, private var context: Context) : BaseTripPhotosViewHolder(v), View.OnClickListener {
+    class TripPhotosViewHolder(v: View, private var context: Context) : BaseTripPhotosViewHolder(v),
+        View.OnClickListener {
 
 
         private var view: View = v
 
-        init { v.setOnClickListener(this) }
+        init {
+            v.setOnClickListener(this)
+        }
 
         override fun onClick(v: View?) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -115,7 +124,9 @@ class TripPhotosAdapter(val context: Context, val trip: Trip, private val itemCl
         }
 
         // Set view onClick
-        fun bind(clickListener: (View) -> Unit) { view.setOnClickListener { clickListener(view) }}
+        fun bind(clickListener: (View) -> Unit) {
+            view.setOnClickListener { clickListener(view) }
+        }
 
     }
 }
