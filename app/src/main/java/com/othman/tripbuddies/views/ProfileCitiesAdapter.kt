@@ -5,13 +5,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.libraries.places.api.model.Place
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
-import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
 
 
@@ -66,7 +62,7 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
             view.city_or_buddies_list_name.text = city.name
             view.city_or_buddies_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
             Glide.with(context).load(COVER_IMAGE_URL + city.coverPicture +
-                    "&key=" + BuildConfig.google_apikey).into(view.city_or_buddies_list_image)
+                    "&key=" + BuildConfig.google_apikey).into(view.user_search_item_image)
 
             // Set view holder on click
             view.setOnClickListener { clickListener(city) }

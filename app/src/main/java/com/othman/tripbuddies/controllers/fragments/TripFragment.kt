@@ -164,7 +164,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         buddiesAdapter = TripBuddiesAdapter(
             requireContext(),
             { user: User -> openProfileFragmentOnClick(user) },
-            { Toast.makeText(activity, "User clicked", Toast.LENGTH_SHORT).show() })
+            { displayDialogFragment() })
 
         trip_buddies_recycler_view.adapter = buddiesAdapter
         trip_buddies_recycler_view.layoutManager =
@@ -271,6 +271,21 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             .build(context!!)
         startActivityForResult(intent, autocompleteRequestCode)
 
+    }
+
+
+    // Create user search dialog fragment and pass it arguments from trip
+    private fun displayDialogFragment() {
+
+        val fragmentTransaction = childFragmentManager.beginTransaction()
+        val prev = childFragmentManager.findFragmentByTag("dialog")
+        if (prev != null) fragmentTransaction.remove(prev)
+
+        fragmentTransaction.addToBackStack(null)
+
+        val dialogFragment = UserSearchFragment(trip.tripId)
+
+        dialogFragment.show(fragmentTransaction, "dialog")
     }
 
 

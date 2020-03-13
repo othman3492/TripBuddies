@@ -7,39 +7,29 @@
 
     <ImageView
         android:id="@+id/user_search_item_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="@dimen/margin_normal"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:scaleType="centerCrop"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_marginEnd="@dimen/margin_normal"
         android:contentDescription="@string/trip_image"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
-        android:id="@+id/city_or_buddies_list_name"
+        android:id="@+id/user_search_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_margin="@dimen/margin_normal"
+        android:paddingEnd="@dimen/margin_normal"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_normal"
+        android:textSize="@dimen/text_small"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/user_search_item_image"
+        app:layout_constraintStart_toEndOf="@id/user_search_item_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Othman BOUADJENAK" />
-
-    <ImageView
-        android:id="@+id/remove_cities_or_buddies_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:src="@drawable/baseline_delete_grey_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/remove_icon"
-        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
