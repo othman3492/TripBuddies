@@ -17,11 +17,7 @@ data class City(
     var tripList: List<String> = ArrayList(),
     var visitorsList: List<String> = ArrayList(),
     var wishList: List<String> = ArrayList(),
-    var messagesList: MutableList<String> = ArrayList(),
-    var nbTrips: Int = tripList.size,
-    var nbVisitors: Int = visitorsList.size,
-    var nbWishList: Int = wishList.size,
-    var nbMessages: Int = messagesList.size
+    var messagesList: MutableList<String> = ArrayList()
 ) : Serializable {
 
 

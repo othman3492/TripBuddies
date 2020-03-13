@@ -14,10 +14,7 @@ data class User(
     var urlCoverPicture: String? = null,
     var tripList: List<String> = ArrayList(),
     var wishList: List<String> = ArrayList(),
-    var visitedCitiesList: MutableList<String> = ArrayList(),
-    var nbTrips: Int = tripList.size,
-    var nbWishList: Int = wishList.size,
-    var nbVisitedCities: Int = visitedCitiesList.size
+    var visitedCitiesList: MutableList<String> = ArrayList()
 ): Serializable {
 
     constructor(): this(Utils.generateId(), "", "", "")

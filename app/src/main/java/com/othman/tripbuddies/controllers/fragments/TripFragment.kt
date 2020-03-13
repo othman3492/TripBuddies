@@ -114,31 +114,36 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     private fun configureUI(trip: Trip) {
 
-        this.trip = trip
+        tripViewModel.getTrip(trip.tripId).observe(viewLifecycleOwner, Observer{
 
-        // Load data into views
-        configureRecyclerViews()
-        getDestinationsList(trip)
-        getBuddiesList(trip)
+            // Load data into views
+            configureRecyclerViews()
+            getDestinationsList(it)
+            getBuddiesList(it)
 
 
-        trip_name.text = trip.name
-        trip_username.text =
-            String.format(this.resources.getString(R.string.by_name), trip.username)
-        trip_description.text = trip.description
-        trip_dates.text = String.format(
-            context!!.resources.getString(R.string.dates_from_to),
-            trip.departDate,
-            trip.returnDate
-        )
-        nb_photos_textview.text = trip.nbPhotos.toString()
-        nb_buddies_textview.text = trip.nbBuddies.toString()
-        nb_destinations_textview.text = trip.nbDestinations.toString()
+            trip_name.text = it.name
+            trip_username.text =
+                String.format(this.resources.getString(R.string.by_name), it.username)
+            trip_description.text = it.description
+            trip_dates.text = String.format(
+                context!!.resources.getString(R.string.dates_from_to),
+                it.departDate,
+                it.returnDate
+            )
+            nb_photos_textview.text = it.photosList.size.toString()
+            nb_buddies_textview.text = it.buddiesList.size.toString()
+            nb_destinations_textview.text = it.destinationsList.size.toString()
 
-        // Display first trip photo if image list isn't empty
-        if (trip.photosList.isNotEmpty()) {
-            Glide.with(activity!!).load(trip.photosList[0]).into(trip_cover_picture)
-        }
+            // Display first trip photo if image list isn't empty
+            if (it.photosList.isNotEmpty()) {
+                Glide.with(activity!!).load(it.photosList[0]).into(trip_cover_picture)
+            }
+
+
+        })
+
+
     }
 
 
@@ -310,9 +315,9 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         when (event.adapterId) {
 
-            0 -> trip.photosList.remove(event.data)
-            1 -> trip.buddiesList.remove(event.data)
-            2 -> trip.destinationsList.remove(event.data)
+            0 -> tripViewModel.removePhotoFromTrip(trip.tripId, event.data)
+            1 -> tripViewModel.removeBuddyFromTrip(trip.tripId, event.data)
+            2 -> tripViewModel.removeCityFromTrip(trip.tripId, event.data)
         }
     }
 

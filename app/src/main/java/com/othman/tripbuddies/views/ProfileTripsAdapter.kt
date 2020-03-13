@@ -55,18 +55,12 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
 
             view.trip_list_name.text = trip.name
             view.trip_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            view.trip_list_creator.text = trip.username
             view.trip_list_dates.text = String.format(
                 context.resources.getString(
                     R.string.dates_from_to, trip.departDate, trip.returnDate
                 )
             )
-
-
-            // Set destination(s) text view depending on quantities
-            /*view.trip_list_cities_or_user.text = context.resources.getQuantityString(
-                R.plurals.destination_and_others,
-                trip.destination.size, trip.destination[0].name, trip.destination.size
-            )*/
 
 
             // Display first trip photo if image list isn't empty
@@ -77,7 +71,7 @@ class ProfileTripsAdapter(val context: Context, private val clickListener: (Trip
             }
 
             // Set number of buddies
-            view.trip_list_nb_buddies.text = trip.nbBuddies.toString()
+            view.trip_list_nb_buddies.text = trip.buddiesList.size.toString()
 
             // Set view holder on click
             view.setOnClickListener { clickListener(trip) }

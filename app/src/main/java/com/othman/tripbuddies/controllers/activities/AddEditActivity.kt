@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.utils.Utils
@@ -70,7 +69,7 @@ class AddEditActivity : AppCompatActivity() {
 
         // Set views' visibility
         add_trip.text = getString(R.string.edit_a_trip)
-        create_button.visibility = View.GONE
+        create_button.visibility = View.INVISIBLE
         edit_button.visibility = View.VISIBLE
 
 

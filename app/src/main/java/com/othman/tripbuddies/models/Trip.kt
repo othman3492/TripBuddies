@@ -16,10 +16,7 @@ data class Trip(
     var returnDate: String?,
     var photosList: MutableList<String> = ArrayList(),
     var destinationsList: MutableList<String> = ArrayList(),
-    var buddiesList: MutableList<String> = ArrayList(),
-    var nbDestinations: Int = destinationsList.size,
-    var nbBuddies: Int = buddiesList.size,
-    var nbPhotos: Int = photosList.size
+    var buddiesList: MutableList<String> = ArrayList()
     ) : Serializable {
 
     constructor() : this(Utils.generateId(), "", "", "", "", "", "", "")

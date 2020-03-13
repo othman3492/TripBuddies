@@ -215,12 +215,12 @@
             app:layout_constraintTop_toBottomOf="@id/add_trip_buddies"
             app:layout_constraintBottom_toTopOf="@id/back_button_2"
             app:layout_constraintStart_toStartOf="@id/back_button_2"
-            app:layout_constraintEnd_toEndOf="@id/create_button">
+            app:layout_constraintEnd_toEndOf="@id/create_edit_button">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <Button
-            android:id="@+id/create_button"
+            android:id="@+id/create_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_large"
