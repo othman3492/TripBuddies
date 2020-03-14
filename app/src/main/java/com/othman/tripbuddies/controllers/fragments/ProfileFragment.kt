@@ -66,14 +66,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
-
     /*-----------------------------
 
     USER INTERFACE
 
     ---------------------------- */
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,7 +131,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             add_floating_action_button.show()
             add_floating_action_button.setOnClickListener {
 
-                startActivity(Intent(activity, AddEditActivity:: class.java))
+                startActivity(Intent(activity, AddEditActivity::class.java))
             }
         } else {
 
@@ -181,7 +178,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
-
     // Load profile picture into view
     private fun setProfilePicture(user: User) {
 
@@ -201,7 +197,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .into(cover_picture)
         }
     }
-
 
 
     // Open Trip details fragment when clicked
@@ -238,13 +233,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
-
     /*-----------------------------
 
     DATA QUERIES
 
     ---------------------------- */
-
 
 
     private fun configureViewModels() {
@@ -255,7 +248,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
-
     // Get trip list from user
     private fun getTripList(user: User) {
 
@@ -264,12 +256,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         for (doc in user.tripList) {
 
             tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    profileTripsAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        profileTripsAdapter.updateData(list)
     }
 
 
@@ -281,14 +273,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         for (doc in user.wishList) {
 
             cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    profileCitiesAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        profileCitiesAdapter.updateData(list)
     }
-
 
 
     // Ask for permission to pick image from gallery
@@ -375,8 +366,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
 
 
-            }
         }
     }
+}
 
 

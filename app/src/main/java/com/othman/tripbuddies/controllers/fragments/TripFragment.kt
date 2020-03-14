@@ -114,7 +114,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     private fun configureUI(trip: Trip) {
 
-        tripViewModel.getTrip(trip.tripId).observe(viewLifecycleOwner, Observer{
+        tripViewModel.getTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
 
             // Load data into views
             configureRecyclerViews()
@@ -330,12 +330,12 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         for (doc in trip.destinationsList) {
 
             cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    destinationsAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        destinationsAdapter.updateData(list)
     }
 
 
@@ -347,12 +347,12 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         for (doc in trip.buddiesList) {
 
             userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    buddiesAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        buddiesAdapter.updateData(list)
     }
 
 
@@ -406,7 +406,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         intent.type = "image/*"
         startActivityForResult(intent, galleryCode)
     }
-
 
 
     // Handle picked image result
@@ -477,7 +476,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             }
         }
     }
-
 
 
     private fun deleteTrip(trip: Trip) {

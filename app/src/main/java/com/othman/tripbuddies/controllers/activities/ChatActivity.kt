@@ -32,14 +32,11 @@ class ChatActivity : AppCompatActivity() {
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
-
     /*-----------------------------
 
     USER INTERFACE
 
     ---------------------------- */
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,13 +80,11 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-
     /*-----------------------------
 
     DATA QUERIES
 
     ---------------------------- */
-
 
 
     private fun configureViewModel() {
@@ -107,12 +102,12 @@ class ChatActivity : AppCompatActivity() {
         for (doc in city.messagesList) {
 
             messageViewModel.getMessage(doc).observe(this, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    messageAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        messageAdapter.updateData(list)
     }
 
 
@@ -130,12 +125,13 @@ class ChatActivity : AppCompatActivity() {
 
             messageViewModel.createMessage(message).addOnSuccessListener {
 
-                cityViewModel.addMessageToChat(city.cityId, message.messageId).addOnSuccessListener {
+                cityViewModel.addMessageToChat(city.cityId, message.messageId)
+                    .addOnSuccessListener {
 
-                    // Display message and empty message field
-                    messageAdapter.notifyDataSetChanged()
-                    chat_message_field.editText!!.text.clear()
-                }
+                        // Display message and empty message field
+                        messageAdapter.notifyDataSetChanged()
+                        chat_message_field.editText!!.text.clear()
+                    }
             }
 
         }

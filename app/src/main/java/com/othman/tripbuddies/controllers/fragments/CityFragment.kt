@@ -74,7 +74,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     ---------------------------- */
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -299,7 +298,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     }
 
 
-
     // Get trip list from city
     private fun getTripList(city: City) {
 
@@ -308,12 +306,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         for (doc in city.tripList) {
 
             tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    cityTripsAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        cityTripsAdapter.updateData(list)
     }
 
 
@@ -325,12 +323,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         for (doc in city.wishList) {
 
             userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
-                if (it != null && !list.contains(it))
-                    list.add(it) })
+                if (it != null && !list.contains(it)) {
+                    list.add(it)
+                    cityBuddiesAdapter.updateData(list)
+                }
+            })
         }
-
-        // Send data to adapter
-        cityBuddiesAdapter.updateData(list)
     }
 
 
@@ -378,7 +376,11 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                         remove_city_wish_list_floating_action_button.hide()
                         add_city_wish_list_floating_action_button.show()
 
-                        Toast.makeText(activity, "City removed from wish list !",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            activity,
+                            "City removed from wish list !",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
             }
     }
