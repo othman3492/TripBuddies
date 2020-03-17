@@ -255,9 +255,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         for (doc in user.tripList) {
 
-            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
+            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortByDescending { it.creationDate }
                     profileTripsAdapter.updateData(list)
                 }
             })
@@ -272,9 +273,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         for (doc in user.wishList) {
 
-            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
+            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortBy { it.name }
                     profileCitiesAdapter.updateData(list)
                 }
             })

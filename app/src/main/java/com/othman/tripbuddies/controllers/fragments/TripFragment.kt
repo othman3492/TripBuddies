@@ -168,6 +168,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         // Configure buddies RecyclerView
         buddiesAdapter = TripBuddiesAdapter(
             requireContext(),
+            trip,
             { user: User -> openProfileFragmentOnClick(user) },
             { displayDialogFragment() })
 
@@ -183,6 +184,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         // Configure destinations RecyclerView
         destinationsAdapter = TripDestinationsAdapter(
             requireContext(),
+            trip,
             { city: City -> openCityFragmentOnClick(city) },
             { configurePlaceAutocomplete() })
 
@@ -203,7 +205,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         // Set edit button
         edit_trip_button.setOnClickListener {
             val editIntent = Intent(activity, AddEditActivity::class.java)
-            editIntent.putExtra("TRIP_TO_EDIT", trip)
+            editIntent.putExtra("TRIP_TO_EDIT", trip.tripId)
 
             startActivity(editIntent)
         }
@@ -316,8 +318,14 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         when (event.adapterId) {
 
             0 -> tripViewModel.removePhotoFromTrip(trip.tripId, event.data)
-            1 -> tripViewModel.removeBuddyFromTrip(trip.tripId, event.data)
-            2 -> tripViewModel.removeCityFromTrip(trip.tripId, event.data)
+
+            1 -> tripViewModel.removeBuddyFromTrip(trip.tripId, event.data).addOnSuccessListener {
+                userViewModel.removeTripFromUser(event.data, trip.tripId)
+            }
+
+            2 -> tripViewModel.removeCityFromTrip(trip.tripId, event.data).addOnCanceledListener {
+                cityViewModel.removeTripFromCity(event.data, trip.tripId)
+            }
         }
     }
 
@@ -329,9 +337,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         for (doc in trip.destinationsList) {
 
-            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer {
+            cityViewModel.getCity(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortBy { it.name }
                     destinationsAdapter.updateData(list)
                 }
             })
@@ -346,9 +355,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         for (doc in trip.buddiesList) {
 
-            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortBy { it.name }
                     buddiesAdapter.updateData(list)
                 }
             })
@@ -431,13 +441,12 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
                 if (task.isSuccessful) {
                     val downloadUri = task.result
 
-                    // Update data and save it
-                    this.trip.photosList.add(downloadUri.toString())
-                    tripViewModel.updateTripIntoFirestore(this.trip).addOnSuccessListener {
+                    // Add photo to trip
+                    tripViewModel.addPhotoToTrip(trip.tripId, downloadUri.toString())
+                        .addOnSuccessListener {
 
-                        Toast.makeText(activity, "New photo added !", Toast.LENGTH_SHORT).show()
-                        this.photoAdapter.notifyDataSetChanged()
-                    }
+                            Toast.makeText(activity, "New photo added !", Toast.LENGTH_SHORT).show()
+                        }
                 }
             }
         }
@@ -466,13 +475,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             // Add city to trip destinations list
             tripViewModel.addCityToTrip(trip.tripId, city.cityId).addOnSuccessListener {
                 // Add trip to city trip list
-                cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
-                    // Add user to city visitors list
-                    cityViewModel.addVisitorToCity(city.cityId, trip.userId).addOnSuccessListener {
-                        // Add city to user visited cities
-                        userViewModel.addVisitedCity(trip.userId, city.cityId)
-                    }
-                }
+                cityViewModel.addTripToCity(city.cityId, trip.tripId)
             }
         }
     }

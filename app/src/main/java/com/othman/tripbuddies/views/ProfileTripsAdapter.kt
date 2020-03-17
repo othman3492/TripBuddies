@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
+import com.othman.tripbuddies.utils.Utils
 import kotlinx.android.synthetic.main.trips_list_layout.view.*
 
 

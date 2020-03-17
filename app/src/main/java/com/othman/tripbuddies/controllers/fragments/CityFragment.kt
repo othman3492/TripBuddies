@@ -79,6 +79,8 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         // Initialize current user
         configureViewModels()
+        configureBuddiesRecyclerView()
+        configureTripsRecyclerView()
         userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
             .observe(viewLifecycleOwner, Observer { currentUser = it })
 
@@ -99,8 +101,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     @SuppressLint("DefaultLocale", "RestrictedApi")
     private fun configureUI(city: City) {
 
+        configureBuddiesRecyclerView()
+        configureTripsRecyclerView()
 
         configureButtons(city)
+        getTripList(city)
+        getWishList(city)
 
         // Update UI
         city_original_layout.visibility = View.GONE
@@ -110,6 +116,8 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
+        city_nb_visitors.text = String.format((resources.getString(R.string.city_nb_buddies)), city.visitorsList.size.toString())
+        city_nb_wish_list.text = String.format((resources.getString(R.string.city_nb_wishlist)), city.wishList.size.toString())
 
         Glide.with(this).load(loadStaticMap(city)).into(city_static_map)
 
@@ -305,9 +313,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         for (doc in city.tripList) {
 
-            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer {
+            tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortByDescending { it.creationDate }
                     cityTripsAdapter.updateData(list)
                 }
             })
@@ -322,9 +331,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         for (doc in city.wishList) {
 
-            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer {
+            userViewModel.getUser(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortBy { it.name }
                     cityBuddiesAdapter.updateData(list)
                 }
             })
@@ -352,6 +362,8 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                         // Update button
                         add_city_wish_list_floating_action_button.hide()
                         remove_city_wish_list_floating_action_button.show()
+                        cityBuddiesAdapter.notifyDataSetChanged()
+                        configureUI(city)
 
                         Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT)
                             .show()
@@ -375,6 +387,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                         // Update button
                         remove_city_wish_list_floating_action_button.hide()
                         add_city_wish_list_floating_action_button.show()
+                        configureUI(city)
 
                         Toast.makeText(
                             activity,

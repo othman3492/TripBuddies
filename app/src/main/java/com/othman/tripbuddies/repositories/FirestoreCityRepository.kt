@@ -47,7 +47,7 @@ class FirestoreCityRepository {
         getAllCities().document(cityId).update("wishList", FieldValue.arrayRemove(userId))
 
     fun removeUserFromWishList(cityId: String, userId: String): Task<Void> =
-        getAllCities().document(cityId).update("visitorsList", FieldValue.arrayRemove(userId))
+        getAllCities().document(cityId).update("wishList", FieldValue.arrayRemove(userId))
 
     fun removeTripFromCity(cityId: String, tripId: String): Task<Void> =
         getAllCities().document(cityId).update("tripList", FieldValue.arrayRemove(tripId))

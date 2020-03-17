@@ -112,6 +112,26 @@
                     app:layout_constraintTop_toBottomOf="@id/city_name"
                     tools:text="Canada" />
 
+                <TextView
+                    android:id="@+id/city_nb_visitors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:text="@string/city_nb_buddies"
+                    android:textSize="@dimen/text_small"
+                    app:layout_constraintStart_toStartOf="@id/city_name"
+                    app:layout_constraintBottom_toTopOf="@id/city_nb_wish_list" />
+
+                <TextView
+                    android:id="@+id/city_nb_wish_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:text="@string/city_nb_wishlist"
+                    android:textSize="@dimen/text_small"
+                    app:layout_constraintStart_toStartOf="@id/city_name"
+                    app:layout_constraintBottom_toBottomOf="@id/city_static_map" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/city_trips_layout"
                     android:layout_width="match_parent"

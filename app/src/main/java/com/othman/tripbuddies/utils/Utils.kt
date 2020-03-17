@@ -15,6 +15,13 @@ object Utils {
         return dateFormat.format(date)
     }
 
+    fun convertDateAndTime(date: Date): String {
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.FRANCE)
+
+        return dateFormat.format(date)
+    }
+
 
     fun generateId(): String {
 

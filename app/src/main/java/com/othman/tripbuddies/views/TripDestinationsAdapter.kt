@@ -7,14 +7,17 @@ import com.bumptech.glide.Glide
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
+import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.utils.AdapterEvent
+import com.othman.tripbuddies.utils.FirebaseUserHelper
 import kotlinx.android.synthetic.main.trip_cities_list_layout.view.*
+import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 import java.util.*
 
 
-class TripDestinationsAdapter(val context: Context, private val itemClickListener: (City) -> Unit,
+class TripDestinationsAdapter(val context: Context, val trip: Trip, private val itemClickListener: (City) -> Unit,
                               private val addClickListener: (View) -> Unit) :
     RecyclerView.Adapter<TripDestinationsAdapter.BaseTripDestinationsViewHolder>() {
 
@@ -66,18 +69,35 @@ class TripDestinationsAdapter(val context: Context, private val itemClickListene
         when (holder) {
 
             is TripDestinationsViewHolder -> {
+
                 holder.bind(destinationsList[position], itemClickListener)
 
-                // Configure delete button
-                holder.itemView.remove_city_button.setOnClickListener {
+                // Configure delete button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
-                    EventBus.getDefault().post(AdapterEvent(destinationsAdapterId, destinationsList[position].cityId))
+                    holder.itemView.remove_city_button.setOnClickListener {
 
-                    destinationsList.toMutableList().removeAt(position)
-                    notifyItemRemoved(position)
+                        EventBus.getDefault()
+                            .post(AdapterEvent(destinationsAdapterId, destinationsList[position].cityId))
+
+                        destinationsList.toMutableList().removeAt(position)
+                        notifyItemRemoved(position)
+                    }
+                } else {
+
+                    holder.itemView.remove_city_button.visibility = View.GONE
                 }
             }
-            is TripDestinationsFooter -> holder.bind(addClickListener)
+
+            is TripDestinationsFooter -> {
+
+                // Display add button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
+                    holder.bind(addClickListener)
+                } else {
+                    holder.itemView.visibility = View.GONE
+                }
+            }
             else -> throw IllegalArgumentException()
         }
     }

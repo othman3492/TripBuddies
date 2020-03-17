@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.utils.AdapterEvent
+import com.othman.tripbuddies.utils.FirebaseUserHelper
 import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
@@ -67,19 +68,38 @@ class TripPhotosAdapter(
             is TripPhotosViewHolder -> {
                 holder.bind(trip.photosList[position], itemClickListener)
 
-                // Configure delete button and get event
-                holder.itemView.remove_photo_button.setOnClickListener {
 
-                    EventBus.getDefault().post(AdapterEvent(photoAdapterId, trip.photosList[position]))
+                // Configure delete button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
-                    trip.photosList.removeAt(position)
-                    notifyItemRemoved(position)
+                    holder.itemView.remove_photo_button.setOnClickListener {
+
+                        EventBus.getDefault()
+                            .post(AdapterEvent(photoAdapterId, trip.photosList[position]))
+
+                        trip.photosList.removeAt(position)
+                        notifyItemRemoved(position)
+                    }
+                } else {
+
+                    holder.itemView.remove_photo_button.visibility = View.GONE
                 }
             }
-            is TripPhotosFooter -> holder.bind(addClickListener)
+
+            is TripPhotosFooter ->  {
+
+                // Display add button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
+                    holder.bind(addClickListener)
+                } else {
+                    holder.itemView.visibility = View.GONE
+                }
+            }
             else -> throw IllegalArgumentException()
         }
     }
+
+
 
 
     abstract class BaseTripPhotosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}

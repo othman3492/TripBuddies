@@ -5,15 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
+import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.AdapterEvent
+import com.othman.tripbuddies.utils.FirebaseUserHelper
 import kotlinx.android.synthetic.main.trip_buddies_list_layout.view.*
+import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 
 
-class TripBuddiesAdapter(val context: Context, private val itemClickListener: (User) -> Unit,
-                              private val addClickListener: (View) -> Unit) :
+class TripBuddiesAdapter(val context: Context, val trip: Trip, private val itemClickListener: (User) -> Unit,
+                         private val addClickListener: (View) -> Unit) :
     RecyclerView.Adapter<TripBuddiesAdapter.BaseTripBuddiesViewHolder>() {
 
 
@@ -65,16 +68,33 @@ class TripBuddiesAdapter(val context: Context, private val itemClickListener: (U
             is TripBuddiesViewHolder -> {
                 holder.bind(buddiesList[position], itemClickListener)
 
-                // Configure delete button
-                holder.itemView.remove_buddy_button.setOnClickListener {
+                // Configure delete button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid &&
+                    !(buddiesList[position].userId == FirebaseUserHelper.getCurrentUser()!!.uid)) {
 
-                    EventBus.getDefault().post(AdapterEvent(buddiesAdapterId, buddiesList[position].userId))
+                    holder.itemView.remove_buddy_button.setOnClickListener {
 
-                    buddiesList.toMutableList().removeAt(position)
-                    notifyItemRemoved(position)
+                        EventBus.getDefault()
+                            .post(AdapterEvent(buddiesAdapterId, buddiesList[position].userId))
+
+                        buddiesList.toMutableList().removeAt(position)
+                        notifyItemRemoved(position)
+                    }
+                } else {
+
+                    holder.itemView.remove_buddy_button.visibility = View.GONE
                 }
             }
-            is TripBuddiesFooter -> holder.bind(addClickListener)
+
+            is TripBuddiesFooter -> {
+
+                // Display add button if user is trip's creator
+                if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
+                    holder.bind(addClickListener)
+                } else {
+                    holder.itemView.visibility = View.GONE
+                }
+            }
             else -> throw IllegalArgumentException()
         }
     }

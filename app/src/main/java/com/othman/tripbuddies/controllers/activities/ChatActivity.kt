@@ -14,11 +14,16 @@ import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Message
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
+import com.othman.tripbuddies.utils.Utils.convertDate
+import com.othman.tripbuddies.utils.Utils.convertDateAndTime
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreMessageViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.fragment_city.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
 
@@ -101,7 +106,7 @@ class ChatActivity : AppCompatActivity() {
 
         for (doc in city.messagesList) {
 
-            messageViewModel.getMessage(doc).observe(this, Observer {
+            messageViewModel.getMessage(doc).observe(this, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
                     messageAdapter.updateData(list)
@@ -122,6 +127,7 @@ class ChatActivity : AppCompatActivity() {
             message.urlProfile = FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString()
             message.cityId = city.cityId
             message.content = chat_message_edit_text.text.toString()
+            message.timestamp = convertDateAndTime(Date())
 
             messageViewModel.createMessage(message).addOnSuccessListener {
 

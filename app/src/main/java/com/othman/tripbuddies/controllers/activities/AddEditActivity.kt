@@ -22,7 +22,7 @@ class AddEditActivity : AppCompatActivity() {
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
 
-    private var trip = Trip()
+    private lateinit var trip: Trip
 
 
     /*-----------------------------
@@ -50,8 +50,12 @@ class AddEditActivity : AppCompatActivity() {
 
         // Get trip if it's EditActivity
         if (intent.getSerializableExtra("TRIP_TO_EDIT") != null) {
-            trip = intent.getSerializableExtra("TRIP_TO_EDIT") as Trip
-            fillData()
+            tripViewModel.getTrip(intent.getStringExtra("TRIP_TO_EDIT")!!).observe(this, androidx.lifecycle.Observer {
+                trip = it
+                fillData()
+            })
+        } else {
+            trip = Trip()
         }
     }
 
@@ -90,9 +94,17 @@ class AddEditActivity : AppCompatActivity() {
         trip.name = name_text_input.text.toString()
         trip.description = description_text_input.text.toString()
         trip.userId = FirebaseUserHelper.getCurrentUser()!!.uid
-        trip.departDate = depart_date.text.toString()
-        trip.returnDate = return_date.text.toString()
         trip.username = FirebaseUserHelper.getCurrentUser()!!.displayName.toString()
+
+        if (depart_date.text == resources.getString(R.string.depart_date))
+            trip.departDate = "-"
+        else
+            trip.departDate = depart_date.text.toString()
+
+        if (return_date.text == resources.getString(R.string.return_date))
+            trip.returnDate = "-"
+        else
+            trip.returnDate = return_date.text.toString()
 
     }
 
@@ -148,7 +160,7 @@ class AddEditActivity : AppCompatActivity() {
         if (newTrip.name != "") {
 
             // Set trip creation date
-            newTrip.creationDate = Utils.convertDate(Date())
+            newTrip.creationDate = Utils.convertDateAndTime(Date())
 
             // Create object
             tripViewModel.createTripIntoFirestore(newTrip).addOnSuccessListener {
