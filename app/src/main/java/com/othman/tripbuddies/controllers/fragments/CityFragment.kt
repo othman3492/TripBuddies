@@ -116,8 +116,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         city_name.text = city.name.toUpperCase()
         city_country.text = city.country
-        city_nb_visitors.text = String.format((resources.getString(R.string.city_nb_buddies)), city.visitorsList.size.toString())
-        city_nb_wish_list.text = String.format((resources.getString(R.string.city_nb_wishlist)), city.wishList.size.toString())
 
         Glide.with(this).load(loadStaticMap(city)).into(city_static_map)
 

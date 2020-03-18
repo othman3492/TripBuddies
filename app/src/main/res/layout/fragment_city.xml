@@ -9,10 +9,10 @@
         android:id="@+id/city_original_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/city_original_search_button"
@@ -62,9 +62,9 @@
                     android:id="@+id/city_cover_picture"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:src="@color/colorPrimary"
-                    android:scaleType="centerCrop"
                     android:contentDescription="@string/trip_cover"
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -88,49 +88,43 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/city_cover_picture" />
 
-                <TextView
-                    android:id="@+id/city_name"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/city_static_map"
                     app:layout_constraintStart_toEndOf="@id/city_static_map"
-                    app:layout_constraintTop_toTopOf="@id/city_static_map"
-                    tools:text="VANCOUVER" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/city_static_map">
 
-                <TextView
-                    android:id="@+id/city_country"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@id/city_name"
-                    app:layout_constraintTop_toBottomOf="@id/city_name"
-                    tools:text="Canada" />
+                    <TextView
+                        android:id="@+id/city_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="NOM DE VILLE TRES LONG QUI DEBORDE" />
 
-                <TextView
-                    android:id="@+id/city_nb_visitors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:text="@string/city_nb_buddies"
-                    android:textSize="@dimen/text_small"
-                    app:layout_constraintStart_toStartOf="@id/city_name"
-                    app:layout_constraintBottom_toTopOf="@id/city_nb_wish_list" />
+                    <TextView
+                        android:id="@+id/city_country"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@id/city_name"
+                        app:layout_constraintTop_toBottomOf="@id/city_name"
+                        tools:text="Canada" />
 
-                <TextView
-                    android:id="@+id/city_nb_wish_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:text="@string/city_nb_wishlist"
-                    android:textSize="@dimen/text_small"
-                    app:layout_constraintStart_toStartOf="@id/city_name"
-                    app:layout_constraintBottom_toBottomOf="@id/city_static_map" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/city_trips_layout"
@@ -184,11 +178,11 @@
                     android:id="@+id/city_buddies_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/city_trips_layout"
-                    android:visibility="gone"/>
+                    app:layout_constraintTop_toBottomOf="@id/city_trips_layout" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -211,9 +205,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_normal"
             android:src="@drawable/baseline_favorite_24"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/open_chat_floating_action_button"
-            android:visibility="gone"/>
+            app:layout_constraintEnd_toStartOf="@id/open_chat_floating_action_button" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/open_chat_floating_action_button"
@@ -224,7 +218,6 @@
             app:backgroundTint="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

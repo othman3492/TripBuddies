@@ -202,22 +202,33 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     private fun configureButtons() {
 
-        // Set edit button
-        edit_trip_button.setOnClickListener {
-            val editIntent = Intent(activity, AddEditActivity::class.java)
-            editIntent.putExtra("TRIP_TO_EDIT", trip.tripId)
+        // Set user rights
+        if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
-            startActivity(editIntent)
-        }
+            edit_trip_button.visibility = View.VISIBLE
+            delete_trip_button.visibility = View.VISIBLE
 
-        // Set delete button
-        delete_trip_button.setOnClickListener {
+            // Set edit button
+            edit_trip_button.setOnClickListener {
+                val editIntent = Intent(activity, AddEditActivity::class.java)
+                editIntent.putExtra("TRIP_TO_EDIT", trip.tripId)
 
-            AlertDialog.Builder(activity)
-                .setMessage(R.string.delete_trip_confirmation)
-                .setPositiveButton(R.string.yes) { _, _ -> deleteTrip(trip) }
-                .setNegativeButton(R.string.no, null)
-                .show()
+                startActivity(editIntent)
+            }
+
+            // Set delete button
+            delete_trip_button.setOnClickListener {
+
+                AlertDialog.Builder(activity)
+                    .setMessage(R.string.delete_trip_confirmation)
+                    .setPositiveButton(R.string.yes) { _, _ -> deleteTrip(trip) }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+            }
+        } else {
+
+            edit_trip_button.visibility = View.GONE
+            delete_trip_button.visibility = View.GONE
         }
     }
 

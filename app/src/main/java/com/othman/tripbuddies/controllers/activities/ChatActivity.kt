@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R

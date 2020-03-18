@@ -68,28 +68,30 @@
                 app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"
                 tools:text="From 23/08/2018 to 10/09/2018" />
 
-            <Button
+            <ImageView
                 android:id="@+id/edit_trip_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginEnd="@dimen/margin_normal"
                 android:text="@string/edit"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/baseline_edit_green_24"
+                android:contentDescription="@string/edit_trip"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/trip_cover_picture"/>
+                app:layout_constraintTop_toTopOf="@id/trip_dates"
+                app:layout_constraintBottom_toBottomOf="@id/trip_dates"/>
 
 
             <TextView
                 android:id="@+id/trip_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/margin_small"
                 android:layout_margin="@dimen/margin_normal"
                 android:paddingBottom="@dimen/margin_normal"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edit_trip_button"
+                app:layout_constraintTop_toBottomOf="@id/trip_dates"
                 tools:text="We and our partners use technologies, such as cookies, and process personal data, such as IP addresses and cookie identifiers, to personalise ads and content based on your interests, measure the performance of ads and content, and derive insights about the audiences who saw ads and content. Click below to consent to the use of this technology and the processing of your personal data for these purposes. You can change your mind and change your consent choices at any time by returning to this site. " />
 
             <TextView

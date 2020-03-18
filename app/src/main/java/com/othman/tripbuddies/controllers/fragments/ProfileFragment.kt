@@ -99,16 +99,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     username.text = it.name
                     setProfilePicture(it)
                     setCoverPicture(it)
-
-                    configureFloatingButton(it)
                 }
             })
 
     }
 
 
+    @SuppressLint("RestrictedApi")
     private fun configureButtons(user: User) {
-
 
         profile_last_trips_button.setOnClickListener {
             configureTripsRecyclerView()
@@ -119,23 +117,25 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             getWishList(user)
         }
         cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
-    }
 
 
-    @SuppressLint("RestrictedApi")
-    private fun configureFloatingButton(user: User) {
-
-
+        // Display buttons depending on user rights
         if (user.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
             add_floating_action_button.show()
-            add_floating_action_button.setOnClickListener {
+            add_floating_action_button.setOnClickListener { startActivity(Intent(activity, AddEditActivity::class.java)) }
 
-                startActivity(Intent(activity, AddEditActivity::class.java))
-            }
+            cover_profile_change_button.visibility = View.VISIBLE
+            cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
+
+            account_button.visibility = View.VISIBLE
+            account_button.setOnClickListener { displayDialogFragment() }
+
         } else {
 
             add_floating_action_button.hide()
+            cover_profile_change_button.visibility = View.GONE
+            account_button.visibility = View.GONE
         }
     }
 
@@ -230,6 +230,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         } else {
             transaction.replace(R.id.fragment_container, fragment).commit()
         }
+    }
+
+
+    // Create account settings dialog fragment
+    private fun displayDialogFragment() {
+
+        val fragmentTransaction = childFragmentManager.beginTransaction()
+        val prev = childFragmentManager.findFragmentByTag("dialog")
+        if (prev != null) fragmentTransaction.remove(prev)
+
+        fragmentTransaction.addToBackStack(null)
+
+        val dialogFragment = AccountSettingsFragment(FirebaseUserHelper.getCurrentUser()!!.uid)
+
+        dialogFragment.show(fragmentTransaction, "dialog")
     }
 
 
