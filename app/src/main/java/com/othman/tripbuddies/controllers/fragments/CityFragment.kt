@@ -39,8 +39,6 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class CityFragment : Fragment(R.layout.fragment_city) {
 
 
-    private var currentUser = User()
-
     private lateinit var city: City
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
@@ -81,8 +79,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         configureViewModels()
         configureBuddiesRecyclerView()
         configureTripsRecyclerView()
-        userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid)
-            .observe(viewLifecycleOwner, Observer { currentUser = it })
 
         // Initialize Places for Autocomplete
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
@@ -101,41 +97,50 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     @SuppressLint("DefaultLocale", "RestrictedApi")
     private fun configureUI(city: City) {
 
-        configureBuddiesRecyclerView()
-        configureTripsRecyclerView()
+        var cityToDisplay: City
 
-        configureButtons(city)
-        getTripList(city)
-        getWishList(city)
+        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
 
-        // Update UI
-        city_original_layout.visibility = View.GONE
-        city_fragment_layout.visibility = View.VISIBLE
-        remove_city_wish_list_floating_action_button.hide()
-        add_city_wish_list_floating_action_button.show()
+            cityToDisplay = it ?: city
 
-        city_name.text = city.name.toUpperCase()
-        city_country.text = city.country
+            // Display right floating action button
+            if (cityToDisplay.wishList.contains(FirebaseUserHelper.getCurrentUser()!!.uid)) {
 
-        Glide.with(this).load(loadStaticMap(city)).into(city_static_map)
+                add_city_wish_list_floating_action_button.hide()
+                remove_city_wish_list_floating_action_button.show()
+            } else {
 
-        val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
-        Glide.with(this).load(path).into(city_cover_picture)
+                remove_city_wish_list_floating_action_button.hide()
+                add_city_wish_list_floating_action_button.show()
+            }
+
+            configureBuddiesRecyclerView()
+            configureTripsRecyclerView()
+
+            configureButtons(cityToDisplay)
+            getTripList(cityToDisplay)
+            getWishList(cityToDisplay)
+
+            // Update UI
+            city_original_layout.visibility = View.GONE
+            city_fragment_layout.visibility = View.VISIBLE
+
+            city_name.text = cityToDisplay.name.toUpperCase()
+            city_country.text = cityToDisplay.country
+
+            Glide.with(this).load(loadStaticMap(cityToDisplay)).into(city_static_map)
+
+            val path = COVER_IMAGE_URL + cityToDisplay.coverPicture + "&key=" + BuildConfig.google_apikey
+            Glide.with(this).load(path).into(city_cover_picture)
+
+        })
+
+
 
     }
 
 
     private fun configureButtons(city: City) {
-
-        // Display right floating action button
-        cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
-
-            if (it != null && it.wishList.contains(FirebaseUserHelper.getCurrentUser()!!.uid)) {
-
-                add_city_wish_list_floating_action_button.hide()
-                remove_city_wish_list_floating_action_button.show()
-            }
-        })
 
 
         val chatIntent = Intent(activity, ChatActivity::class.java)
@@ -234,7 +239,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     place.photoMetadatas!![0].zza()
                 )
 
-                configureUI(this.city)
+                cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+
+                    if (it == null) cityViewModel.createCityIntoFirestore(city)
+                })
+
+                configureUI(city)
             }
         }
     }
@@ -350,18 +360,17 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         })
 
         // Add city to current user wish list
-        userViewModel.addCityToWishList(currentUser.userId, city.cityId)
+        userViewModel.addCityToWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city.cityId)
             .addOnSuccessListener {
 
                 // Add user to city wish list
-                cityViewModel.addUserToWishList(city.cityId, currentUser.userId)
+                cityViewModel.addUserToWishList(city.cityId, FirebaseUserHelper.getCurrentUser()!!.uid)
                     .addOnSuccessListener {
 
                         // Update button
                         add_city_wish_list_floating_action_button.hide()
                         remove_city_wish_list_floating_action_button.show()
                         cityBuddiesAdapter.notifyDataSetChanged()
-                        configureUI(city)
 
                         Toast.makeText(activity, "City added to wish list !", Toast.LENGTH_SHORT)
                             .show()
@@ -375,17 +384,17 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     private fun removeCityFromWishList(city: City) {
 
         // Remove city from user wish list
-        userViewModel.removeCityFromWishList(currentUser.userId, city.cityId)
+        userViewModel.removeCityFromWishList(FirebaseUserHelper.getCurrentUser()!!.uid, city.cityId)
             .addOnSuccessListener {
 
                 // Remove user from city wish list
-                cityViewModel.removeUserFromWishList(city.cityId, currentUser.userId)
+                cityViewModel.removeUserFromWishList(city.cityId, FirebaseUserHelper.getCurrentUser()!!.uid)
                     .addOnSuccessListener {
 
                         // Update button
                         remove_city_wish_list_floating_action_button.hide()
                         add_city_wish_list_floating_action_button.show()
-                        configureUI(city)
+                        cityBuddiesAdapter.notifyDataSetChanged()
 
                         Toast.makeText(
                             activity,

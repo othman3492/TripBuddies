@@ -108,6 +108,7 @@ class ChatActivity : AppCompatActivity() {
             messageViewModel.getMessage(doc).observe(this, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
+                    list.sortBy { it.timestamp }
                     messageAdapter.updateData(list)
                 }
             })

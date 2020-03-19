@@ -494,18 +494,18 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     private fun deleteTrip(trip: Trip) {
 
+        // Delete trip from users
+        for (doc in trip.buddiesList) {
+            userViewModel.removeTripFromUser(doc, trip.tripId)
+        }
+
+        // Delete trip from cities
+        for (doc in trip.destinationsList) {
+            cityViewModel.removeTripFromCity(doc, trip.tripId)
+        }
+
         // Delete trip from Firestore
         tripViewModel.deleteTripFromFirestore(trip.tripId).addOnSuccessListener {
-
-            // Delete trip from users
-            for (doc in trip.buddiesList) {
-                userViewModel.removeTripFromUser(doc, trip.tripId)
-            }
-
-            // Delete trip from cities
-            for (doc in trip.destinationsList) {
-                cityViewModel.removeTripFromCity(doc, trip.tripId)
-            }
 
             Toast.makeText(activity, "Trip deleted !", Toast.LENGTH_SHORT).show()
         }
