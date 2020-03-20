@@ -10,8 +10,8 @@
     <string name="error_unknown_error">Unknown error</string>
     <string name="connection_succeed">Authentication successful</string>
 
-    <string name="facebook_application_id">274579653518850</string>
-    <string name="fb_login_protocol_scheme">fb274579653518850</string>
+    <string name="facebook_application_id">244304536727479</string>
+    <string name="fb_login_protocol_scheme">fb244304536727479</string>
     <string name="profile">PROFILE</string>
     <string name="places">PLACES</string>
     <string name="inbox">INBOX</string>
