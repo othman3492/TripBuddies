@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -123,20 +124,31 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         if (user.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
             add_floating_action_button.show()
-            add_floating_action_button.setOnClickListener { startActivity(Intent(activity, AddEditActivity::class.java)) }
+            add_floating_action_button.setOnClickListener {
+                startActivity(
+                    Intent(
+                        activity,
+                        AddEditActivity::class.java
+                    )
+                )
+            }
 
             cover_profile_change_button.visibility = View.VISIBLE
             cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
 
-            account_button.visibility = View.VISIBLE
-            account_button.setOnClickListener { displayDialogFragment() }
-
+            logout_button.visibility = View.VISIBLE
+            logout_button.setOnClickListener {
+                AuthUI.getInstance()
+                    .signOut(activity!!).addOnSuccessListener { activity!!.finish() }
+            }
         } else {
 
             add_floating_action_button.hide()
             cover_profile_change_button.visibility = View.GONE
-            account_button.visibility = View.GONE
+            logout_button.visibility = View.GONE
         }
+
+
     }
 
 
@@ -202,49 +214,26 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     // Open Trip details fragment when clicked
     private fun openTripFragmentOnClick(trip: Trip) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
-        val fragment = TripFragment.newInstance(trip)
+        /*val fragment = TripFragment.newInstance(trip)
 
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
-            transaction.replace(R.id.fragment_container, fragment).commit()
-        }
+        transaction.replace(R.id.fragment_container, fragment).commit()*/
+
+        (activity as MainActivity).displayFragment(TripFragment.newInstance(trip))
     }
 
 
     // Open City details fragment when clicked
     private fun openCityFragmentOnClick(city: City) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
         val fragment = CityFragment.newInstance(city)
 
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
-            transaction.replace(R.id.fragment_container, fragment).commit()
-        }
-    }
-
-
-    // Create account settings dialog fragment
-    private fun displayDialogFragment() {
-
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        val prev = childFragmentManager.findFragmentByTag("dialog")
-        if (prev != null) fragmentTransaction.remove(prev)
-
-        fragmentTransaction.addToBackStack(null)
-
-        val dialogFragment = AccountSettingsFragment(FirebaseUserHelper.getCurrentUser()!!.uid)
-
-        dialogFragment.show(fragmentTransaction, "dialog")
+        transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
 

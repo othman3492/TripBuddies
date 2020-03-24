@@ -26,14 +26,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class UserSearchFragment(val tripId: String) : DialogFragment() {
+class UserSearchFragment : DialogFragment() {
 
 
     private lateinit var userSearchAdapter: UserSearchAdapter
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
 
-    private lateinit var usersList: List<User>
+    private lateinit var tripId: String
+    private var usersList: List<User> = ArrayList()
 
     private var onDismissListener: DialogInterface.OnDismissListener? = null
 
@@ -67,6 +68,9 @@ class UserSearchFragment(val tripId: String) : DialogFragment() {
         configureRecyclerView()
         getUsersList()
         configureSearch()
+
+        tripId = this.arguments!!.getString("TRIP_BUNDLE")!!
+
     }
 
 

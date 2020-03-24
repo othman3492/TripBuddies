@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
     private val CITY_FRAGMENT = 1
     private val TRIP_FRAGMENT = 2
 
-    private var isTablet = false
     private var fragmentId = PROFILE_FRAGMENT
 
     private var trip = Trip()
@@ -44,10 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         configureBottomNavigationView()
         configureUI(fragmentId)
-
-        // Verify if device is a tablet
-        val secondFragment = findViewById<View>(R.id.second_fragment_container)
-        isTablet = secondFragment?.visibility == View.VISIBLE
     }
 
 
@@ -82,14 +77,17 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun configureBottomNavigationView() {
 
         // Configure bottom buttons
         bottom_nav_view.setOnNavigationItemSelectedListener {
 
             when (it.itemId) {
-                R.id.bottom_menu_profile -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
+                R.id.bottom_menu_profile -> displayFragment(
+                    ProfileFragment.newInstance(
+                        FirebaseUserHelper.getCurrentUser()!!.uid
+                    )
+                )
                 R.id.bottom_menu_places -> displayFragment(CityFragment.newInstance(null))
             }
 
@@ -98,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun displayFragment(fragment: Fragment) {
+    fun displayFragment(fragment: Fragment) {
 
         // Set fragmentId to save it into SavedInstanceState
         when (fragment) {
@@ -116,14 +114,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // Display second fragment is device is a tablet
-    private fun displaySecondFragment(fragment: Fragment) {
-
-        if (isTablet) {
-
-            val secondTransaction = supportFragmentManager.beginTransaction()
-            secondTransaction.addToBackStack(null)
-            secondTransaction.replace(R.id.second_fragment_container, fragment).commit()
-        }
-    }
 }

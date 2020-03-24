@@ -40,7 +40,7 @@ class ChatActivity : AppCompatActivity() {
 
     USER INTERFACE
 
-    ---------------------------- */
+    ----------------------------*/
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +136,7 @@ class ChatActivity : AppCompatActivity() {
 
                         // Display message and empty message field
                         messageAdapter.notifyDataSetChanged()
+                        configureUI(city)
                         chat_message_field.editText!!.text.clear()
                     }
             }

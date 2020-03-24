@@ -130,11 +130,11 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
             Glide.with(this).load(loadStaticMap(cityToDisplay)).into(city_static_map)
 
-            val path = COVER_IMAGE_URL + cityToDisplay.coverPicture + "&key=" + BuildConfig.google_apikey
+            val path =
+                COVER_IMAGE_URL + cityToDisplay.coverPicture + "&key=" + BuildConfig.google_apikey
             Glide.with(this).load(path).into(city_cover_picture)
 
         })
-
 
 
     }
@@ -268,34 +268,24 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     // Open Trip details fragment when clicked
     private fun openTripFragmentOnClick(trip: Trip) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
         val fragment = TripFragment.newInstance(trip)
 
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
-            transaction.replace(R.id.fragment_container, fragment).commit()
-        }
+        transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
 
     // Open User profile fragment when clicked
     private fun openProfileFragmentOnClick(user: User) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
         val fragment = ProfileFragment.newInstance(user.userId)
 
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
-            transaction.replace(R.id.fragment_container, fragment).commit()
-        }
+        transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
 
@@ -364,7 +354,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             .addOnSuccessListener {
 
                 // Add user to city wish list
-                cityViewModel.addUserToWishList(city.cityId, FirebaseUserHelper.getCurrentUser()!!.uid)
+                cityViewModel.addUserToWishList(
+                    city.cityId,
+                    FirebaseUserHelper.getCurrentUser()!!.uid
+                )
                     .addOnSuccessListener {
 
                         // Update button
@@ -388,7 +381,10 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             .addOnSuccessListener {
 
                 // Remove user from city wish list
-                cityViewModel.removeUserFromWishList(city.cityId, FirebaseUserHelper.getCurrentUser()!!.uid)
+                cityViewModel.removeUserFromWishList(
+                    city.cityId,
+                    FirebaseUserHelper.getCurrentUser()!!.uid
+                )
                     .addOnSuccessListener {
 
                         // Update button

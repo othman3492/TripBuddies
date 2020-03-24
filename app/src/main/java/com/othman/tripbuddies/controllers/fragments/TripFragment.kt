@@ -88,7 +88,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trip = arguments!!.getSerializable("TRIP") as Trip
+        trip = if (savedInstanceState != null) {
+            savedInstanceState.getSerializable("TRIP_TO_RESTORE") as Trip
+
+        } else {
+            arguments!!.getSerializable("TRIP") as Trip
+        }
+
 
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
 
@@ -97,7 +103,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         configureViewModel()
         configureButtons()
 
-        configureUI(trip)
+        if (savedInstanceState == null) updateUI()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putSerializable("TRIP_TO_RESTORE", trip)
     }
 
     override fun onPause() {
@@ -112,32 +124,35 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    private fun configureUI(trip: Trip) {
+    private fun updateUI() {
 
         tripViewModel.getTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
 
-            // Load data into views
-            configureRecyclerViews()
-            getDestinationsList(it)
-            getBuddiesList(it)
+            if (it != null) {
+
+                // Load data into views
+                configureRecyclerViews()
+                getDestinationsList(it)
+                getBuddiesList(it)
 
 
-            trip_name.text = it.name
-            trip_username.text =
-                String.format(this.resources.getString(R.string.by_name), it.username)
-            trip_description.text = it.description
-            trip_dates.text = String.format(
-                context!!.resources.getString(R.string.dates_from_to),
-                it.departDate,
-                it.returnDate
-            )
-            nb_photos_textview.text = it.photosList.size.toString()
-            nb_buddies_textview.text = it.buddiesList.size.toString()
-            nb_destinations_textview.text = it.destinationsList.size.toString()
+                trip_name.text = it.name
+                trip_username.text =
+                    String.format(this.resources.getString(R.string.by_name), it.username)
+                trip_description.text = it.description
+                trip_dates.text = String.format(
+                    context!!.resources.getString(R.string.dates_from_to),
+                    it.departDate,
+                    it.returnDate
+                )
+                nb_photos_textview.text = it.photosList.size.toString()
+                nb_buddies_textview.text = it.buddiesList.size.toString()
+                nb_destinations_textview.text = it.destinationsList.size.toString()
 
-            // Display first trip photo if image list isn't empty
-            if (it.photosList.isNotEmpty()) {
-                Glide.with(activity!!).load(it.photosList[0]).into(trip_cover_picture)
+                // Display first trip photo if image list isn't empty
+                if (it.photosList.isNotEmpty()) {
+                    Glide.with(activity!!).load(it.photosList[0]).into(trip_cover_picture)
+                }
             }
 
 
@@ -243,33 +258,26 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     // Open User profile fragment when clicked
     private fun openProfileFragmentOnClick(user: User) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
-        val fragment = ProfileFragment.newInstance(user.userId)
+        if (user.name != "Deleted user") {
 
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
+            val fragment = ProfileFragment.newInstance(user.userId)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
-            transaction.replace(R.id.fragment_container, fragment).commit()
+            val transaction = activity!!.supportFragmentManager.beginTransaction()
+            transaction.addToBackStack(null)
+
+                transaction.replace(R.id.fragment_container, fragment).commit()
         }
     }
 
     // Open City details fragment when clicked
     private fun openCityFragmentOnClick(city: City) {
 
-        val isTablet = resources.getBoolean(R.bool.isTablet)
         val fragment = CityFragment.newInstance(city)
 
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
 
-        if (isTablet) {
-            transaction.replace(R.id.second_fragment_container, fragment).commit()
-        } else {
             transaction.replace(R.id.fragment_container, fragment).commit()
-        }
     }
 
 
@@ -301,7 +309,11 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
         fragmentTransaction.addToBackStack(null)
 
-        val dialogFragment = UserSearchFragment(trip.tripId)
+        val dialogFragment = UserSearchFragment()
+
+        val bundle = Bundle()
+        bundle.putString("TRIP_BUNDLE", trip.tripId)
+        dialogFragment.arguments = bundle
 
         dialogFragment.show(fragmentTransaction, "dialog")
     }
@@ -334,7 +346,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
                 userViewModel.removeTripFromUser(event.data, trip.tripId)
             }
 
-            2 -> tripViewModel.removeCityFromTrip(trip.tripId, event.data).addOnCanceledListener {
+            2 -> tripViewModel.removeCityFromTrip(trip.tripId, event.data).addOnSuccessListener {
                 cityViewModel.removeTripFromCity(event.data, trip.tripId)
             }
         }
@@ -370,6 +382,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
                 if (it != null && !list.contains(it)) {
                     list.add(it)
                     list.sortBy { it.name }
+                    buddiesAdapter.updateData(list)
+                }
+
+                if (list.isEmpty()) {
+
+                    val deletedUser = User(name = "Deleted user")
+                    list.add(deletedUser)
                     buddiesAdapter.updateData(list)
                 }
             })
@@ -483,10 +502,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
                 if (it == null) cityViewModel.createCityIntoFirestore(city)
             })
 
-            // Add city to trip destinations list
-            tripViewModel.addCityToTrip(trip.tripId, city.cityId).addOnSuccessListener {
-                // Add trip to city trip list
-                cityViewModel.addTripToCity(city.cityId, trip.tripId)
+            // Add trip to city trip list
+            cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
+                // Add city to trip destinations list
+                tripViewModel.addCityToTrip(trip.tripId, city.cityId)
             }
         }
     }
@@ -495,13 +514,13 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private fun deleteTrip(trip: Trip) {
 
         // Delete trip from users
-        for (doc in trip.buddiesList) {
-            userViewModel.removeTripFromUser(doc, trip.tripId)
+        if (trip.buddiesList.isNotEmpty()) {
+            for (doc in trip.buddiesList) userViewModel.removeTripFromUser(doc, trip.tripId)
         }
 
         // Delete trip from cities
-        for (doc in trip.destinationsList) {
-            cityViewModel.removeTripFromCity(doc, trip.tripId)
+        if (trip.destinationsList.isNotEmpty()) {
+            for (doc in trip.destinationsList) cityViewModel.removeTripFromCity(doc, trip.tripId)
         }
 
         // Delete trip from Firestore

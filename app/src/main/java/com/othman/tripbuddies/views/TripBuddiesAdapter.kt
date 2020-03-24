@@ -70,7 +70,9 @@ class TripBuddiesAdapter(val context: Context, val trip: Trip, private val itemC
 
                 // Configure delete button if user is trip's creator
                 if (trip.userId == FirebaseUserHelper.getCurrentUser()!!.uid &&
-                    !(buddiesList[position].userId == FirebaseUserHelper.getCurrentUser()!!.uid)) {
+                    buddiesList[position].userId != FirebaseUserHelper.getCurrentUser()!!.uid
+                    || trip.userId != FirebaseUserHelper.getCurrentUser()!!.uid &&
+                        buddiesList[position].userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
                     holder.itemView.remove_buddy_button.setOnClickListener {
 
