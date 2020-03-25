@@ -31,10 +31,8 @@ class FirestoreUserViewModel : ViewModel() {
     fun updateUserIntoFirestore(user: User) = userRepository.updateUser(user)
     fun addTripToUser(userId: String, tripId: String) = userRepository.addTripToUser(userId, tripId)
     fun addCityToWishList(userId: String, cityId: String) = userRepository.addCityToWishList(userId, cityId)
-    fun addVisitedCity(userId: String, cityId: String) = userRepository.addVisitedCity(userId, cityId)
     fun removeTripFromUser(userId: String, tripId: String) = userRepository.removeTripFromUser(userId, tripId)
     fun removeCityFromWishList(userId: String, cityId: String) = userRepository.removeCityFromWishList(userId, cityId)
-    fun removeVisitedCity(userId: String, cityId: String) = userRepository.removeVisitedCity(userId, cityId)
 
 
     // DELETE

@@ -88,28 +88,30 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trip = if (savedInstanceState != null) {
-            savedInstanceState.getSerializable("TRIP_TO_RESTORE") as Trip
-
-        } else {
-            arguments!!.getSerializable("TRIP") as Trip
-        }
-
-
-        if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
-
-        EventBus.getDefault().register(this)
-
-        configureViewModel()
-        configureButtons()
-
-        if (savedInstanceState == null) updateUI()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        outState.putSerializable("TRIP_TO_RESTORE", trip)
+        EventBus.getDefault().register(this)
+        if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
+
+        configureViewModel()
+
+        trip = if (savedInstanceState != null)
+            savedInstanceState.getSerializable("SAVED_TRIP") as Trip
+        else
+            arguments!!.getSerializable("TRIP") as Trip
+
+        configureButtons()
+        updateUI(trip)
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        outState.putSerializable("SAVED_TRIP", trip)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
@@ -119,12 +121,11 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
     override fun onResume() {
         super.onResume()
-
         if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
     }
 
 
-    private fun updateUI() {
+    private fun updateUI(trip: Trip) {
 
         tripViewModel.getTrip(trip.tripId).observe(viewLifecycleOwner, Observer {
 
@@ -514,14 +515,10 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private fun deleteTrip(trip: Trip) {
 
         // Delete trip from users
-        if (trip.buddiesList.isNotEmpty()) {
-            for (doc in trip.buddiesList) userViewModel.removeTripFromUser(doc, trip.tripId)
-        }
+        for (doc in trip.buddiesList) userViewModel.removeTripFromUser(doc, trip.tripId)
 
         // Delete trip from cities
-        if (trip.destinationsList.isNotEmpty()) {
-            for (doc in trip.destinationsList) cityViewModel.removeTripFromCity(doc, trip.tripId)
-        }
+        for (doc in trip.destinationsList) cityViewModel.removeTripFromCity(doc, trip.tripId)
 
         // Delete trip from Firestore
         tripViewModel.deleteTripFromFirestore(trip.tripId).addOnSuccessListener {

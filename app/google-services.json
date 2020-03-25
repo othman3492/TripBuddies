@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "644934496829-ihhl5u2e1678l4g2el9ioj5oq1mrugbg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.othman.tripbuddies",
+            "certificate_hash": "a72d672a71ee46d9aa7ad370e163f51bf84c2e7c"
+          }
+        },
+        {
           "client_id": "644934496829-mbkpj7pfe96f0aov151sdjg9e7bh93hf.apps.googleusercontent.com",
           "client_type": 3
         }

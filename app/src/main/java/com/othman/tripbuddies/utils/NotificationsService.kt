@@ -13,19 +13,10 @@ class NotificationsService: FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
-        Log.d(TAG, "From: ${remoteMessage.from}")
+        if (remoteMessage.notification != null) {
 
-        // Check if message contains a data payload.
-        remoteMessage.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
-
-                // Handle message within 10 seconds
-                Log.d("TAG", "message received")
-        }
-
-        // Check if message contains a notification payload.
-        remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
+            val message = remoteMessage.notification!!.body
+            Log.e("TAG", message!!)
         }
 
     }

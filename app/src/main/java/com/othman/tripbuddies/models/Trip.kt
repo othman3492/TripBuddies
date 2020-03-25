@@ -2,6 +2,8 @@ package com.othman.tripbuddies.models
 
 import com.othman.tripbuddies.utils.Utils
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 data class Trip(
@@ -12,8 +14,8 @@ data class Trip(
     var username: String,
     var description: String?,
     var creationDate: String = "",
-    var departDate: String?,
-    var returnDate: String?,
+    var departDate: String = "",
+    var returnDate: String = "",
     var photosList: MutableList<String> = ArrayList(),
     var destinationsList: MutableList<String> = ArrayList(),
     var buddiesList: MutableList<String> = ArrayList()

@@ -2,6 +2,7 @@ package com.othman.tripbuddies.utils
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.random.Random
 
@@ -10,14 +11,14 @@ object Utils {
 
     fun convertDate(date: Date): String {
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
+        val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE)
 
         return dateFormat.format(date)
     }
 
     fun convertDateAndTime(date: Date): String {
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE)
+        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.FRANCE)
 
         return dateFormat.format(date)
     }

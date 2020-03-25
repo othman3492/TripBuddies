@@ -10,14 +10,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -109,20 +106,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     @SuppressLint("RestrictedApi")
     private fun configureButtons(user: User) {
 
+        // Last trips button
         profile_last_trips_button.setOnClickListener {
             configureTripsRecyclerView()
             getTripList(user)
         }
+        // Wish list button
         profile_wish_list_button.setOnClickListener {
             configureCitiesRecyclerView()
             getWishList(user)
         }
+        // Change cover picture
         cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
 
 
         // Display buttons depending on user rights
         if (user.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
 
+            // Add new trip
             add_floating_action_button.show()
             add_floating_action_button.setOnClickListener {
                 startActivity(
@@ -136,11 +137,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             cover_profile_change_button.visibility = View.VISIBLE
             cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
 
+            // Logout
             logout_button.visibility = View.VISIBLE
             logout_button.setOnClickListener {
                 AuthUI.getInstance()
                     .signOut(activity!!).addOnSuccessListener { activity!!.finish() }
             }
+
+            // Open settings
+            settings_button.setOnClickListener { displaySettingsFragment() }
         } else {
 
             add_floating_action_button.hide()
@@ -237,6 +242,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
 
+    // Create settings dialog fragment
+    private fun displaySettingsFragment() {
+
+        val fragmentTransaction = childFragmentManager.beginTransaction()
+        val prev = childFragmentManager.findFragmentByTag("dialog")
+        if (prev != null) fragmentTransaction.remove(prev)
+
+        fragmentTransaction.addToBackStack(null)
+
+        val dialogFragment = SettingsFragment()
+        val bundle = Bundle()
+        bundle.putSerializable("USER_SETTINGS", profileUser)
+        dialogFragment.arguments = bundle
+
+        dialogFragment.show(fragmentTransaction, "dialog")
+    }
+
+
     /*-----------------------------
 
     DATA QUERIES
@@ -262,7 +285,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
-                    list.sortByDescending { it.creationDate }
+                    list.sortByDescending { it.departDate }
                     profileTripsAdapter.updateData(list)
                 }
             })

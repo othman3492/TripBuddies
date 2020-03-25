@@ -34,17 +34,11 @@ class FirestoreCityRepository {
     fun addUserToWishList(cityId: String, userId: String): Task<Void> =
         getAllCities().document(cityId).update("wishList", FieldValue.arrayUnion(userId))
 
-    fun addVisitorToCity(cityId: String, userId: String): Task<Void> =
-        getAllCities().document(cityId).update("visitorsList", FieldValue.arrayUnion(userId))
-
     fun addTripToCity(cityId: String, tripId: String): Task<Void> =
         getAllCities().document(cityId).update("tripList", FieldValue.arrayUnion(tripId))
 
     fun addMessageToChat(cityId: String, messageId: String): Task<Void> =
         getAllCities().document(cityId).update("messagesList", FieldValue.arrayUnion(messageId))
-
-    fun removeVisitorFromCity(cityId: String, userId: String): Task<Void> =
-        getAllCities().document(cityId).update("wishList", FieldValue.arrayRemove(userId))
 
     fun removeUserFromWishList(cityId: String, userId: String): Task<Void> =
         getAllCities().document(cityId).update("wishList", FieldValue.arrayRemove(userId))

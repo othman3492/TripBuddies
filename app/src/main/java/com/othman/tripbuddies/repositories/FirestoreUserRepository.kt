@@ -38,17 +38,11 @@ class FirestoreUserRepository {
     fun addCityToWishList(userId: String, cityId: String): Task<Void> =
         getAllUsers().document(userId).update("wishList", FieldValue.arrayUnion(cityId))
 
-    fun addVisitedCity(userId: String, cityId: String): Task<Void> =
-        getAllUsers().document(userId).update("visitedCitiesList", FieldValue.arrayUnion(cityId))
-
     fun removeTripFromUser(userId: String, tripId: String): Task<Void> =
         getAllUsers().document(userId).update("tripList", FieldValue.arrayRemove(tripId))
 
     fun removeCityFromWishList(userId: String, cityId: String): Task<Void> =
         getAllUsers().document(userId).update("wishList", FieldValue.arrayRemove(cityId))
-
-    fun removeVisitedCity(userId: String, cityId: String): Task<Void> =
-        getAllUsers().document(userId).update("visitedCitiesList", FieldValue.arrayRemove(cityId))
 
 
 

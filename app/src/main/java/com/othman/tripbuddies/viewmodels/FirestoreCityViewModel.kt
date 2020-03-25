@@ -28,11 +28,9 @@ class FirestoreCityViewModel: ViewModel() {
 
     // UPDATE
     fun updateCityIntoFirestore(city: City) = cityRepository.updateCity(city)
-    fun addVisitorToCity(cityId: String, userId: String) = cityRepository.addVisitorToCity(cityId, userId)
     fun addUserToWishList(cityId: String, userId: String) = cityRepository.addUserToWishList(cityId, userId)
     fun addTripToCity(cityId: String, tripId: String) = cityRepository.addTripToCity(cityId, tripId)
     fun addMessageToChat(cityId: String, messageId: String) = cityRepository.addMessageToChat(cityId, messageId)
-    fun removeVisitorFromCity(cityId: String, userId: String) = cityRepository.removeVisitorFromCity(cityId, userId)
     fun removeUserFromWishList(cityId: String, userId: String) = cityRepository.removeUserFromWishList(cityId, userId)
     fun removeTripFromCity(cityId: String, tripId: String) = cityRepository.removeTripFromCity(cityId, tripId)
     fun removeMessageFromChat(cityId: String, messageId: String) = cityRepository.removeMessageFromChat(cityId, messageId)

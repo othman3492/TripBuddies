@@ -157,28 +157,39 @@ class AddEditActivity : AppCompatActivity() {
 
         getDataFromInput(newTrip)
 
+        // Verify if trip has a name
         if (newTrip.name != "") {
 
-            // Set trip creation date
-            newTrip.creationDate = Utils.convertDateAndTime(Date())
+            // Verify if return date is after depart date
+            if (newTrip.departDate < newTrip.returnDate) {
 
-            // Create object
-            tripViewModel.createTripIntoFirestore(newTrip).addOnSuccessListener {
-                // Add trip to user trip list
-                userViewModel.addTripToUser(trip.userId, trip.tripId).addOnSuccessListener {
-                    // Add user to trip buddies list
-                    tripViewModel.addBuddyToTrip(trip.tripId, trip.userId).addOnSuccessListener {
+                // Set trip creation date
+                newTrip.creationDate = Utils.convertDateAndTime(Date())
 
-                        // Confirm creation
-                        Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT).show()
+                // Create object
+                tripViewModel.createTripIntoFirestore(newTrip).addOnSuccessListener {
+                    // Add trip to user trip list
+                    userViewModel.addTripToUser(trip.userId, trip.tripId).addOnSuccessListener {
+                        // Add user to trip buddies list
+                        tripViewModel.addBuddyToTrip(trip.tripId, trip.userId)
+                            .addOnSuccessListener {
+
+                                // Confirm creation
+                                Toast.makeText(this, "New trip created !", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                     }
                 }
-            }
 
-            // Return to MainActivity and pass it Trip via intent to display TripFragment
-            val tripIntent = Intent(this, MainActivity::class.java)
-            tripIntent.putExtra("TRIP", newTrip)
-            startActivity(tripIntent)
+                // Return to MainActivity and pass it Trip via intent to display TripFragment
+                val tripIntent = Intent(this, MainActivity::class.java)
+                tripIntent.putExtra("TRIP", newTrip)
+                startActivity(tripIntent)
+
+            } else {
+
+                Toast.makeText(this, "Wow, are you travelling to the past ?", Toast.LENGTH_SHORT).show()
+            }
 
         } else {
 
@@ -188,20 +199,28 @@ class AddEditActivity : AppCompatActivity() {
 
 
     // Update Trip object from data and store it into database
-    private fun updateTrip(tripUpdate: Trip) {
+    private fun updateTrip(updatedTrip: Trip) {
 
-        getDataFromInput(tripUpdate)
+        getDataFromInput(updatedTrip)
 
-        if (tripUpdate.name != "") {
+        // Verify if trip has a name
+        if (updatedTrip.name != "") {
 
-            // Update object
-            tripViewModel.updateTripIntoFirestore(tripUpdate)
+            // Verify if return date is after depart date
+            if (updatedTrip.departDate < updatedTrip.returnDate) {
 
-            // Confirm creation
-            Toast.makeText(this, "Trip updated !", Toast.LENGTH_SHORT).show()
+                // Update object
+                tripViewModel.updateTripIntoFirestore(updatedTrip)
 
-            // Return to MainActivity and pass it Trip via intent to display TripFragment
-            finish()
+                // Confirm creation
+                Toast.makeText(this, "Trip updated !", Toast.LENGTH_SHORT).show()
+
+                // Return to MainActivity and pass it Trip via intent to display TripFragment
+                finish()
+            } else {
+
+                Toast.makeText(this, "Wow, are you travelling to the past ?", Toast.LENGTH_SHORT).show()
+            }
 
         } else {
 

@@ -39,7 +39,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class CityFragment : Fragment(R.layout.fragment_city) {
 
 
-    private lateinit var city: City
+    private var city: City? = null
     private lateinit var tripViewModel: FirestoreTripViewModel
     private lateinit var userViewModel: FirestoreUserViewModel
     private lateinit var cityViewModel: FirestoreCityViewModel
@@ -84,14 +84,15 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
         city_original_search_button.setOnClickListener { configurePlaceAutocomplete() }
 
-        // Display city data if bundle isn't empty
+        // Display city data if bundle isn't empty, or if saved instance state isn't empty
         if (arguments!!.getSerializable("CITY") != null) {
 
             city = arguments!!.getSerializable("CITY") as City
-            configureUI(city)
+            configureUI(city!!)
         }
 
     }
+
 
 
     @SuppressLint("DefaultLocale", "RestrictedApi")
@@ -239,12 +240,12 @@ class CityFragment : Fragment(R.layout.fragment_city) {
                     place.photoMetadatas!![0].zza()
                 )
 
-                cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+                cityViewModel.getCity(city!!.cityId).observe(viewLifecycleOwner, Observer {
 
-                    if (it == null) cityViewModel.createCityIntoFirestore(city)
+                    if (it == null) cityViewModel.createCityIntoFirestore(city!!)
                 })
 
-                configureUI(city)
+                configureUI(city!!)
             }
         }
     }
@@ -314,7 +315,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             tripViewModel.getTrip(doc).observe(viewLifecycleOwner, Observer { it ->
                 if (it != null && !list.contains(it)) {
                     list.add(it)
-                    list.sortByDescending { it.creationDate }
+                    list.sortByDescending { it.departDate }
                     cityTripsAdapter.updateData(list)
                 }
             })

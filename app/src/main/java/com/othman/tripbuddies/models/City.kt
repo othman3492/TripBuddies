@@ -15,7 +15,6 @@ data class City(
     var longitude: Double? = null,
     var coverPicture: String?,
     var tripList: List<String> = ArrayList(),
-    var visitorsList: List<String> = ArrayList(),
     var wishList: List<String> = ArrayList(),
     var messagesList: MutableList<String> = ArrayList()
 ) : Serializable {
