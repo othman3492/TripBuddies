@@ -42,6 +42,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val galleryCode = 1
     private val galleryPermissionCode = 11
+    private val profilePictureCode = 101
+    private val coverPictureCode = 201
+    private var buttonClicked: Int? = null
 
     private var profileUser = User()
     private lateinit var profileCitiesAdapter: ProfileCitiesAdapter
@@ -117,7 +120,16 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             getWishList(user)
         }
         // Change cover picture
-        cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
+        cover_profile_change_button.setOnClickListener {
+            buttonClicked = coverPictureCode
+            checkPermissionForGallery()
+        }
+
+        // Change profile picture
+        profile_picture.setOnClickListener {
+            buttonClicked = profilePictureCode
+            checkPermissionForGallery()
+        }
 
 
         // Display buttons depending on user rights
@@ -361,24 +373,50 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             val imageRef: StorageReference = FirebaseStorage.getInstance().getReference(imageId)
             val uploadTask = imageRef.putFile(data?.data!!)
 
-            uploadTask.continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
+            // Change and save cover picture
+            if (buttonClicked == coverPictureCode) {
+
+                uploadTask.continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let { throw it }
+                    }
+                    imageRef.downloadUrl
+                }.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+
+                        // Update data and save it
+                        profileUser.urlCoverPicture = downloadUri.toString()
+                        userViewModel.updateUserIntoFirestore(profileUser)
+
+                        // Load image into view
+                        Glide.with(this)
+                            .load(profileUser.urlCoverPicture).into(cover_picture)
                     }
                 }
-                imageRef.downloadUrl
-            }.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
 
-                    // Update data and save it
-                    profileUser.urlCoverPicture = downloadUri.toString()
-                    userViewModel.updateUserIntoFirestore(profileUser)
+                // Change and save profile picture
+            } else if (buttonClicked == profilePictureCode) {
 
-                    // Load image into view
-                    Glide.with(this)
-                        .load(profileUser.urlCoverPicture).into(cover_picture)
+                uploadTask.continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+                    imageRef.downloadUrl
+                }.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+
+                        // Update data and save it
+                        profileUser.urlPicture = downloadUri.toString()
+                        userViewModel.updateUserIntoFirestore(profileUser)
+
+                        // Load image into view
+                        Glide.with(this)
+                            .load(profileUser.urlPicture).into(profile_picture)
+                    }
                 }
             }
 
