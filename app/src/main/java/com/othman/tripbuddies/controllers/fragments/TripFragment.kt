@@ -5,8 +5,9 @@ import TripBuddiesAdapter
 import TripDestinationsAdapter
 import TripPhotosAdapter
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
+import android.app.*
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,10 +15,11 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.libraries.places.api.Places
@@ -31,11 +33,11 @@ import com.othman.tripbuddies.BuildConfig
 
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
+import com.othman.tripbuddies.controllers.activities.MainActivity
 import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.utils.AdapterEvent
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
@@ -60,6 +62,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private val autocompleteRequestCode = 21
     private val galleryCode = 1
     private val galleryPermissionCode = 11
+    private val notificationChannel = "100"
 
     val COVER_IMAGE_URL =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
@@ -88,23 +91,19 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        configureButtons()
+        updateUI(trip)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
 
         EventBus.getDefault().register(this)
         if (!Places.isInitialized()) Places.initialize(context!!, BuildConfig.google_apikey)
 
         configureViewModel()
-
-        trip = if (savedInstanceState != null)
-            savedInstanceState.getSerializable("SAVED_TRIP") as Trip
-        else
-            arguments!!.getSerializable("TRIP") as Trip
-
-        configureButtons()
-        updateUI(trip)
+        trip = arguments!!.getSerializable("TRIP") as Trip
     }
 
 
@@ -175,11 +174,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         trip_photos_recycler_view.adapter = photoAdapter
         trip_photos_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        trip_photos_recycler_view.addItemDecoration(
-            DividerItemDecoration(
-                trip_photos_recycler_view.context, DividerItemDecoration.HORIZONTAL
-            )
-        )
 
         // Configure buddies RecyclerView
         buddiesAdapter = TripBuddiesAdapter(
@@ -191,11 +185,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         trip_buddies_recycler_view.adapter = buddiesAdapter
         trip_buddies_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        trip_buddies_recycler_view.addItemDecoration(
-            DividerItemDecoration(
-                trip_buddies_recycler_view.context, DividerItemDecoration.HORIZONTAL
-            )
-        )
 
         // Configure destinations RecyclerView
         destinationsAdapter = TripDestinationsAdapter(
@@ -207,12 +196,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
         trip_destinations_recycler_view.adapter = destinationsAdapter
         trip_destinations_recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        trip_destinations_recycler_view.addItemDecoration(
-            DividerItemDecoration(
-                trip_destinations_recycler_view.context, DividerItemDecoration.HORIZONTAL
-            )
-        )
-
     }
 
 
@@ -249,7 +232,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    // Open User profile fragment when clicked
+    // Display photo on cover when clicked
     private fun displayPhotoOnClick(photo: String) {
 
         Glide.with(this).load(photo).into(trip_cover_picture)
@@ -259,26 +242,15 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     // Open User profile fragment when clicked
     private fun openProfileFragmentOnClick(user: User) {
 
-        if (user.name != "Deleted user") {
+        if (user.name != "Deleted user")
+            (activity as MainActivity).displayFragment(ProfileFragment.newInstance(user.userId))
 
-            val fragment = ProfileFragment.newInstance(user.userId)
-
-            val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.addToBackStack(null)
-
-                transaction.replace(R.id.fragment_container, fragment).commit()
-        }
     }
 
     // Open City details fragment when clicked
     private fun openCityFragmentOnClick(city: City) {
 
-        val fragment = CityFragment.newInstance(city)
-
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-
-            transaction.replace(R.id.fragment_container, fragment).commit()
+        (activity as MainActivity).displayFragment(CityFragment.newInstance(city))
     }
 
 
@@ -320,11 +292,48 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    /*-----------------------------
+    // Create a notification when user has been added to a trip
+    private fun createNotification() {
 
-    DATA QUERIES
+        // Create notification text
+        val text = String.format(
+            resources.getString(R.string.notification_trip_add),
+            FirebaseUserHelper.getCurrentUser()!!.displayName)
 
-    ---------------------------- */
+        // Create intent to open Trip
+        val intent = Intent(activity, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(activity, 0, intent, 0)
+
+        // Configure notification channel if API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = notificationChannel
+            val descriptionText = "CHANNEL DESCRIPTION"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(notificationChannel, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                activity!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Create notification
+        var notification = NotificationCompat.Builder(activity!!, notificationChannel)
+            .setSmallIcon(R.drawable.app_icon)
+            .setContentTitle(R.string.app_name.toString())
+            .setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+    }
+
+/*-----------------------------
+
+DATA QUERIES
+
+---------------------------- */
 
 
     private fun configureViewModel() {
@@ -337,7 +346,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
 
 
     @Subscribe
-    fun onEvent(event: AdapterEvent) {
+    fun onEvent(event: Utils.AdapterEvent) {
 
         when (event.adapterId) {
 
@@ -500,14 +509,25 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             // Create city collection if it doesn't exist
             cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
 
-                if (it == null) cityViewModel.createCityIntoFirestore(city)
+                if (it == null) {
+                    // Create city collection
+                    cityViewModel.createCityIntoFirestore(city).addOnSuccessListener {
+                        // Add trip to city trip list
+                        cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
+                            // Add city to trip destinations list
+                            tripViewModel.addCityToTrip(trip.tripId, city.cityId)
+                        }
+                    }
+                } else {
+                    // Add trip to city trip list
+                    cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
+                        // Add city to trip destinations list
+                        tripViewModel.addCityToTrip(trip.tripId, city.cityId)
+                    }
+                }
+
             })
 
-            // Add trip to city trip list
-            cityViewModel.addTripToCity(city.cityId, trip.tripId).addOnSuccessListener {
-                // Add city to trip destinations list
-                tripViewModel.addCityToTrip(trip.tripId, city.cityId)
-            }
         }
     }
 

@@ -19,8 +19,6 @@ class FirestoreUserViewModel : ViewModel() {
 
 
     private var userRepository = FirestoreUserRepository()
-    var user: MutableLiveData<User> = MutableLiveData()
-    private var usersList: MutableLiveData<List<User>> = MutableLiveData()
 
 
     // CREATE
@@ -43,24 +41,26 @@ class FirestoreUserViewModel : ViewModel() {
     // Retrieve single user from Firestore and convert it to usable LiveData
     fun getUser(userId: String): LiveData<User> {
 
+        val user: MutableLiveData<User> = MutableLiveData()
         userRepository.getUser(userId).addSnapshotListener { doc, e ->
             if (e != null) {
-                this.user.value = null
+                user.value = null
                 return@addSnapshotListener
             }
 
             val savedUser = doc!!.toObject(User::class.java)
 
-            this.user.value = savedUser
+            user.value = savedUser
         }
 
-        return this.user
+        return user
     }
 
 
     // Retrieve user list from Firestore and convert it to usable List<LiveData>
     fun getAllUsers(): LiveData<List<User>> {
 
+        val usersList: MutableLiveData<List<User>> = MutableLiveData()
         userRepository.getAllUsers().addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
             if (e != null) {

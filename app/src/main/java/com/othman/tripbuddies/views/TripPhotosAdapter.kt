@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.utils.AdapterEvent
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
 import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
@@ -75,7 +75,7 @@ class TripPhotosAdapter(
                     holder.itemView.remove_photo_button.setOnClickListener {
 
                         EventBus.getDefault()
-                            .post(AdapterEvent(photoAdapterId, trip.photosList[position]))
+                            .post(Utils.AdapterEvent(photoAdapterId, trip.photosList[position]))
 
                         trip.photosList.removeAt(position)
                         notifyItemRemoved(position)

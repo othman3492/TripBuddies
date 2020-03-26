@@ -1,23 +1,24 @@
 package com.othman.tripbuddies.controllers.activities
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
-import com.othman.tripbuddies.utils.Utils
-import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
@@ -42,6 +43,21 @@ class LoginActivity : AppCompatActivity() {
 
         configureViewModel()
         setSignInButtons()
+
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(ContentValues.TAG, "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+
+                // Log and toast
+                Log.d("TOKEN", token!!)
+                Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+            })
 
     }
 
@@ -156,5 +172,7 @@ class LoginActivity : AppCompatActivity() {
 
         userViewModel = ViewModelProvider(this).get(FirestoreUserViewModel::class.java)
     }
+
+
 }
 

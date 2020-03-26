@@ -24,6 +24,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.ChatActivity
+import com.othman.tripbuddies.controllers.activities.MainActivity
 import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
@@ -269,24 +270,14 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     // Open Trip details fragment when clicked
     private fun openTripFragmentOnClick(trip: Trip) {
 
-        val fragment = TripFragment.newInstance(trip)
-
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-
-        transaction.replace(R.id.fragment_container, fragment).commit()
+        (activity as MainActivity).displayFragment(TripFragment.newInstance(trip))
     }
 
 
     // Open User profile fragment when clicked
     private fun openProfileFragmentOnClick(user: User) {
 
-        val fragment = ProfileFragment.newInstance(user.userId)
-
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-
-        transaction.replace(R.id.fragment_container, fragment).commit()
+        (activity as MainActivity).displayFragment(ProfileFragment.newInstance(user.userId))
     }
 
 

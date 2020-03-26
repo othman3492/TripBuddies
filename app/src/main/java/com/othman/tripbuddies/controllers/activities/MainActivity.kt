@@ -2,6 +2,7 @@ package com.othman.tripbuddies.controllers.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.othman.tripbuddies.R
@@ -31,25 +32,26 @@ class MainActivity : AppCompatActivity() {
         // Get savedInstanceState in case of screen rotation
         if (savedInstanceState != null) {
 
-            fragmentId = savedInstanceState.getInt("FRAGMENT_ID")
+            when (supportFragmentManager.findFragmentByTag("TRIPBUDDIES")) {
+                is ProfileFragment -> fragmentId = PROFILE_FRAGMENT
+                is CityFragment -> fragmentId = CITY_FRAGMENT
+                is TripFragment -> fragmentId = TRIP_FRAGMENT
+            }
+
+            configureBottomNavigationView()
+
+        } else {
+
+            // Display TripFragment if an intent exists
+            if (intent.getSerializableExtra("TRIP") != null) {
+
+                trip = intent.getSerializableExtra("TRIP") as Trip
+                fragmentId = TRIP_FRAGMENT
+            }
+
+            configureBottomNavigationView()
+            configureUI(fragmentId)
         }
-
-        // Display TripFragment if an intent exists
-        if (intent.getSerializableExtra("TRIP") != null) {
-
-            trip = intent.getSerializableExtra("TRIP") as Trip
-            fragmentId = TRIP_FRAGMENT
-        }
-
-        configureBottomNavigationView()
-        configureUI(fragmentId)
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putInt("FRAGMENT_ID", fragmentId)
     }
 
 
@@ -109,8 +111,7 @@ class MainActivity : AppCompatActivity() {
 
         val transaction = supportFragmentManager.beginTransaction()
         transaction.addToBackStack(null)
-        transaction.replace(R.id.fragment_container, fragment).commit()
-
+        transaction.replace(R.id.fragment_container, fragment, "TRIPBUDDIES").commit()
     }
 
 

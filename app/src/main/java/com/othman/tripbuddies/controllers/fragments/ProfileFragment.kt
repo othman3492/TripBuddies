@@ -219,13 +219,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     // Open Trip details fragment when clicked
     private fun openTripFragmentOnClick(trip: Trip) {
 
-        /*val fragment = TripFragment.newInstance(trip)
-
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-
-        transaction.replace(R.id.fragment_container, fragment).commit()*/
-
         (activity as MainActivity).displayFragment(TripFragment.newInstance(trip))
     }
 
@@ -233,12 +226,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     // Open City details fragment when clicked
     private fun openCityFragmentOnClick(city: City) {
 
-        val fragment = CityFragment.newInstance(city)
-
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-
-        transaction.replace(R.id.fragment_container, fragment).commit()
+        (activity as MainActivity).displayFragment(CityFragment.newInstance(city))
     }
 
 

@@ -3,6 +3,7 @@ package com.othman.tripbuddies.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.facebook.internal.Mutable
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.QuerySnapshot
 import com.othman.tripbuddies.models.City
@@ -14,8 +15,6 @@ class FirestoreTripViewModel: ViewModel() {
 
 
     var tripRepository = FirestoreTripRepository()
-    var trip: MutableLiveData<Trip> = MutableLiveData()
-    var tripList: MutableLiveData<List<Trip>> = MutableLiveData()
 
 
     // CREATE
@@ -40,24 +39,25 @@ class FirestoreTripViewModel: ViewModel() {
     // Retrieve single trip from Firestore and convert it to usable LiveData
     fun getTrip(tripId: String): LiveData<Trip> {
 
+        val trip: MutableLiveData<Trip> = MutableLiveData()
         tripRepository.getTrip(tripId).addSnapshotListener { doc, e ->
             if (e != null) {
-                this.trip.value = null
+                trip.value = null
                 return@addSnapshotListener
             }
 
             val savedTrip = doc!!.toObject(Trip::class.java)
-
-            this.trip.value = savedTrip
+            trip.value = savedTrip
         }
 
-        return this.trip
+        return trip
     }
 
 
     // Retrieve trip list from Firestore and convert it to usable List<LiveData>
     fun getAllTrips(): LiveData<List<Trip>> {
 
+        val tripList: MutableLiveData<List<Trip>> = MutableLiveData()
         tripRepository.getAllTrips().addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
             if (e != null) {

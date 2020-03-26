@@ -18,8 +18,6 @@ class FirestoreCityViewModel: ViewModel() {
 
 
     var cityRepository = FirestoreCityRepository()
-    var city: MutableLiveData<City> = MutableLiveData()
-    var cityList: MutableLiveData<List<City>> = MutableLiveData()
 
 
     // CREATE
@@ -44,24 +42,26 @@ class FirestoreCityViewModel: ViewModel() {
     // Retrieve single city from Firestore and convert it to usable LiveData
     fun getCity(cityId: String): LiveData<City> {
 
+        val city: MutableLiveData<City> = MutableLiveData()
         cityRepository.getCity(cityId).addSnapshotListener { doc, e ->
             if (e != null) {
-                this.city.value = null
+                city.value = null
                 return@addSnapshotListener
             }
 
             val savedCity = doc!!.toObject(City::class.java)
 
-            this.city.value = savedCity
+            city.value = savedCity
         }
 
-        return this.city
+        return city
     }
 
 
     // Retrieve city list from Firestore and convert it to usable List<LiveData>
     fun getAllCities(): LiveData<List<City>> {
 
+        val cityList: MutableLiveData<List<City>> = MutableLiveData()
         cityRepository.getAllCities().addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
             if (e != null) {

@@ -19,17 +19,13 @@ class FirestoreMessageViewModel: ViewModel() {
 
 
     var messageRepository = FirestoreMessageRepository()
-    var message: MutableLiveData<Message> = MutableLiveData()
-    var messageList: MutableLiveData<List<Message>> = MutableLiveData()
 
 
     // CREATE
     fun createMessage(message: Message) = messageRepository.createMessage(message)
 
-
     // UPDATE
     fun updateMessage(message: Message) = messageRepository.updateMessage(message)
-
 
     // DELETE
     fun deleteMessage(messageId: String) = messageRepository.deleteMessage(messageId)
@@ -39,24 +35,26 @@ class FirestoreMessageViewModel: ViewModel() {
     // Retrieve single message from Firestore and convert it to usable LiveData
     fun getMessage(messageId: String): LiveData<Message> {
 
+        val message: MutableLiveData<Message> = MutableLiveData()
         messageRepository.getMessage(messageId).addSnapshotListener { doc, e ->
             if (e != null) {
-                this.message.value = null
+                message.value = null
                 return@addSnapshotListener
             }
 
             val savedMessage = doc!!.toObject(Message::class.java)
 
-            this.message.value = savedMessage
+            message.value = savedMessage
         }
 
-        return this.message
+        return message
     }
 
 
     // Retrieve message list from Firestore and convert it to usable List<LiveData>
     fun getAllMessages(): LiveData<List<Message>> {
 
+        val messageList: MutableLiveData<List<Message>> = MutableLiveData()
         messageRepository.getAllMessages().addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
 
             if (e != null) {

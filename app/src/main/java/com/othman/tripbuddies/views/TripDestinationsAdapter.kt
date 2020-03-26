@@ -8,10 +8,9 @@ import com.othman.tripbuddies.BuildConfig
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.utils.AdapterEvent
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
 import kotlinx.android.synthetic.main.trip_cities_list_layout.view.*
-import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -78,7 +77,7 @@ class TripDestinationsAdapter(val context: Context, val trip: Trip, private val 
                     holder.itemView.remove_city_button.setOnClickListener {
 
                         EventBus.getDefault()
-                            .post(AdapterEvent(destinationsAdapterId, destinationsList[position].cityId))
+                            .post(Utils.AdapterEvent(destinationsAdapterId, destinationsList[position].cityId))
 
                         destinationsList.toMutableList().removeAt(position)
                         notifyItemRemoved(position)

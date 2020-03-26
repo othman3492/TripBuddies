@@ -7,10 +7,9 @@ import com.bumptech.glide.Glide
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.utils.AdapterEvent
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
 import kotlinx.android.synthetic.main.trip_buddies_list_layout.view.*
-import kotlinx.android.synthetic.main.trip_photos_list_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalArgumentException
 
@@ -77,7 +76,7 @@ class TripBuddiesAdapter(val context: Context, val trip: Trip, private val itemC
                     holder.itemView.remove_buddy_button.setOnClickListener {
 
                         EventBus.getDefault()
-                            .post(AdapterEvent(buddiesAdapterId, buddiesList[position].userId))
+                            .post(Utils.AdapterEvent(buddiesAdapterId, buddiesList[position].userId))
 
                         buddiesList.toMutableList().removeAt(position)
                         notifyItemRemoved(position)
