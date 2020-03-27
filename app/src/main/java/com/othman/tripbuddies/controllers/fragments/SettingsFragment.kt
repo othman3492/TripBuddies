@@ -42,15 +42,6 @@ class SettingsFragment() : DialogFragment() {
     private lateinit var user: User
 
 
-    private var onDismissListener: DialogInterface.OnDismissListener? = null
-
-
-    // Create a custom OnDismissListener to handle imageList
-    interface OnDismissListener {
-
-        fun dismissed()
-    }
-
 
 
     /*-----------------------------
@@ -77,6 +68,8 @@ class SettingsFragment() : DialogFragment() {
 
     private fun configureButtons() {
 
+        logout_button.setOnClickListener { AuthUI.getInstance()
+            .signOut(activity!!).addOnSuccessListener { activity!!.finish() } }
 
         delete_account_button.setOnClickListener {
             AlertDialog.Builder(activity)

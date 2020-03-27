@@ -125,10 +125,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             checkPermissionForGallery()
         }
 
-        // Change profile picture
-        profile_picture.setOnClickListener {
-            buttonClicked = profilePictureCode
-            checkPermissionForGallery()
+        // Enable profile picture change if user's own profile
+        if (profileUser.userId == FirebaseUserHelper.getCurrentUser()!!.uid) {
+            profile_picture.setOnClickListener {
+                buttonClicked = profilePictureCode
+                checkPermissionForGallery()
+            }
         }
 
 
@@ -147,17 +149,19 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
 
             cover_profile_change_button.visibility = View.VISIBLE
-            cover_profile_change_button.setOnClickListener { checkPermissionForGallery() }
+            cover_profile_change_button.setOnClickListener {
+                buttonClicked = coverPictureCode
+                checkPermissionForGallery() }
+
+            profile_picture.setOnClickListener {
+                buttonClicked = profilePictureCode
+                checkPermissionForGallery()
+            }
 
             // Logout
             logout_button.visibility = View.VISIBLE
-            logout_button.setOnClickListener {
-                AuthUI.getInstance()
-                    .signOut(activity!!).addOnSuccessListener { activity!!.finish() }
-            }
+            logout_button.setOnClickListener { displaySettingsFragment() }
 
-            // Open settings
-            settings_button.setOnClickListener { displaySettingsFragment() }
         } else {
 
             add_floating_action_button.hide()

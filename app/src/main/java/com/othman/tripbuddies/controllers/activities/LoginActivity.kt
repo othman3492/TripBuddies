@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
@@ -44,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
         configureViewModel()
         setSignInButtons()
 
-        FirebaseInstanceId.getInstance().instanceId
+        /*FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.w(ContentValues.TAG, "getInstanceId failed", task.exception)
@@ -57,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
                 // Log and toast
                 Log.d("TOKEN", token!!)
                 Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
-            })
+            })*/
 
     }
 
@@ -160,11 +161,15 @@ class LoginActivity : AppCompatActivity() {
             FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString() else null
         val username: String? = FirebaseUserHelper.getCurrentUser()!!.displayName
 
-        userViewModel.getUser(FirebaseAuth.getInstance().currentUser!!.uid).observe(this,
-            androidx.lifecycle.Observer<User> {
+        val liveData: LiveData<User> = userViewModel.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
-                if (it == null)
+        liveData.observe(this, androidx.lifecycle.Observer<User> {
+                if (liveData.hasActiveObservers())
+                    liveData.removeObservers(this)
+
+                if (it == null) {
                     userViewModel.createUserIntoFirestore(User(uid, username!!, urlPicture))
+                }
             })
     }
 

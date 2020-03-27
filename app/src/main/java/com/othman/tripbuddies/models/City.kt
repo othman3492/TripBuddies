@@ -23,6 +23,7 @@ data class City(
     constructor() : this("", "", "", null, null, null)
 
 
+    // Compare objects without comparing lists
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

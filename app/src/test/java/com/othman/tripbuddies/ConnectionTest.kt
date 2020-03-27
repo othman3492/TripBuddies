@@ -3,7 +3,7 @@ package com.othman.tripbuddies
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.facebook.FacebookSdk.getApplicationContext
 import com.google.common.truth.Truth.assertThat
 import com.othman.tripbuddies.utils.Connection

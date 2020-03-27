@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +28,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.othman.tripbuddies.BuildConfig
@@ -506,8 +508,13 @@ DATA QUERIES
                 place.photoMetadatas!![0].zza()
             )
 
-            // Create city collection if it doesn't exist
-            cityViewModel.getCity(city.cityId).observe(viewLifecycleOwner, Observer {
+
+            val liveData: LiveData<City> = cityViewModel.getCity(city.cityId)
+
+            liveData.observe(viewLifecycleOwner, Observer {
+
+                if (liveData.hasActiveObservers())
+                    liveData.removeObservers(viewLifecycleOwner)
 
                 if (it == null) {
                     // Create city collection
@@ -527,7 +534,6 @@ DATA QUERIES
                 }
 
             })
-
         }
     }
 

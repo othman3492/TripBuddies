@@ -101,18 +101,23 @@ class ChatActivity : AppCompatActivity() {
     // Get message list from city chat
     private fun getMessages(city: City) {
 
-        val list: MutableList<Message> = ArrayList()
+        cityViewModel.getCity(city.cityId).observe(this, Observer {
 
-        for (doc in city.messagesList) {
+            val list: MutableList<Message> = ArrayList()
 
-            messageViewModel.getMessage(doc).observe(this, Observer { it ->
-                if (it != null && !list.contains(it)) {
-                    list.add(it)
-                    list.sortBy { it.timestamp }
-                    messageAdapter.updateData(list)
-                }
-            })
-        }
+            for (doc in it.messagesList) {
+
+                messageViewModel.getMessage(doc).observe(this, Observer { message ->
+                    if (it != null && !list.contains(message)) {
+                        list.add(message)
+                        list.sortBy { message.timestamp }
+                        messageAdapter.updateData(list)
+                    }
+                })
+            }
+        })
+
+
     }
 
 
@@ -134,9 +139,7 @@ class ChatActivity : AppCompatActivity() {
                 cityViewModel.addMessageToChat(city.cityId, message.messageId)
                     .addOnSuccessListener {
 
-                        // Display message and empty message field
-                        messageAdapter.notifyDataSetChanged()
-                        configureUI(city)
+                        // Empty message field
                         chat_message_field.editText!!.text.clear()
                     }
             }

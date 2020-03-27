@@ -71,16 +71,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cover_picture" />
 
-            <ImageView
-                android:id="@+id/settings_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="@string/settings"
-                android:src="@drawable/baseline_settings_blue_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/trips_layout"/>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/trips_layout"
                 android:layout_width="match_parent"
