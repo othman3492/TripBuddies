@@ -90,6 +90,7 @@
     <string name="delete">DELETE</string>
     <string name="account">ACCOUNT</string>
     <string name="notification_trip_add">%s added you to a trip !</string>
+    <string name="show_your_email_address">Show your email address</string>
 
 
 </resources>

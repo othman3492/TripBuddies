@@ -49,6 +49,15 @@
                 app:layout_constraintBottom_toBottomOf="@id/profile_picture"
                 tools:text="Othman BOUADJENAK" />
 
+            <TextView
+                android:id="@+id/email_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                app:layout_constraintStart_toEndOf="@id/profile_picture"
+                app:layout_constraintBottom_toBottomOf="@id/profile_picture"
+                tools:text="Othman BOUADJENAK" />
+
             <ImageView
                 android:id="@+id/cover_profile_change_button"
                 android:layout_width="wrap_content"
@@ -70,6 +79,16 @@
                 android:src="@drawable/baseline_power_settings_red_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cover_picture" />
+
+            <ImageView
+                android:id="@+id/settings_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/settings"
+                android:src="@drawable/baseline_settings_blue_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/trips_layout"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/trips_layout"

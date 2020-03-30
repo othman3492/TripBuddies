@@ -10,13 +10,15 @@ data class User(
 
     var userId: String = "",
     var name: String = "",
+    var email: String = "",
+    var displayEmail: Boolean = true,
     var urlPicture: String? = null,
     var urlCoverPicture: String? = null,
     var tripList: List<String> = ArrayList(),
     var wishList: List<String> = ArrayList()
 ): Serializable {
 
-    constructor(): this(Utils.generateId(), "", "", "")
+    constructor(): this(Utils.generateId(), "", "", true, "", "")
 
 
     // Compare objects without comparing lists

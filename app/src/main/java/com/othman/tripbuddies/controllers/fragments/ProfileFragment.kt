@@ -97,6 +97,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     getTripList(it)
                     configureButtons(it)
 
+                    if (it.displayEmail) email_address.text = it.email else email_address.text = ""
                     username.text = it.name
                     setProfilePicture(it)
                     setCoverPicture(it)
@@ -160,7 +161,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
             // Logout
             logout_button.visibility = View.VISIBLE
-            logout_button.setOnClickListener { displaySettingsFragment() }
+            logout_button.setOnClickListener {
+                AuthUI.getInstance()
+                    .signOut(activity!!).addOnSuccessListener { activity!!.finish() }
+            }
+
+            // Open settings
+            settings_button.setOnClickListener { displaySettingsFragment() }
 
         } else {
 
@@ -256,12 +263,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         fragmentTransaction.addToBackStack(null)
 
         val dialogFragment = SettingsFragment()
-        val bundle = Bundle()
-        bundle.putSerializable("USER_SETTINGS", profileUser)
-        dialogFragment.arguments = bundle
-
         dialogFragment.show(fragmentTransaction, "dialog")
     }
+
 
 
     /*-----------------------------

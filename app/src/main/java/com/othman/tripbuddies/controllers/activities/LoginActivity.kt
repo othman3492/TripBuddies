@@ -160,6 +160,7 @@ class LoginActivity : AppCompatActivity() {
         val urlPicture: String? = if (FirebaseUserHelper.getCurrentUser()!!.photoUrl != null)
             FirebaseUserHelper.getCurrentUser()!!.photoUrl.toString() else null
         val username: String? = FirebaseUserHelper.getCurrentUser()!!.displayName
+        val email: String? = FirebaseUserHelper.getCurrentUser()!!.email
 
         val liveData: LiveData<User> = userViewModel.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
@@ -168,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
                     liveData.removeObservers(this)
 
                 if (it == null) {
-                    userViewModel.createUserIntoFirestore(User(uid, username!!, urlPicture))
+                    userViewModel.createUserIntoFirestore(User(uid, username!!, email!!, true, urlPicture))
                 }
             })
     }

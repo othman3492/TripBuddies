@@ -26,6 +26,7 @@ import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.fragment_user_search.*
 import java.util.*
@@ -39,7 +40,7 @@ class SettingsFragment() : DialogFragment() {
     private lateinit var cityViewModel: FirestoreCityViewModel
     private lateinit var tripViewModel: FirestoreTripViewModel
 
-    private lateinit var user: User
+
 
 
 
@@ -59,8 +60,6 @@ class SettingsFragment() : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        user = this.arguments!!.getSerializable("USER_SETTINGS") as User
-
         configureViewModels()
         configureButtons()
     }
@@ -68,17 +67,35 @@ class SettingsFragment() : DialogFragment() {
 
     private fun configureButtons() {
 
-        logout_button.setOnClickListener { AuthUI.getInstance()
-            .signOut(activity!!).addOnSuccessListener { activity!!.finish() } }
+        userViewModel.getUser(FirebaseUserHelper.getCurrentUser()!!.uid).observe(viewLifecycleOwner, Observer {
 
-        delete_account_button.setOnClickListener {
-            AlertDialog.Builder(activity)
-                .setMessage(R.string.delete_account_confirmation)
-                .setPositiveButton(R.string.yes) { _, _ -> deleteUser(user) }
-                .setNegativeButton(R.string.no, null)
-                .show()
-        }
+            // Set switch initial state
+            if (it.displayEmail) email_settings_switch.isChecked = true
+
+            // Configure switch
+            email_settings_switch.setOnCheckedChangeListener { _, isChecked ->
+
+                if (isChecked) {
+                    it.displayEmail = true
+                    userViewModel.updateUserIntoFirestore(it)
+                } else {
+                    it.displayEmail = false
+                    userViewModel.updateUserIntoFirestore(it)
+                }
+            }
+
+            // Configure delete account button
+            delete_account_button.setOnClickListener { _ ->
+                AlertDialog.Builder(activity)
+                    .setMessage(R.string.delete_account_confirmation)
+                    .setPositiveButton(R.string.yes) { _, _ -> deleteUser(it) }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+            }
+        })
     }
+
+
 
 
 
