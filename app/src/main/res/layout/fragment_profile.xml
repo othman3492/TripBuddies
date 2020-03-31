@@ -55,14 +55,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_normal"
                 app:layout_constraintStart_toEndOf="@id/profile_picture"
-                app:layout_constraintBottom_toBottomOf="@id/profile_picture"
-                tools:text="Othman BOUADJENAK" />
+                app:layout_constraintTop_toBottomOf="@id/username"
+                tools:text="othman3492@gmail.com" />
 
             <ImageView
                 android:id="@+id/cover_profile_change_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_normal"
+                android:layout_margin="10dp"
                 android:contentDescription="@string/change_cover_picture_button"
                 android:padding="2dp"
                 android:src="@drawable/baseline_panorama_24"

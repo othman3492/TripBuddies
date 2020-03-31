@@ -7,8 +7,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.facebook.FacebookSdk.getApplicationContext
 import com.google.common.truth.Truth.assertThat
 import com.othman.tripbuddies.utils.Connection
+import org.robolectric.RobolectricTestRunner
 
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
@@ -19,6 +21,7 @@ import java.util.*
 class ConnectionTest {
     private var connectivityManager: ConnectivityManager? = null
     private var shadowOfActiveNetworkInfo: ShadowNetworkInfo? = null
+
     @Before
     fun setUp() {
         connectivityManager =

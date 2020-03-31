@@ -29,7 +29,9 @@ import com.othman.tripbuddies.controllers.activities.MainActivity
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
+import com.othman.tripbuddies.utils.Connection
 import com.othman.tripbuddies.utils.FirebaseUserHelper
+import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
@@ -149,14 +151,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 )
             }
 
-            cover_profile_change_button.visibility = View.VISIBLE
-            cover_profile_change_button.setOnClickListener {
-                buttonClicked = coverPictureCode
-                checkPermissionForGallery() }
+            if (Connection.isInternetAvailable(activity!!)!!) {
 
-            profile_picture.setOnClickListener {
-                buttonClicked = profilePictureCode
-                checkPermissionForGallery()
+                cover_profile_change_button.visibility = View.VISIBLE
+                cover_profile_change_button.setOnClickListener {
+                    buttonClicked = coverPictureCode
+                    checkPermissionForGallery()
+                }
+
+                profile_picture.setOnClickListener {
+                    buttonClicked = profilePictureCode
+                    checkPermissionForGallery()
+                }
             }
 
             // Logout
@@ -167,6 +173,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
 
             // Open settings
+            settings_button.visibility = View.VISIBLE
             settings_button.setOnClickListener { displaySettingsFragment() }
 
         } else {
@@ -174,6 +181,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             add_floating_action_button.hide()
             cover_profile_change_button.visibility = View.GONE
             logout_button.visibility = View.GONE
+            settings_button.visibility = View.GONE
         }
 
 
@@ -227,15 +235,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .into(profile_picture)
     }
 
-    // Load cover picture into view if not null
+    // Load cover picture into view
     private fun setCoverPicture(user: User) {
 
-        if (user.urlCoverPicture != null) {
-
-            Glide.with(this)
-                .load(user.urlCoverPicture)
-                .into(cover_picture)
-        }
+        Glide.with(this)
+            .load(user.urlCoverPicture)
+            .into(cover_picture)
     }
 
 
@@ -265,7 +270,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val dialogFragment = SettingsFragment()
         dialogFragment.show(fragmentTransaction, "dialog")
     }
-
 
 
     /*-----------------------------
