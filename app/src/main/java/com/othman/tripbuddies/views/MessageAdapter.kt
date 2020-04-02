@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.Message
-import com.othman.tripbuddies.models.User
 import kotlinx.android.synthetic.main.my_message_layout.view.*
 import kotlinx.android.synthetic.main.my_message_layout.view.my_message_timestamp
 import kotlinx.android.synthetic.main.other_message_layout.view.*
@@ -21,8 +20,8 @@ class MessageAdapter(private val context: Context, val userId: String) :
 
 
     private var messagesList: List<Message> = ArrayList()
-    private val MY_MESSAGE = 0
-    private val OTHER_MESSAGE = 1
+    private val myMessageId = 0
+    private val otherMessageId = 1
 
 
     override fun getItemCount() = messagesList.size
@@ -30,9 +29,9 @@ class MessageAdapter(private val context: Context, val userId: String) :
     override fun getItemViewType(position: Int): Int {
 
         return if (messagesList[position].userId == userId) {
-            MY_MESSAGE
+            myMessageId
         } else {
-            OTHER_MESSAGE
+            otherMessageId
         }
     }
 
@@ -41,13 +40,13 @@ class MessageAdapter(private val context: Context, val userId: String) :
 
         return when (viewType) {
 
-            MY_MESSAGE -> {
+            myMessageId -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.my_message_layout, parent, false)
                 MyMessageViewHolder(view)
             }
 
-            OTHER_MESSAGE -> {
+            otherMessageId -> {
 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.other_message_layout, parent, false)
                 OtherMessageViewHolder(view, context)
@@ -92,7 +91,7 @@ class MessageAdapter(private val context: Context, val userId: String) :
         override fun bind(message: Message) {
 
             view.my_message_content.text = message.content
-            view.my_message_timestamp.text = message.timestamp.toString()
+            view.my_message_timestamp.text = message.timestamp
         }
     }
 
@@ -105,7 +104,7 @@ class MessageAdapter(private val context: Context, val userId: String) :
         override fun bind(message: Message) {
 
             view.other_message_content.text = message.content
-            view.other_message_timestamp.text = message.timestamp.toString()
+            view.other_message_timestamp.text = message.timestamp
             view.other_name.text = message.username
 
             Glide.with(context)

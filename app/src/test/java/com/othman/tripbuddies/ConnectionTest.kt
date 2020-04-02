@@ -7,15 +7,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.facebook.FacebookSdk.getApplicationContext
 import com.google.common.truth.Truth.assertThat
 import com.othman.tripbuddies.utils.Connection
-import org.robolectric.RobolectricTestRunner
-
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetworkInfo
-import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class ConnectionTest {
@@ -40,10 +36,10 @@ class ConnectionTest {
     val activeNetworkInfoshouldReturnTrueCorrectly: Unit
         get() {
             shadowOfActiveNetworkInfo!!.setConnectionStatus(NetworkInfo.State.CONNECTED)
-            assertThat(Connection.isInternetAvailable(getApplicationContext())).isTrue()
+            assertThat(Connection.checkNetworkState(getApplicationContext())).isTrue()
             shadowOfActiveNetworkInfo!!.setConnectionStatus(NetworkInfo.State.CONNECTING)
-            assertThat(Connection.isInternetAvailable(getApplicationContext())).isFalse()
+            assertThat(Connection.checkNetworkState(getApplicationContext())).isFalse()
             shadowOfActiveNetworkInfo!!.setConnectionStatus(NetworkInfo.State.DISCONNECTED)
-            assertThat(Connection.isInternetAvailable(getApplicationContext())).isFalse()
+            assertThat(Connection.checkNetworkState(getApplicationContext())).isFalse()
         }
 }

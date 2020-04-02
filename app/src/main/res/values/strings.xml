@@ -1,23 +1,18 @@
 <resources>
     <string name="app_name">TripBuddies</string>
     <string name="login_background">Login background</string>
-    <string name="sign_in_with_email">SIGN IN WITH EMAIL</string>
     <string name="sign_in_with_facebook">SIGN IN WITH FACEBOOK</string>
     <string name="sign_in_with_google">SIGN IN WITH GOOGLE</string>
     <string name="logo">logo</string>
-    <string name="error_authentication_canceled">Authentication canceled</string>
     <string name="error_no_internet">No internet connection</string>
     <string name="error_unknown_error">Unknown error</string>
     <string name="connection_succeed">Authentication successful</string>
 
     <string name="facebook_application_id">244304536727479</string>
-    <string name="fb_login_protocol_scheme">fb244304536727479</string>
     <string name="profile">PROFILE</string>
     <string name="places">PLACES</string>
-    <string name="inbox">INBOX</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cover_picture">Cover picture</string>
     <string name="profile_picture">Profile picture</string>
     <string name="change_cover_picture_button">Change cover picture button</string>
@@ -27,49 +22,29 @@
     <string name="add_a_new_trip">ADD A NEW TRIP</string>
     <string name="edit_a_trip">EDIT TRIP</string>
     <string name="wish_list">WISH LIST</string>
-    <string name="add_city">ADD CITIES</string>
     <string name="depart_date">Depart date</string>
     <string name="return_date">Return date</string>
-    <string name="add_photos">ADD PHOTOS</string>
-    <string name="add_buddies">ADD BUDDIES</string>
     <string name="tell_other_buddies_about_your_trip">Tell other buddies about your trip !</string>
     <string name="name_of_your_trip">Name of your trip</string>
     <string name="buddies_icon">Buddies icon</string>
     <string name="search_button">Search button</string>
-    <string name="trip_name_by">by %s</string>
     <string name="photos">PHOTOS</string>
     <string name="buddies">BUDDIES</string>
-    <string name="messages">MESSAGES</string>
 
     <string name="by_name">by %s</string>
     <string name="dates_from_to">From %s to %s</string>
-    <string name="trips_in_cities">%s trips in %s cities</string>
-    <plurals name="destination_and_others">
-        <item quantity="one">%s</item>
-        <item quantity="two">%s and 1 other</item>
-        <item quantity="other">%s and %s others</item>
-    </plurals>
 
     <string name="trip_cover">Trip cover</string>
     <string name="trip_images">Trip images</string>
     <string name="trip_cover_picture">Trip cover picture</string>
     <string name="where_do_you_want_to_go">Where do you want to go ?</string>
-    <string name="avatar">avatar</string>
     <string name="city_picture">City picture</string>
     <string name="type_your_message">Type your message</string>
     <string name="send_button">Send button</string>
 
-    <string name="city_nb_buddies">%s buddies have visited this city</string>
-    <string name="city_nb_wishlist">%s buddies would like to go there</string>
     <string name="destinations">DESTINATIONS</string>
-    <string name="next">NEXT</string>
-    <string name="add_destinations_to_your_trip">Add destinations to your trip</string>
-    <string name="previous">PREVIOUS</string>
-    <string name="back">BACK</string>
-    <string name="add_buddies_to_your_trip">Add Buddies to your trip</string>
     <string name="create">CREATE</string>
     <string name="update">UPDATE</string>
-    <string name="recyclerview_add_button">RecyclerView add button</string>
     <string name="message_profile_picture">Message profile picture</string>
     <string name="remove_icon">Remove icon</string>
     <string name="remove_photo_button">Remove photo button</string>
@@ -79,17 +54,10 @@
     <string name="delete_account_confirmation">Do you really want to delete this account ?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
-    <string name="notifications_on_off">Activate notifications</string>
     <string name="search_a_buddy">Search a buddy</string>
     <string name="settings">Settings</string>
     <string name="edit_trip">Edit trip</string>
-    <string name="logout_button">Logout button</string>
-    <string name="delete_account_button">Delete account button</string>
-    <string name="logout">LOGOUT</string>
     <string name="delete_account">DELETE ACCOUNT</string>
-    <string name="delete">DELETE</string>
-    <string name="account">ACCOUNT</string>
-    <string name="notification_trip_add">%s added you to a trip !</string>
     <string name="show_your_email_address">Show your email address</string>
 
 

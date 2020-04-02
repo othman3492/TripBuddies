@@ -32,7 +32,6 @@
         tools:text="Othman BOUADJENAK" />
 
     <ImageView
-        android:id="@+id/remove_cities_or_buddies_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

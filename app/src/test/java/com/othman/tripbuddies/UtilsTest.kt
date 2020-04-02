@@ -3,7 +3,6 @@ package com.othman.tripbuddies
 import com.othman.tripbuddies.utils.Utils
 import junit.framework.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDate
 import java.util.*
 
 class UtilsTest {

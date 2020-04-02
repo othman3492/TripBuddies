@@ -1,11 +1,8 @@
 package com.othman.tripbuddies.controllers.fragments
 
-import UserSearchAdapter
-import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.othman.tripbuddies.R
-import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
+import com.othman.tripbuddies.views.UserSearchAdapter
 import kotlinx.android.synthetic.main.fragment_user_search.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -35,16 +30,6 @@ class UserSearchFragment : DialogFragment() {
 
     private lateinit var tripId: String
     private var usersList: List<User> = ArrayList()
-
-    private var onDismissListener: DialogInterface.OnDismissListener? = null
-
-
-    // Create a custom OnDismissListener to handle imageList
-    interface OnDismissListener {
-
-        fun dismissed()
-    }
-
 
 
     /*-----------------------------
@@ -114,7 +99,7 @@ class UserSearchFragment : DialogFragment() {
         val filteredList: MutableList<User> = ArrayList()
 
         for (user in usersList) {
-            if (user.name.toLowerCase().contains(text.toLowerCase())) {
+            if (user.name.toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT))) {
                 filteredList.add(user)
             }
         }

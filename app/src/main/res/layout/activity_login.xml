@@ -19,7 +19,6 @@
 
 
     <ImageView
-        android:id="@+id/app_logo"
         android:layout_width="@dimen/fui_auth_method_button_width"
         android:layout_height="@dimen/fui_auth_method_button_width"
         android:background="@drawable/logo"

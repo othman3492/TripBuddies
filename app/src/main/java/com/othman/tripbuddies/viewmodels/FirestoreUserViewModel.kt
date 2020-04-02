@@ -3,17 +3,10 @@ package com.othman.tripbuddies.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.facebook.internal.Mutable
-import com.google.android.libraries.places.api.model.Place
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.QuerySnapshot
-import com.othman.tripbuddies.models.City
-import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.repositories.FirestoreTripRepository
 import com.othman.tripbuddies.repositories.FirestoreUserRepository
-import java.util.concurrent.Executor
 
 class FirestoreUserViewModel : ViewModel() {
 

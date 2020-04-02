@@ -1,12 +1,9 @@
 package com.othman.tripbuddies.repositories
 
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
-import com.othman.tripbuddies.models.City
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.othman.tripbuddies.models.Trip
-import com.othman.tripbuddies.models.User
-import com.othman.tripbuddies.utils.FirebaseUserHelper
 
 
 class FirestoreTripRepository {

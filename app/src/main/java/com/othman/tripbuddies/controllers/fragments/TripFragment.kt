@@ -1,23 +1,17 @@
 package com.othman.tripbuddies.controllers.fragments
 
 
-import TripBuddiesAdapter
-import TripDestinationsAdapter
-import TripPhotosAdapter
 import android.Manifest
-import android.app.*
-import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,11 +22,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.othman.tripbuddies.BuildConfig
-
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.activities.AddEditActivity
 import com.othman.tripbuddies.controllers.activities.MainActivity
@@ -45,6 +37,9 @@ import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
+import com.othman.tripbuddies.views.TripBuddiesAdapter
+import com.othman.tripbuddies.views.TripDestinationsAdapter
+import com.othman.tripbuddies.views.TripPhotosAdapter
 import kotlinx.android.synthetic.main.fragment_trip.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -64,10 +59,6 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     private val autocompleteRequestCode = 21
     private val galleryCode = 1
     private val galleryPermissionCode = 11
-    private val notificationChannel = "100"
-
-    val COVER_IMAGE_URL =
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
     companion object {
@@ -294,48 +285,11 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    // Create a notification when user has been added to a trip
-    private fun createNotification() {
+    /*-----------------------------
 
-        // Create notification text
-        val text = String.format(
-            resources.getString(R.string.notification_trip_add),
-            FirebaseUserHelper.getCurrentUser()!!.displayName)
+    DATA QUERIES
 
-        // Create intent to open Trip
-        val intent = Intent(activity, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(activity, 0, intent, 0)
-
-        // Configure notification channel if API 26+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = notificationChannel
-            val descriptionText = "CHANNEL DESCRIPTION"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(notificationChannel, name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                activity!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        // Create notification
-        var notification = NotificationCompat.Builder(activity!!, notificationChannel)
-            .setSmallIcon(R.drawable.app_icon)
-            .setContentTitle(R.string.app_name.toString())
-            .setContentText(text)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-    }
-
-/*-----------------------------
-
-DATA QUERIES
-
----------------------------- */
+    ---------------------------- */
 
 
     private fun configureViewModel() {
@@ -418,7 +372,7 @@ DATA QUERIES
                 ) == PackageManager.PERMISSION_DENIED
             ) {
                 // Permission denied
-                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 // Request permission
                 requestPermissions(permissions, galleryPermissionCode)
             } else {

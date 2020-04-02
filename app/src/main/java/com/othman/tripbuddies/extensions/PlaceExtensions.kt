@@ -3,7 +3,6 @@ package com.othman.tripbuddies.extensions
 import android.content.Context
 import android.location.Geocoder
 import com.google.android.libraries.places.api.model.Place
-import com.othman.tripbuddies.BuildConfig
 
 
 // Retrieve country from Place object

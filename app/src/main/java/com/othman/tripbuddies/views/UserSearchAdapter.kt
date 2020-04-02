@@ -1,3 +1,5 @@
+package com.othman.tripbuddies.views
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
-import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.*
 import kotlinx.android.synthetic.main.city_or_buddies_list_layout.view.user_search_item_image
 import kotlinx.android.synthetic.main.user_search_item_layout.view.*
 

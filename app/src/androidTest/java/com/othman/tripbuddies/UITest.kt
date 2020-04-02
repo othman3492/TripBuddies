@@ -1,6 +1,5 @@
 package com.othman.tripbuddies
 
-import android.R
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.action.ViewActions
@@ -29,6 +28,9 @@ class UITest {
 
     @Test
     fun clickOnProfile_openProfileFragment() {
+        Espresso.onView(withId(R.id.menu_bottom_places)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.city_original_layout))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         Espresso.onView(withId(R.id.menu_bottom_profile)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.cover_profile))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))

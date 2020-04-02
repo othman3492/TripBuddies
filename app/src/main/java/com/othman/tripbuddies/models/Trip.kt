@@ -2,8 +2,6 @@ package com.othman.tripbuddies.models
 
 import com.othman.tripbuddies.utils.Utils
 import java.io.Serializable
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 data class Trip(
@@ -43,7 +41,7 @@ data class Trip(
         var result = tripId.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + description.hashCode()
-        result = 31 * result + (creationDate.hashCode() ?: 0)
+        result = 31 * result + creationDate.hashCode()
         return result
     }
 }

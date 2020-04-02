@@ -1,8 +1,8 @@
 package com.othman.tripbuddies.controllers.fragments
 
 
-import CityBuddiesAdapter
-import CityTripsAdapter
+import com.othman.tripbuddies.views.CityBuddiesAdapter
+import com.othman.tripbuddies.views.CityTripsAdapter
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -29,12 +28,12 @@ import com.othman.tripbuddies.extensions.getCountry
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
+import com.othman.tripbuddies.utils.Connection
 import com.othman.tripbuddies.utils.FirebaseUserHelper
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreUserViewModel
 import kotlinx.android.synthetic.main.fragment_city.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 class CityFragment : Fragment(R.layout.fragment_city) {
@@ -48,8 +47,8 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     private lateinit var cityTripsAdapter: CityTripsAdapter
 
 
-    val AUTOCOMPLETE_REQUEST_CODE = 100
-    val COVER_IMAGE_URL =
+    private val autocompleteRequestCode = 100
+    private val coverImageURL =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
@@ -133,7 +132,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             Glide.with(this).load(loadStaticMap(cityToDisplay)).into(city_static_map)
 
             val path =
-                COVER_IMAGE_URL + cityToDisplay.coverPicture + "&key=" + BuildConfig.google_apikey
+                coverImageURL + cityToDisplay.coverPicture + "&key=" + BuildConfig.google_apikey
             Glide.with(this).load(path).into(city_cover_picture)
 
         })
@@ -149,10 +148,16 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         chatIntent.putExtra("CHAT_CITY", city)
 
         city_search_button.setOnClickListener { configurePlaceAutocomplete() }
-        add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
-        remove_city_wish_list_floating_action_button.setOnClickListener {
-            removeCityFromWishList(city)
+
+        // Activate like button if network is available
+        if (Connection.checkNetworkState(activity!!)) {
+
+            add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
+            remove_city_wish_list_floating_action_button.setOnClickListener {
+                removeCityFromWishList(city)
+            }
         }
+
         open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
 
         city_last_trips.setOnClickListener {
@@ -219,7 +224,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
             .setTypeFilter(TypeFilter.CITIES)
             .build(context!!)
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        startActivityForResult(intent, autocompleteRequestCode)
 
     }
 
@@ -227,7 +232,7 @@ class CityFragment : Fragment(R.layout.fragment_city) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+        if (requestCode == autocompleteRequestCode) {
             if (resultCode == RESULT_OK) {
 
                 // Retrieve Place data and create City object

@@ -2,8 +2,6 @@ package com.othman.tripbuddies.controllers.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.controllers.fragments.CityFragment
@@ -16,11 +14,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
 
-    private val PROFILE_FRAGMENT = 0
-    private val CITY_FRAGMENT = 1
-    private val TRIP_FRAGMENT = 2
+    private val profileFragmentId = 0
+    private val cityFragmentId = 1
+    private val tripFragmentId = 2
 
-    private var fragmentId = PROFILE_FRAGMENT
+    private var fragmentId = profileFragmentId
 
     private var trip = Trip()
 
@@ -33,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
 
             when (supportFragmentManager.findFragmentByTag("TRIPBUDDIES")) {
-                is ProfileFragment -> fragmentId = PROFILE_FRAGMENT
-                is CityFragment -> fragmentId = CITY_FRAGMENT
-                is TripFragment -> fragmentId = TRIP_FRAGMENT
+                is ProfileFragment -> fragmentId = profileFragmentId
+                is CityFragment -> fragmentId = cityFragmentId
+                is TripFragment -> fragmentId = tripFragmentId
             }
 
             configureBottomNavigationView()
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             if (intent.getSerializableExtra("TRIP") != null) {
 
                 trip = intent.getSerializableExtra("TRIP") as Trip
-                fragmentId = TRIP_FRAGMENT
+                fragmentId = tripFragmentId
             }
 
             configureBottomNavigationView()
@@ -72,9 +70,9 @@ class MainActivity : AppCompatActivity() {
 
         when (fragmentId) {
 
-            PROFILE_FRAGMENT -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
-            CITY_FRAGMENT -> displayFragment(CityFragment.newInstance(null))
-            TRIP_FRAGMENT -> displayFragment(TripFragment.newInstance(trip))
+            profileFragmentId -> displayFragment(ProfileFragment.newInstance(FirebaseUserHelper.getCurrentUser()!!.uid))
+            cityFragmentId -> displayFragment(CityFragment.newInstance(null))
+            tripFragmentId -> displayFragment(TripFragment.newInstance(trip))
         }
     }
 
@@ -102,11 +100,11 @@ class MainActivity : AppCompatActivity() {
 
         // Set fragmentId to save it into SavedInstanceState
         when (fragment) {
-            is ProfileFragment -> fragmentId = PROFILE_FRAGMENT
+            is ProfileFragment -> fragmentId = profileFragmentId
 
-            is CityFragment -> fragmentId = CITY_FRAGMENT
+            is CityFragment -> fragmentId = cityFragmentId
 
-            is TripFragment -> fragmentId = TRIP_FRAGMENT
+            is TripFragment -> fragmentId = tripFragmentId
         }
 
         val transaction = supportFragmentManager.beginTransaction()

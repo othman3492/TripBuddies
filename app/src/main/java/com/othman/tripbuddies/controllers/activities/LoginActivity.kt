@@ -1,11 +1,8 @@
 package com.othman.tripbuddies.controllers.activities
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LiveData
@@ -13,10 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.iid.FirebaseInstanceId
 import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.FirebaseUserHelper
@@ -27,7 +22,7 @@ import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
-    private val RC_SIGN_IN = 100
+    private val signInCode = 100
     private lateinit var userViewModel: FirestoreUserViewModel
 
 
@@ -82,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
                     )
                 )
                 .setIsSmartLockEnabled(false, true)
-                .build(), RC_SIGN_IN
+                .build(), signInCode
         )
     }
 
@@ -97,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                     )
                 )
                 .setIsSmartLockEnabled(false, true)
-                .build(), RC_SIGN_IN
+                .build(), signInCode
         )
     }
 
@@ -121,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
 
         val response: IdpResponse = IdpResponse.fromResultIntent(data)!!
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == signInCode) {
             if (resultCode == Activity.RESULT_OK) {
 
                 // Show message, create user and start MainActivity

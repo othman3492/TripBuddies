@@ -1,3 +1,5 @@
+package com.othman.tripbuddies.views
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -111,15 +113,14 @@ class TripDestinationsAdapter(val context: Context, val trip: Trip, private val 
 
 
 
-    abstract class BaseTripDestinationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
-
+    abstract class BaseTripDestinationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 
     class TripDestinationsViewHolder(v: View, private var context: Context) :
         BaseTripDestinationsViewHolder(v), View.OnClickListener {
 
         private var view: View = v
-        val COVER_IMAGE_URL =
+        private val coverImageURL =
             "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
@@ -137,7 +138,7 @@ class TripDestinationsAdapter(val context: Context, val trip: Trip, private val 
 
             view.details_city_name.text = city.name
 
-            val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
+            val path = coverImageURL + city.coverPicture + "&key=" + BuildConfig.google_apikey
 
 
             // Display profile picture if not null

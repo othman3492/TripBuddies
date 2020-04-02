@@ -4,7 +4,6 @@ import com.othman.tripbuddies.views.MessageAdapter
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.EditText
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,14 +12,11 @@ import com.othman.tripbuddies.R
 import com.othman.tripbuddies.models.City
 import com.othman.tripbuddies.models.Message
 import com.othman.tripbuddies.utils.FirebaseUserHelper
-import com.othman.tripbuddies.utils.Utils
-import com.othman.tripbuddies.utils.Utils.convertDate
 import com.othman.tripbuddies.utils.Utils.convertDateAndTime
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreMessageViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.android.synthetic.main.fragment_city.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -32,7 +28,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
 
     private lateinit var city: City
-    val COVER_IMAGE_URL =
+    private val coverImageURL =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
 
@@ -60,7 +56,7 @@ class ChatActivity : AppCompatActivity() {
         configureButtons()
         getMessages(city)
 
-        val path = COVER_IMAGE_URL + city.coverPicture + "&key=" + BuildConfig.google_apikey
+        val path = coverImageURL + city.coverPicture + "&key=" + BuildConfig.google_apikey
 
         // Update views
         chat_city_name.text = city.name.toUpperCase()

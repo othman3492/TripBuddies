@@ -1,8 +1,5 @@
 package com.othman.tripbuddies.models
 
-import android.content.Context
-import com.google.android.libraries.places.api.model.Place
-import com.othman.tripbuddies.extensions.getCountry
 import java.io.Serializable
 
 

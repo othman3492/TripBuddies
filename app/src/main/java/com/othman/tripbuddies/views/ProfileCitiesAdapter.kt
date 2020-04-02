@@ -1,3 +1,5 @@
+package com.othman.tripbuddies.views
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +48,7 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
     class ProfileCitiesViewHolder(v: View, private var context: Context) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
         private var view: View = v
-        val COVER_IMAGE_URL =
+        private val coverImageURL =
             "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&maxheight=1000&photoreference="
 
         init { v.setOnClickListener(this) }
@@ -61,7 +63,7 @@ class ProfileCitiesAdapter(val context: Context, private val clickListener: (Cit
 
             view.city_or_buddies_list_name.text = city.name
             view.city_or_buddies_list_name.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-            Glide.with(context).load(COVER_IMAGE_URL + city.coverPicture +
+            Glide.with(context).load(coverImageURL + city.coverPicture +
                     "&key=" + BuildConfig.google_apikey).into(view.user_search_item_image)
 
             // Set view holder on click

@@ -1,3 +1,5 @@
+package com.othman.tripbuddies.views
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -110,7 +112,7 @@ class TripBuddiesAdapter(val context: Context, val trip: Trip, private val itemC
 
 
 
-    abstract class BaseTripBuddiesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
+    abstract class BaseTripBuddiesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 
     class TripBuddiesViewHolder(v: View, private var context: Context) : BaseTripBuddiesViewHolder(v), View.OnClickListener {

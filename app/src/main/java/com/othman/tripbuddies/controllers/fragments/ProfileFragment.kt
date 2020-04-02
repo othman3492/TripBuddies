@@ -1,8 +1,8 @@
 package com.othman.tripbuddies.controllers.fragments
 
 
-import ProfileCitiesAdapter
-import ProfileTripsAdapter
+import com.othman.tripbuddies.views.ProfileCitiesAdapter
+import com.othman.tripbuddies.views.ProfileTripsAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -31,7 +31,6 @@ import com.othman.tripbuddies.models.Trip
 import com.othman.tripbuddies.models.User
 import com.othman.tripbuddies.utils.Connection
 import com.othman.tripbuddies.utils.FirebaseUserHelper
-import com.othman.tripbuddies.utils.Utils
 import com.othman.tripbuddies.utils.Utils.generateId
 import com.othman.tripbuddies.viewmodels.FirestoreCityViewModel
 import com.othman.tripbuddies.viewmodels.FirestoreTripViewModel
@@ -151,7 +150,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 )
             }
 
-            if (Connection.isInternetAvailable(activity!!)!!) {
+            // Activate cover and profile picture change if network is available
+            if (Connection.checkNetworkState(activity!!)) {
 
                 cover_profile_change_button.visibility = View.VISIBLE
                 cover_profile_change_button.setOnClickListener {
