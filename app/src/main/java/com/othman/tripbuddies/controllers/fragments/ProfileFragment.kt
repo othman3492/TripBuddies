@@ -163,6 +163,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     buttonClicked = profilePictureCode
                     checkPermissionForGallery()
                 }
+            } else {
+
+                cover_profile_change_button.visibility = View.GONE
+                profile_picture.setOnClickListener{
+
+                    Toast.makeText(activity, "No network available", Toast.LENGTH_SHORT).show()
+                }
             }
 
             // Logout

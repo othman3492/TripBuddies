@@ -21,18 +21,18 @@ class UITest {
 
     @Test
     fun clickOnPlaces_openCityFragment() {
-        Espresso.onView(withId(R.id.menu_bottom_places)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.bottom_menu_places)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.city_original_layout))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun clickOnProfile_openProfileFragment() {
-        Espresso.onView(withId(R.id.menu_bottom_places)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.bottom_menu_places)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.city_original_layout))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(withId(R.id.menu_bottom_profile)).perform(ViewActions.click())
-        Espresso.onView(withId(R.id.cover_profile))
+        Espresso.onView(withId(R.id.bottom_menu_profile)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.cover_picture))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 

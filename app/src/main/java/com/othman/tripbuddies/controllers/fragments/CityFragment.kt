@@ -149,15 +149,6 @@ class CityFragment : Fragment(R.layout.fragment_city) {
 
         city_search_button.setOnClickListener { configurePlaceAutocomplete() }
 
-        // Activate like button if network is available
-        if (Connection.checkNetworkState(activity!!)) {
-
-            add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
-            remove_city_wish_list_floating_action_button.setOnClickListener {
-                removeCityFromWishList(city)
-            }
-        }
-
         open_chat_floating_action_button.setOnClickListener { startActivity(chatIntent) }
 
         city_last_trips.setOnClickListener {
@@ -169,6 +160,24 @@ class CityFragment : Fragment(R.layout.fragment_city) {
             getWishList(city)
         }
 
+
+        // Activate like button if network is available
+        if (Connection.checkNetworkState(activity!!)) {
+
+            add_city_wish_list_floating_action_button.setOnClickListener { addCityToWishList(city) }
+            remove_city_wish_list_floating_action_button.setOnClickListener {
+                removeCityFromWishList(city)
+            }
+        } else {
+            add_city_wish_list_floating_action_button.setOnClickListener {
+
+                Toast.makeText(activity, "No network available", Toast.LENGTH_SHORT).show()
+            }
+            remove_city_wish_list_floating_action_button.setOnClickListener {
+
+                Toast.makeText(activity, "No network available", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 

@@ -124,7 +124,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
             if (it != null) {
 
                 // Load data into views
-                configureRecyclerViews()
+                configureRecyclerViews(it)
                 getDestinationsList(it)
                 getBuddiesList(it)
 
@@ -155,7 +155,7 @@ class TripFragment : Fragment(R.layout.fragment_trip) {
     }
 
 
-    private fun configureRecyclerViews() {
+    private fun configureRecyclerViews(trip: Trip) {
 
         // Configure photos RecyclerView
         photoAdapter = TripPhotosAdapter(
