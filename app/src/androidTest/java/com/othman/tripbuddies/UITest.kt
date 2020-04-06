@@ -28,9 +28,7 @@ class UITest {
 
     @Test
     fun clickOnProfile_openProfileFragment() {
-        Espresso.onView(withId(R.id.bottom_menu_places)).perform(ViewActions.click())
-        Espresso.onView(withId(R.id.city_original_layout))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        clickOnPlaces_openCityFragment()
         Espresso.onView(withId(R.id.bottom_menu_profile)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.cover_picture))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -40,6 +38,20 @@ class UITest {
     fun clickOnPlusButton_openAddEditActivity() {
         Espresso.onView(withId(R.id.add_floating_action_button)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.add_trip))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    @Test
+    fun clickOnLogoutButton_openLoginActivity() {
+        Espresso.onView(withId(R.id.logout_button)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.google_button))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    @Test
+    fun clickOnSettingsButton_openSettingsFragment() {
+        Espresso.onView(withId(R.id.settings_button)).perform(ViewActions.click())
+        Espresso.onView(withId(R.id.email_settings_switch))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 }
