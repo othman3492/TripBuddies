@@ -42,13 +42,6 @@ class UITest {
     }
 
     @Test
-    fun clickOnLogoutButton_openLoginActivity() {
-        Espresso.onView(withId(R.id.logout_button)).perform(ViewActions.click())
-        Espresso.onView(withId(R.id.google_button))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-
-    @Test
     fun clickOnSettingsButton_openSettingsFragment() {
         Espresso.onView(withId(R.id.settings_button)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.email_settings_switch))
