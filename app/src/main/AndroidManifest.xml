@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,10 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".controllers.activities.ChatActivity"/>
-        <activity android:name=".controllers.activities.AddEditActivity" />
-        <activity android:name=".controllers.activities.MainActivity" />
-        <activity android:name=".controllers.activities.LoginActivity">
+        <activity android:name=".ui.activities.ChatActivity"/>
+        <activity android:name=".ui.activities.AddEditActivity" />
+        <activity android:name=".ui.activities.MainActivity" />
+        <activity android:name=".ui.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
