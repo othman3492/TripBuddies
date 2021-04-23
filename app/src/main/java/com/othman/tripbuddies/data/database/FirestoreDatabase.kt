@@ -15,7 +15,7 @@ class FirestoreDatabase {
     private val firestore = FirebaseFirestore.getInstance()
     private val cityCollection = firestore.collection("cities")
     private val userCollection = firestore.collection("users")
-    private val tripCollection = firestore.collection("messages")
+    private val tripCollection = firestore.collection("trips")
     private val messageCollection = firestore.collection("messages")
 
 
